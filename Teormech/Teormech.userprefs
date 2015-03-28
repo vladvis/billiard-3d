@@ -1,0 +1,14 @@
+﻿<Properties StartupItem="Teormech/Teormech.cproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Teormech/table.cpp">
+    <Files>
+      <File FileName="Teormech/tesh.cpp" Line="13" Column="13" />
+      <File FileName="Teormech/table.cpp" Line="46" Column="46" />
+      <File FileName="Teormech/table.h" Line="51" Column="51" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
