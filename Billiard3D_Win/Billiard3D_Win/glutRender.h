@@ -6,7 +6,11 @@
 #include <ctime>
 #include <assert.h>
 
-#include <glut.h>
+#ifdef LINUX_PLATFORM
+	#include <GL/glut.h>
+#else
+	#include <glut.h>
+#endif
 
 class glutRender
 {
@@ -24,7 +28,7 @@ class glutRender
 			static glutRender Instance;
 
 		private:
-			glutRender (int _WindowWidth = 800, int _WindowHeight = 600) :
+			glutRender (int _WindowWidth = 900, int _WindowHeight = 700) :
 				WindowWidth(_WindowWidth), WindowHeight(_WindowHeight) {};
 
 			static void DisplayGL_ ();
@@ -34,7 +38,7 @@ class glutRender
 			static void MotionGL_ (int x, int y);
 			static void ReshapeGL_ (int w, int h);
 
-			int glutWindowHandle = 0;
+			int glutWindowHandle;
 
 			int WindowWidth;
 			int WindowHeight;

@@ -1,4 +1,3 @@
-#define _USE_MATH_DEFINES
 #include "glutRender.h"
 
 int main (int argc, char* argv[])

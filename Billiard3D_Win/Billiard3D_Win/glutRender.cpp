@@ -139,13 +139,14 @@ void glutRender::Init (int* argc, char* argv[])
 	glutInitWindowSize (WindowWidth, WindowHeight);
 
 	glutWindowHandle = glutCreateWindow ("Billiard 3D Project");
+	assert (glutWindowHandle != 0);
 
 	glutDisplayFunc (DisplayGL_);
 	glutIdleFunc (IdleGL_);
-	glutMouseFunc (MouseGL_);
-	glutMotionFunc (MotionGL_);
-	glutKeyboardFunc (KeyboardGL_);
-	glutReshapeFunc (ReshapeGL_);
+	glutMouseFunc (MouseGL_);//
+	glutMotionFunc (MotionGL_);//
+	glutKeyboardFunc (KeyboardGL_);//
+	glutReshapeFunc (ReshapeGL_);//
 
 	glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
 	glClearDepth (1.0f);
@@ -153,7 +154,6 @@ void glutRender::Init (int* argc, char* argv[])
 	glShadeModel (GL_SMOOTH);
 
 	glutMainLoop ();
-	Cleanup (); //something were wrong?
 }
 
 void glutRender::DisplayGL ()
@@ -237,7 +237,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 		}
 		break;
 
-		case '\009': // TAB
+		case '\t': // TAB
 		{
 			//TODO: Change active ball
 		}
@@ -247,7 +247,6 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 		{
 			// Cleanup up and quit
 			Cleanup();
-			exit (0);
 		}
 		break;
 	}
@@ -273,8 +272,11 @@ void glutRender::ReshapeGL (int w, int h)
 
 void glutRender::Cleanup ()
 {
+	std::cout << "Cleanup\n";
+
 	if (glutWindowHandle != 0)
 	{
+		std::cout << "Start destructing\n";
 		glutDestroyWindow (glutWindowHandle);
 		glutWindowHandle = 0;
 	}
@@ -291,22 +293,22 @@ void glutRender::DisplayGL_ ()
 	glutRender::Instance.DisplayGL ();
 }
 
-static void KeyboardGL_ (unsigned char c, int x, int y)
+void glutRender::KeyboardGL_ (unsigned char c, int x, int y)
 {
 	glutRender::Instance.KeyboardGL (c, x, y);
 }
 
-static void MouseGL_ (int button, int state, int x, int y)
+void glutRender::MouseGL_ (int button, int state, int x, int y)
 {
 	glutRender::Instance.MouseGL (button, state, x, y);
 }
 
-static void MotionGL_ (int x, int y)
+void glutRender::MotionGL_ (int x, int y)
 {
 	glutRender::Instance.MotionGL (x, y);
 }
 
-static void ReshapeGL_ (int w, int h)
+void glutRender::ReshapeGL_ (int w, int h)
 {
 	glutRender::Instance.ReshapeGL (w, h);
 }
