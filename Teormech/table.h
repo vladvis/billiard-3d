@@ -1,7 +1,7 @@
 ﻿#ifndef BILLIARD_TABLE
 #define BILLIARD_TABLE
 
-#define MINTIME 0.00001
+#define MINTIME 0.000001
 #define EPS 0.00000001
 
 #include "vec.h"
@@ -31,7 +31,7 @@ public:
 public:
 	Ball(const char * cfgfileName, vec r, vec v, vec w);
 	void Collide(Ball);
-	void NextStep(Table t);
+	int NextStep(Table t);//Return 0 is stops
 	double Distance(Ball);
 };
 

@@ -1,17 +1,18 @@
 # depslib dependency file v1.0
-1427587316 source:/home/denisk/Documents/billiard-3d/Teormech/table.cpp
+1427637912 source:/home/denisk/Documents/billiard-3d/Teormech/table.cpp
 	<fstream>
 	<iostream>
 	"table.h"
 
-1427587006 /home/denisk/Documents/billiard-3d/Teormech/table.h
+1427639509 /home/denisk/Documents/billiard-3d/Teormech/table.h
 	"vec.h"
 
 1427576061 /home/denisk/Documents/billiard-3d/Teormech/vec.h
 
-1427586966 source:/home/denisk/Documents/billiard-3d/Teormech/test.cpp
+1427636186 source:/home/denisk/Documents/billiard-3d/Teormech/test.cpp
 	"table.h"
 	<iostream>
+	<fstream>
 
 1427578551 source:/home/denisk/Documents/billiard-3d/Teormech/vec.cpp
 	"vec.h"
