@@ -1,8 +1,8 @@
 ﻿#ifndef BILLIARD_TABLE
 #define BILLIARD_TABLE
 
-#define MINTIME 0.0001
-#define EPS 0.000001
+#define MINTIME 0.00001
+#define EPS 0.00000001
 
 #include "vec.h"
 const double g = 9.8036;

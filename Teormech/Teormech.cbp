@@ -31,6 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="table.cpp" />
+		<Unit filename="table.h" />
+		<Unit filename="test.cpp" />
+		<Unit filename="vec.cpp" />
+		<Unit filename="vec.h" />
 		<Extensions>
 			<envvars />
 			<code_completion />

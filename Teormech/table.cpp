@@ -12,7 +12,7 @@ Table::Table(const char * name){
 	}
 	else
     {
-        std::cout << "Fuck!!!!";
+        throw;
 	}
 
 	file.close();
@@ -31,7 +31,7 @@ Ball::Ball(const char * name, vec r, vec v, vec w) :
 	}
 	else
     {
-        std::cout << "Fuck your!!!!!";
+        throw;
     }
 
 	file.close();
