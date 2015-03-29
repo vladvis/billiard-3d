@@ -65,6 +65,7 @@ int Ball::NextStep(Table t)
 		ret = 1;
 	}
 
+    //std::cout << alpha << " " << beta << std::endl;
     if ((isnan(alpha)) && (isnan(beta))) return ret; //it means that v=0
 
 	if (!isnan(alpha) && mu > EPS){ //Slippage -> sliding friction
@@ -74,16 +75,16 @@ int Ball::NextStep(Table t)
             double dbeta = (t.f*m*g*a/J/mw*cos(beta-alpha))*MINTIME;
             beta += dbeta;
 
-            double du = (t.d*m*g*a/J*sin(beta-alpha) - t.f*g*(1+m*a*a/J))*MINTIME;
-            mu += du;
-            if (mu < 0) mu=0; //Solvability check
-
             double dalpha = -t.d*m*g*a/J/mu*cos(beta-alpha)*MINTIME;
             alpha += dalpha;
 
             double dw = (t.f*m*g*a/J*sin(beta-alpha)-t.d*m*g/J)*MINTIME;
             mw += dw;
             if (mw < 0) mw=0; //Solvability check
+
+            double du = (t.d*m*g*a/J*sin(beta-alpha) - t.f*g*(1+m*a*a/J))*MINTIME;
+            mu += du;
+            if (mu < 0) mu=0; //Solvability check
 
             u.x = mu * cos(alpha);
             u.y = mu * sin(alpha);
