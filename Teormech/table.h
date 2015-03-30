@@ -9,13 +9,13 @@ const double g = 9.8036;
 
 class Table{
 public:
-	double bb;//ball-ball friction
-	double e;//ball-ball restituion
-	double je;//ball-table restitution
+	double bb;//ball-ball friction TODO
+	double e;//ball-ball restitution TODO
+	double je;//ball-table restitution TODO
 	double d;//ball-table rolling friction
 	double s;//ball-table spinning friction
 	double f;//ball-table sliding friction
-	double re;//ball-rail restituion
+	double re;//ball-rail restitution TODO
 
 	Table(const char * cfgfileName);
 };
