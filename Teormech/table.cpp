@@ -57,32 +57,31 @@ int Ball::NextStep(Table t)
     double alpha = acos((u.y<0 ? -1 : 1) * u.x/mu) + (u.y<0 ? M_PI : 0);
     double beta =  acos((w.y<0 ? -1 : 1) * w.x/mw) + (w.y<0 ? M_PI : 0);
 
-	double J = 2.0/5.0*m*a*a;
+	double J = 2.0/5.0*a*a;
 
 	if (std::abs(w.z) > EPS){
-        double dwz = -t.s*m*g * (w.z>0 ? 1 : -1)*MINTIME;
+        double dwz = -t.s*g/J * (w.z>0 ? 1 : -1)*MINTIME;
 		w.z += dwz;
 		ret = 1;
 	}
 
-    //std::cout << alpha << " " << beta << std::endl;
     if ((isnan(alpha)) && (isnan(beta))) return ret; //it means that v=0
 
 	if (!isnan(alpha) && mu > EPS){ //Slippage -> sliding friction
         ret += 2;
         if (!isnan(beta) && mw > EPS){ //Rolling -> rolling friction
             ret += 4;
-            double dbeta = (t.f*m*g*a/J/mw*cos(beta-alpha))*MINTIME;
+            double dbeta = (t.f*g*a/J/mw*cos(beta-alpha))*MINTIME;
             beta += dbeta;
 
-            double dalpha = -t.d*m*g*a/J/mu*cos(beta-alpha)*MINTIME;
+            double dalpha = -t.d*g*a/J/mu*cos(beta-alpha)*MINTIME;
             alpha += dalpha;
 
-            double dw = (t.f*m*g*a/J*sin(beta-alpha)-t.d*m*g/J)*MINTIME;
+            double dw = (t.f*g*a/J*sin(beta-alpha)-t.d*g/J)*MINTIME;
             mw += dw;
             if (mw < 0) mw=0; //Solvability check
 
-            double du = (t.d*m*g*a/J*sin(beta-alpha) - t.f*g*(1+m*a*a/J))*MINTIME;
+            double du = (t.d*g*a/J*sin(beta-alpha) - t.f*g*(1+a*a/J))*MINTIME;
             mu += du;
             if (mu < 0) mu=0; //Solvability check
 
@@ -91,7 +90,7 @@ int Ball::NextStep(Table t)
             w.x = mw * cos(beta);
             w.y = mw * sin(beta);
         }else{ //No rolling -> start of rolling TODO
-            double du = (-t.f*g*(1+m*a*a/J))*MINTIME;
+            double du = (-t.f*g*(1+a*a/J))*MINTIME;
             mu += du;
             if (mu < 0) mu=0; //Solvability check
 
@@ -106,7 +105,7 @@ int Ball::NextStep(Table t)
         }
 	}else{ //No slippage -> no sliding friction, only rolling
 	    ret += 4;
-        double dw = -t.d*m*g/J*MINTIME;
+        double dw = -t.d*g/J*MINTIME;
         mw += dw;
         if (mw < 0) mw=0; //Solvability check
 
