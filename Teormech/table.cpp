@@ -60,7 +60,7 @@ int Ball::Collide(Table t, Ball &b)
     double v1n_n = (t.e*(v2n-v1n) + (v1n+v2n))/2;
     double v2n_n = (t.e*(v1n-v2n) + (v1n+v2n))/2;
 
-    vec u = b.v - v + a * ((b.w - w) ^ k) - k * ((b.v - v) * k);
+    vec u = b.v - v + a * ((b.w + w) ^ k) - k * ((b.v - v) * k);
     double mu = u.mod();
     vec tau = u.normalized();
 

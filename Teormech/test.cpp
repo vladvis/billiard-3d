@@ -5,6 +5,8 @@
 #include <vector>
 #include <iomanip>
 
+#define TIMELOSS 5000
+
 using namespace std;
 
 int main(int argc, char * argv[])
@@ -20,7 +22,7 @@ int main(int argc, char * argv[])
         while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz)
             balls.push_back(Ball("ball.cfg", vec(rx, ry, rz), vec(vx, vy, vz), vec(wx, wy, wz)));
     }else{
-        ifstream file("data");
+        ifstream file("data3");
         double rx, ry, rz, vx, vy, vz, wx, wy, wz;
         if (!file.is_open()){
             cout << "Failed to open file!"; return 1;
@@ -36,11 +38,13 @@ int main(int argc, char * argv[])
 
     int ret = 0;
     int time = 0;
+
+    cout << balls.size() << endl;
     cout << fixed;
     do{
         time++;
         ret = 0;
-        cout << setprecision(5) << time*MINTIME << "\t";
+        if (time % TIMELOSS == 0) cout << setprecision(5) << time*MINTIME << "\t";
 
         for(vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it){
             for(vector<Ball>::iterator jt = it+1; jt != balls.end(); ++jt){
@@ -50,10 +54,10 @@ int main(int argc, char * argv[])
 
         for(vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it){
             int retb = it->NextStep(t);
-            ret |= (retb-1);
-            cout << setprecision(5) << "\t" << it->r.x << ", " << it->r.y << ", " << it->r.z;
+            if (retb != 1) ret |= (retb);
+            if (time % TIMELOSS == 0) cout << setprecision(5) << "\t" << it->r.x << ", " << it->r.y << ", " << it->r.z;
         }
-        cout << endl;
+        if (time % TIMELOSS == 0) cout << endl;
     }while(ret);
 	return 0;
 
