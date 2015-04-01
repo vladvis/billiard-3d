@@ -40,9 +40,46 @@ Ball::Ball(const char * name, vec r, vec v, vec w) :
 	file.close();
 };
 
-void Ball::Collide(Ball b)
+void Ball::Collide(Table t, Ball &b)
 {
 	if (Distance(b) > b.a + a) return;
+    double hi = 2.0/5.0;
+
+    vec k = (b.r - r).normalized();
+
+    double v1n = v * k;
+    double v2n = b.v * k;
+
+    if (v2n >= v1n) return;//They don't move to each other :(
+
+    vec v1t = v - v1n * k;
+    vec v2t = b.v - v2n * k;
+
+    //Normal components is not affected by friction - only restitution
+    double v1n_n = (t.e*(v2n-v1n) + (v1n+v2n))/2;
+    double v2n_n = (t.e*(v1n-v2n) + (v1n+v2n))/2;
+
+    vec u = b.v - v + a * ((b.w - w) ^ k) - k * ((b.v - v) * k);
+    double mu = u.mod();
+    vec tau = u.normalized();
+
+    double itr_v = (1 + t.e) * (v1n - v2n) / 2;
+
+    vec itr;//We use that friction vector is constant in it's direction - Coriolis
+    if (2 * itr_v < mu){ //Always friction
+        itr = itr_v * tau;
+    }else{//Friction stops when u=0
+        itr = u / 2;
+    }
+
+    w -= hi / a * (itr ^ k);
+    b.w -= hi / a * (itr ^ k);
+
+    v1t += itr;
+    v2t -= itr;
+
+    v = v1t + k * v1n_n;
+    b.v = v2t + k * v2n_n;
 };
 
 int Ball::NextStep(Table t)
@@ -121,7 +158,6 @@ int Ball::NextStep(Table t)
 
 double Ball::Distance(Ball b)
 {
-
 	return sqrt(r * b.r);
 }
 

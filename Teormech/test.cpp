@@ -5,12 +5,13 @@
 
 using namespace std;
 
-int main(int argv, char * argc[])
+int main(int argc, char * argv[])
 {
+    /*
     double vx, vy, vz, wx, wy, wz;
 
-    if (argv > 1){
-        ifstream file(argc[1]);
+    if (argc > 1){
+        ifstream file(argv[1]);
         if (!file.is_open()){
             cout << "Failed to open file!"; return 1;
         }
@@ -40,5 +41,17 @@ int main(int argv, char * argc[])
 		//b.NextStep(t);
 	//}
     }
+    */
+
+    Table t("table.cfg");
+	Ball b1("ball.cfg", vec(0, 0, 0), vec(1, 0, 3), vec(0, 0, 0));
+	Ball b2("ball.cfg", vec(0.01, 0, 0), vec(-1, 0, -3), vec(0, 0, 0));
+
+    b1.Collide(t, b2);
+
+    cout << b1.v.x << " " << b1.v.y << " " << b1.v.z << endl;
+    cout << b2.v.x << " " << b2.v.y << " " << b2.v.z << endl;
+
 	return 0;
+
 }

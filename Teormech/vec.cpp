@@ -11,6 +11,21 @@ vec operator* (double a, vec b)
 	return vec(a*b.x, a*b.y, a*b.z);
 };
 
+vec operator* (vec b, double a)
+{
+	return vec(a*b.x, a*b.y, a*b.z);
+};
+
+vec operator/ (double a, vec b)
+{
+	return vec(a/b.x, a/b.y, a/b.z);
+};
+
+vec operator/ (vec b, double a)
+{
+	return vec(b.x/a, b.y/a, b.z/a);
+};
+
 double vec::operator*(vec b)
 {
 	return x*b.x + y*b.y + z*b.z;
@@ -46,4 +61,9 @@ vec vec::operator-=(vec b)
 double vec::mod()
 {
 	return sqrt(x*x + y*y + z*z);
+};
+
+vec vec::normalized()
+{
+    return (*this) / this->mod();
 };

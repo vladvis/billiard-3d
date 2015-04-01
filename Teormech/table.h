@@ -30,7 +30,7 @@ public:
 	vec w;
 public:
 	Ball(const char * cfgfileName, vec r, vec v, vec w);
-	void Collide(Ball);
+	void Collide(Table t, Ball &);
 	int NextStep(Table t);//Return 0 is stops
 	double Distance(Ball);
 };

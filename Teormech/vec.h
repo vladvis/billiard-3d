@@ -18,7 +18,14 @@ public:
 	vec operator- (vec b);
 	vec operator-= (vec b);
 
+	vec normalized();
+
 	friend vec operator* (double a, vec b);
+	friend vec operator* (vec b, double a);
+
+	friend vec operator/ (double a, vec b);
+	friend vec operator/ (vec b, double a);
+
 	double operator*(vec b); //Scalar product
 	vec operator^(vec b); //Vector product
 
