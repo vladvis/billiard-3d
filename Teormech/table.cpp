@@ -1,4 +1,4 @@
-﻿#include <cmath>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include "table.h"
@@ -40,17 +40,18 @@ Ball::Ball(const char * name, vec r, vec v, vec w) :
 	file.close();
 };
 
-void Ball::Collide(Table t, Ball &b)
+int Ball::Collide(Table t, Ball &b)
 {
-	if (Distance(b) > b.a + a) return;
-    double hi = 2.0/5.0;
+	if (Distance(b) > b.a + a) return 0;//No collide for you
+
+    double hi = 5.0/2.0;
 
     vec k = (b.r - r).normalized();
 
     double v1n = v * k;
     double v2n = b.v * k;
 
-    if (v2n >= v1n) return;//They don't move to each other :(
+    if (v2n >= v1n) return 0;//They don't move to each other :(
 
     vec v1t = v - v1n * k;
     vec v2t = b.v - v2n * k;
@@ -63,7 +64,7 @@ void Ball::Collide(Table t, Ball &b)
     double mu = u.mod();
     vec tau = u.normalized();
 
-    double itr_v = (1 + t.e) * (v1n - v2n) / 2;
+    double itr_v = t.bb * (1 + t.e) * (v1n - v2n) / 2;
 
     vec itr;//We use that friction vector is constant in it's direction - Coriolis
     if (2 * itr_v < mu){ //Always friction
@@ -80,6 +81,12 @@ void Ball::Collide(Table t, Ball &b)
 
     v = v1t + k * v1n_n;
     b.v = v2t + k * v2n_n;
+
+    v.z = 0;
+    b.v.z = 0;
+
+    u = b.v - v + a * ((b.w - w) ^ k) - k * ((b.v - v) * k);
+    return 1;
 };
 
 int Ball::NextStep(Table t)
@@ -158,6 +165,6 @@ int Ball::NextStep(Table t)
 
 double Ball::Distance(Ball b)
 {
-	return sqrt(r * b.r);
+	return sqrt((r.x - b.r.x)*(r.x - b.r.x) + (r.y - b.r.y)*(r.y - b.r.y) + (r.z - b.r.z)*(r.z - b.r.z));
 }
 
