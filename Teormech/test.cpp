@@ -22,7 +22,7 @@ int main(int argc, char * argv[])
         while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz)
             balls.push_back(Ball("ball.cfg", vec(rx, ry, rz), vec(vx, vy, vz), vec(wx, wy, wz)));
     }else{
-        ifstream file("data3");
+        ifstream file("lunev");
         double rx, ry, rz, vx, vy, vz, wx, wy, wz;
         if (!file.is_open()){
             cout << "Failed to open file!"; return 1;

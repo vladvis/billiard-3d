@@ -76,16 +76,17 @@ int Ball::Collide(Table t, Ball &b)
     w -= hi / a * (itr ^ k);
     b.w -= hi / a * (itr ^ k);
 
-    v1t += itr;
-    v2t -= itr;
+    v1t -= itr;
+    v2t += itr;
 
     v = v1t + k * v1n_n;
     b.v = v2t + k * v2n_n;
 
+    u = b.v - v + a * ((b.w - w) ^ k) - k * ((b.v - v) * k);
+
     v.z = 0;
     b.v.z = 0;
 
-    u = b.v - v + a * ((b.w - w) ^ k) - k * ((b.v - v) * k);
     return 1;
 };
 

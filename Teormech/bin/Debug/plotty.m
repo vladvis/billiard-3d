@@ -8,6 +8,7 @@ function plotty(filename)
     h = plot(nan,'.');
     axis equal;
     
+    colors = ['m' 'c' 'r' 'g' 'b' 'w'];
     
     X = [];
     Y = [];
@@ -23,7 +24,7 @@ function plotty(filename)
     
     Hc = [];
     for i=1:1:balls
-        Hc = [Hc plot(nan)];
+        Hc = [Hc plot(nan,colors(mod(i-1,6)+1))];
     end
     
     tline = fgets(fid);
