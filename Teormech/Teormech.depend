@@ -5,12 +5,12 @@
 	<iostream>
 	"table.h"
 
-1427907749 /home/denisk/Documents/billiard-3d/Teormech/table.h
+1428004011 /home/denisk/Documents/billiard-3d/Teormech/table.h
 	"vec.h"
 
 1427901251 /home/denisk/Documents/billiard-3d/Teormech/vec.h
 
-1427990433 source:/home/denisk/Documents/billiard-3d/Teormech/test.cpp
+1428003779 source:/home/denisk/Documents/billiard-3d/Teormech/test.cpp
 	"vec.h"
 	"table.h"
 	<iostream>

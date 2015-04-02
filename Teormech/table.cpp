@@ -21,8 +21,9 @@ Table::Table(const char * name){
 	file.close();
 };
 
-Ball::Ball(const char * name, vec r, vec v, vec w) :
+Ball::Ball(const char * name, vec r, vec phi, vec v, vec w) :
 	r(r),
+	phi(phi),
 	v(v),
 	w(w)
 {
@@ -160,6 +161,7 @@ int Ball::NextStep(Table t)
 
 	v = u - a * (k ^ w);
 	r += (MINTIME * v);
+	phi += (MINTIME * w);
 
 	return ret;
 };

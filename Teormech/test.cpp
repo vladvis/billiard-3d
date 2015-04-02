@@ -15,20 +15,20 @@ int main(int argc, char * argv[])
 
     if (argc > 1){
         ifstream file(argv[1]);
-        double rx, ry, rz, vx, vy, vz, wx, wy, wz;
+        double px, py, pz, rx, ry, rz, vx, vy, vz, wx, wy, wz;
         if (!file.is_open()){
             cout << "Failed to open file!"; return 1;
         }
-        while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz)
-            balls.push_back(Ball("ball.cfg", vec(rx, ry, rz), vec(vx, vy, vz), vec(wx, wy, wz)));
+        while(file >> rx >> ry >> rz >> px >> py >> pz >> vx >> vy >> vz >> wx >> wy >> wz)
+            balls.push_back(Ball("ball.cfg", vec(rx, ry, rz), vec(px, py, pz), vec(vx, vy, vz), vec(wx, wy, wz)));
     }else{
         ifstream file("lunev");
-        double rx, ry, rz, vx, vy, vz, wx, wy, wz;
+        double px, py, pz, rx, ry, rz, vx, vy, vz, wx, wy, wz;
         if (!file.is_open()){
             cout << "Failed to open file!"; return 1;
         }
-        while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz)
-            balls.push_back(Ball("ball.cfg", vec(rx, ry, rz), vec(vx, vy, vz), vec(wx, wy, wz)));
+        while(file >> rx >> ry >> rz >> px >> py >> pz >> vx >> vy >> vz >> wx >> wy >> wz)
+            balls.push_back(Ball("ball.cfg", vec(rx, ry, rz), vec(px, py, pz), vec(vx, vy, vz), vec(wx, wy, wz)));
     }
 
     if (balls.empty()){

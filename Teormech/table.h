@@ -26,10 +26,11 @@ public:
 	double m;//mass
 
 	vec r;
+	vec phi;
 	vec v;
 	vec w;
 public:
-	Ball(const char * cfgfileName, vec r, vec v, vec w);
+	Ball(const char * cfgfileName, vec r, vec phi, vec v, vec w);
 	int Collide(Table t, Ball &);
 	int NextStep(Table t);//Return 0 is stops
 	double Distance(Ball);
