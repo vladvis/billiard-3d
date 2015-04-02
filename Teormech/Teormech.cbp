@@ -31,6 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Linker>
+			<Add option="-lGL -lGLU -lglut -Wall -Werror -DDEBUG -DLINUX_TARGET" />
+		</Linker>
+		<Unit filename="glutRender.cpp" />
+		<Unit filename="glutRender.h" />
 		<Unit filename="table.cpp" />
 		<Unit filename="table.h" />
 		<Unit filename="test.cpp" />

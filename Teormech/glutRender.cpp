@@ -1,0 +1,541 @@
+#include "glutRender.h"
+
+double alpha = 1.8*3.14/3;
+double multipluer = 6.0;
+
+float3 balls[3] = {float3(2.0f, 0.085f, -3.0f),
+					float3(-3.0f, 0.085f, -3.0f),
+					float3(2.0f, 0.085f, -1.0f)};
+
+float3 colors[3] = {float3(0.8f, 0.0f, 0.0f),
+					float3(0.0f, 0.8f, 0.0f),
+					float3(0.0f, 0.0f, 0.8f)};
+
+int cure_ball = 2;
+
+/* there is only one copy of glutRender, so we are have to use this lifehack to deal with C GLUT library on C++, it is ok */
+glutRender glutRender::Instance;
+
+void glutRender::Init (int* argc, char* argv[])
+{
+	srand(time(0));
+
+	PreviousTicks = std::clock();
+
+	glutInit (argc, argv);
+	glutInitDisplayMode (GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
+
+	int ScreenWidth = glutGet (GLUT_SCREEN_WIDTH);
+	int ScreenHeight = glutGet (GLUT_SCREEN_HEIGHT);
+
+	glutInitWindowPosition ((ScreenWidth - WindowWidth) / 2, (ScreenHeight - WindowHeight) / 2);
+
+	glutInitWindowSize (WindowWidth, WindowHeight);
+
+	glutWindowHandle = glutCreateWindow ("Billiard 3D Project");
+	assert (glutWindowHandle != 0);
+
+	#ifdef FULLSCREEN
+	glutGameModeString ("1920x1080:32@60");
+	glutEnterGameMode();
+	#endif
+
+	glutDisplayFunc (DisplayGL_);
+	glutIdleFunc (IdleGL_);
+	glutMouseFunc (MouseGL_);
+	glutMotionFunc (MotionGL_);
+	glutKeyboardFunc (KeyboardGL_);
+	glutReshapeFunc (ReshapeGL_);
+
+
+	// ----- OpenGL settings -----
+	glEnable (GL_DEPTH_TEST);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set out clear colour to black, full alpha
+	glClearDepth(1.0f);  // Clear the entire depth of the depth buffer
+
+	glShadeModel (GL_SMOOTH); // Enable (gouraud) shading
+
+	glDepthFunc(GL_LEQUAL); // Set our depth function to overwrite if new value less than or equal to current value
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Ask for nicest perspective correction
+    glEnable(GL_CULL_FACE); // Do not draw polygons facing away from us
+
+    glEnable(GL_LIGHTING);
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //TODO: GL_LIGHT_MODEL_LOCAL_VIEWER
+
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    // ----------------------------
+
+    /* fog */
+	glEnable(GL_FOG);
+	GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
+	#ifdef LINEAR_FOG
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	glFogf(GL_FOG_START, 20);
+	glFogf(GL_FOG_END, 40);
+	glFogfv(GL_FOG_COLOR, fogColor);
+	glFogf(GL_FOG_DENSITY, 0.08f);/*0.08*/
+	#else
+	glFogi(GL_FOG_MODE, GL_EXP2);
+	glFogfv(GL_FOG_COLOR, fogColor);
+	glFogf(GL_FOG_DENSITY, 0.025f);
+	#endif
+	/* fog end */
+
+    checkGLError ("glutRender::Init");
+
+	glutMainLoop ();
+
+	Cleanup(); //guess, is never calling
+}
+
+void init_l()
+{
+	GLfloat light0_diffuse[] = {1.0f, 1.0f, 1.0f};
+    GLfloat light0_direction[] = {1.0, 6.0, 1.0, 0.0};
+
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
+
+    glEnable(GL_LIGHT1);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light0_diffuse);
+    glLightfv(GL_LIGHT1, GL_POSITION, light0_direction);
+}
+
+
+void DrawGroundGrid (const GLfloat groundLevel)
+{
+    GLfloat extent      = 40.0f;
+    GLfloat stepSize    = 3.0f;
+
+    glLineWidth(1.1f);
+    glColor3ub(255, 255, 255);
+
+    glBegin(GL_LINES);
+    for (GLint loop = -extent; loop < extent; loop += stepSize)
+    {
+        glVertex3f(loop, groundLevel,  extent);
+        glVertex3f(loop, groundLevel, -extent);
+
+        glVertex3f(-extent, groundLevel, loop);
+        glVertex3f(extent,  groundLevel, loop);
+    }
+    glEnd();
+}
+
+void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
+{
+	assert (height > 0); assert (edge_size > 0);
+
+	const GLfloat  	hwidth = edge_size / 2,
+					hheight = height / 2;
+
+	glColor3f(0.26f, 0.06f, 0.02f);// brown 102.51.0
+
+	glBegin(GL_QUADS);
+
+	glNormal3f(1.0f, 		0.0f, 		0.0f);
+	glVertex3f(hwidth,		0.0f,		-hwidth);
+	glVertex3f(hwidth,		0.0f,		hwidth);
+	glVertex3f(hwidth,		-hheight,	hwidth);
+	glVertex3f(hwidth,		-hheight,	-hwidth);
+
+	glNormal3f(-1.0f, 		0.0f, 		0.0f);
+	glVertex3f(-hwidth,		-hheight,	-hwidth);
+	glVertex3f(-hwidth,		-hheight,	hwidth);
+	glVertex3f(-hwidth,		0.0f,		hwidth);
+	glVertex3f(-hwidth,		0.0f,		-hwidth);
+
+	glNormal3f(0.0f, 		0.0f, 		1.0f);
+	glVertex3f(hwidth,		0.0f,		hwidth);
+	glVertex3f(-hwidth,		0.0f,		hwidth);
+	glVertex3f(-hwidth,		-hheight,	hwidth);
+	glVertex3f(hwidth,		-hheight,	hwidth);
+
+	glNormal3f(0.0f, 		0.0f, 		-1.0f);
+	glVertex3f(hwidth,		-hheight,	-hwidth);
+	glVertex3f(-hwidth,		-hheight,	-hwidth);
+	glVertex3f(-hwidth,		0.0f,		-hwidth);
+	glVertex3f(hwidth,		0.0f,		-hwidth);
+
+	glEnd();
+}
+
+void DrawBilliardTable(const GLfloat width, const GLfloat height, const GLfloat border_h, const GLfloat leg_height)
+{
+	assert (width > 0); assert (height > 0); assert (border_h > 0);
+
+	const GLfloat  	hwidth = width / 2,
+					hheight = height / 2;
+
+	GLfloat fhborder_ = -0.5f * border_h;
+	//the part of the border which should be under the table besk level
+
+	const GLfloat  	fhwidth = hwidth - fhborder_,
+					fhheight = hheight - fhborder_;
+
+	/*------------------|framing|------------------------*/
+	glColor3f(0.26f, 0.06f, 0.02f);// brown 102.51.0
+
+	glBegin(GL_QUADS);
+	/* head border */
+	glNormal3f(0.0f, 		1.0f, 		0.0f);
+	glVertex3f(-fhwidth,	border_h,	fhheight);
+	glVertex3f(fhwidth,		border_h,	fhheight);
+	glVertex3f(fhwidth,		border_h,	hheight);
+	glVertex3f(-fhwidth,	border_h,	hheight);
+
+	glVertex3f(-fhwidth, 	border_h, 	-hheight);
+	glVertex3f(fhwidth, 	border_h, 	-hheight);
+	glVertex3f(fhwidth, 	border_h, 	-fhheight);
+	glVertex3f(-fhwidth, 	border_h, 	-fhheight);
+
+	glVertex3f(-fhwidth, 	border_h, 	hheight);
+	glVertex3f(-hwidth, 	border_h, 	hheight);
+	glVertex3f(-hwidth, 	border_h, 	-hheight);
+	glVertex3f(-fhwidth, 	border_h, 	-hheight);
+
+	glVertex3f(fhwidth, 	border_h, 	-hheight);
+	glVertex3f(hwidth, 		border_h, 	-hheight);
+	glVertex3f(hwidth, 		border_h, 	hheight);
+	glVertex3f(fhwidth, 	border_h, 	hheight);
+	/* ----------- */
+
+	glNormal3f(0.0f, 		0.0f, 		-1.0f);
+	glVertex3f(-fhwidth, 	fhborder_, 	fhheight);
+	glVertex3f(fhwidth, 	fhborder_, 	fhheight);
+	glVertex3f(fhwidth, 	border_h, 	fhheight);
+	glVertex3f(-fhwidth, 	border_h, 	fhheight);
+
+	glVertex3f(-hwidth, 	0.0f, 		-hheight);
+	glVertex3f(hwidth, 		0.0f, 		-hheight);
+	glVertex3f(hwidth, 		border_h, 	-hheight);
+	glVertex3f(-hwidth, 	border_h, 	-hheight);
+
+	glNormal3f(0.0f,		0.0f, 		1.0f);
+	glVertex3f(-fhwidth, 	border_h,	-fhheight);
+	glVertex3f(fhwidth, 	border_h, 	-fhheight);
+	glVertex3f(fhwidth, 	fhborder_, 	-fhheight);
+	glVertex3f(-fhwidth, 	fhborder_, 	-fhheight);
+
+	glVertex3f(-hwidth, 	border_h, 	hheight);
+	glVertex3f(hwidth, 		border_h, 	hheight);
+	glVertex3f(hwidth, 		0.0f, 		hheight);
+	glVertex3f(-hwidth, 	0.0f, 		hheight);
+
+
+	glNormal3f(1.0f, 		0.0f, 		0.0f);
+	glVertex3f(fhwidth, 	border_h, 	-fhheight);
+	glVertex3f(fhwidth, 	border_h, 	fhheight);
+	glVertex3f(fhwidth, 	fhborder_, 	fhheight);
+	glVertex3f(fhwidth, 	fhborder_, -fhheight);
+
+	glVertex3f(-hwidth, 	border_h, 	-hheight);
+	glVertex3f(-hwidth, 	border_h, 	hheight);
+	glVertex3f(-hwidth, 	0.0f, 		hheight);
+	glVertex3f(-hwidth, 	0.0f, 		-hheight);
+
+	glNormal3f(-1.0f, 		0.0f, 		0.0f);
+	glVertex3f(-fhwidth, 	fhborder_, 	-fhheight);
+	glVertex3f(-fhwidth, 	fhborder_, 	fhheight);
+	glVertex3f(-fhwidth, 	border_h, 	fhheight);
+	glVertex3f(-fhwidth, 	border_h, 	-fhheight);
+
+	glVertex3f(hwidth, 		0.0f, 		-hheight);
+	glVertex3f(hwidth, 		0.0f, 		hheight);
+	glVertex3f(hwidth, 		border_h, 	hheight);
+	glVertex3f(hwidth, 		border_h, 	-hheight);
+	glEnd();
+	/*------------------!framing!------------------------*/
+
+
+	/*------------------|desk surface|------------------------*/
+	glColor3ub(0, 41, 0); //dark green
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 		1.0f, 		0.0f);
+	glVertex3f(-hwidth, 	0.0f, 		hheight);
+	glVertex3f(hwidth, 		0.0f, 		hheight);
+	glVertex3f(hwidth, 		0.0f, 		-hheight);
+	glVertex3f(-hwidth, 	0.0f, 		-hheight);
+	glEnd();
+	/*------------------!desk surface!------------------------*/
+
+	GLfloat table_leg_edge = width * height / 160.0f;
+
+	glPushMatrix();
+	glTranslatef(hwidth - table_leg_edge, 0, hheight - table_leg_edge);
+	DrawTableLeg(table_leg_edge, leg_height);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(hwidth - table_leg_edge, 0, -hheight + table_leg_edge);
+	DrawTableLeg(table_leg_edge, leg_height);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-hwidth + table_leg_edge, 0, hheight - table_leg_edge);
+	DrawTableLeg(table_leg_edge, leg_height);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-hwidth + table_leg_edge, 0, -hheight + table_leg_edge);
+	DrawTableLeg(table_leg_edge, leg_height);
+	glPopMatrix();
+}
+
+void checkGLError (const char * errorLocation)
+{
+    unsigned int gle = glGetError();
+
+    if (gle != GL_NO_ERROR)
+    {
+        std::cout << "GL Error discovered from caller " << errorLocation << ": ";
+
+        switch (gle)
+        {
+        case GL_INVALID_ENUM:
+            std::cout << "Invalid enum." << std::endl;
+            break;
+
+        case GL_INVALID_VALUE:
+            std::cout << "Invalid value.\n";
+            break;
+
+        case GL_INVALID_OPERATION:
+            std::cout << "Invalid Operation.\n";
+            break;
+
+        case GL_STACK_OVERFLOW:
+            std::cout << "Stack overflow.\n";
+            break;
+
+        case GL_STACK_UNDERFLOW:
+            std::cout << "Stack underflow.\n";
+            break;
+
+        case GL_OUT_OF_MEMORY:
+            std::cout << "Out of memory.\n";
+            break;
+        default:
+            std::cout << "Unknown error! Enum code is: " << gle << std::endl;
+            break;
+        }
+
+    }
+
+}
+
+
+void glutRender::DisplayGL ()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// sensative
+    glLoadIdentity();
+ 	gluLookAt (balls[cure_ball].x + multipluer*sin(alpha), balls[cure_ball].y + 2*log(multipluer), balls[cure_ball].z + multipluer*cos(alpha),
+    			balls[cure_ball].x, balls[cure_ball].y, balls[cure_ball].z,
+			   0.0f, 1.0f, 0.0f);
+
+    DrawGroundGrid (-6);
+
+	init_l();
+
+	DrawBilliardTable (13.7f, 6.8f, 0.3f, 12);
+
+
+	for (int i = 0; i<3; i++)
+	{
+		glPushMatrix();
+
+		if (i != cure_ball)
+			glColor3f (colors[i].x, colors[i].y, colors[i].z);
+		else
+			glColor3f (1.0f, 1.0f, 1.0f);
+
+		glTranslatef(balls[i].x, balls[i].y, balls[i].z);
+		glutSolidSphere (0.085f, 30, 30);
+		glPopMatrix ();
+	}
+
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHT1);
+	glutSwapBuffers ();
+}
+
+void glutRender::IdleGL ()
+{
+	//TODO: all calculations here
+	std::clock_t CurrentTicks = std::clock ();
+	//float deltaTicks = (CurrentTicks - PreviousTicks);
+	PreviousTicks = CurrentTicks;
+	//float fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC; // TODO: fps here
+
+	glutPostRedisplay ();
+}
+
+void glutRender::MouseGL (int button, int state, int x, int y)
+{
+	switch (button)
+	{
+		case GLUT_LEFT_BUTTON:
+		{
+			if (state == GLUT_UP)
+			{
+				MouseManipulator.LeftKeyPressed = false;
+			}
+			else
+			{
+				MouseManipulator.LeftKeyPressed = true;
+			}
+		}
+		break;
+
+		case GLUT_RIGHT_BUTTON:
+		{
+			//TODO: make hit the cue here
+		}
+		break;
+	}
+
+	glutPostRedisplay ();
+}
+
+void glutRender::MotionGL (int x, int y)
+{
+	// TODO: normal mouse reaction
+	if (MouseManipulator.LeftKeyPressed)
+	{
+
+	}
+}
+
+void glutRender::KeyboardGL (unsigned char c, int x, int y)
+{
+	switch (c)
+	{
+		//TODO: the following is the test
+		case 'g':
+		case 'G':
+		{
+			// Switch to smooth shading model
+			glShadeModel (GL_SMOOTH);
+		}
+		break;
+
+		case 'f':
+		case 'F':
+		{
+			// Switch to flat shading model
+			glShadeModel (GL_FLAT);
+		}
+		break;
+
+
+		case '\033': // escape quits
+		{
+			// Cleanup up and quit
+			Cleanup();
+		}
+		break;
+
+		case  'D':
+		case  'd':
+		{
+			alpha += 0.05f;
+			if (alpha >= 2*M_PI) alpha -= 2*M_PI;
+		}
+		break;
+
+		case  'A':
+		case  'a':
+		{
+			alpha -= 0.05f;
+			if (alpha <= 0) alpha += 2*M_PI;
+		}
+		break;
+
+
+		case 'S':
+		case 's':
+		{
+			if (multipluer < 15) multipluer += 0.5f;
+		}
+		break;
+
+		case 'W':
+		case 'w':
+		{
+			if (multipluer > 2) multipluer -= 0.5f;
+		}
+		break;
+
+		case '\t': //TAB
+		{
+			cure_ball = (cure_ball + 1) % 3;
+		}
+		break;
+	}
+
+	glutPostRedisplay ();
+}
+
+void glutRender::ReshapeGL (int w, int h)
+{
+	if (h == 0) h = 1; // Prevent A Divide By Zero
+
+	WindowWidth = w;
+	WindowHeight = h;
+
+	glViewport (0, 0, WindowWidth, WindowHeight);
+
+	glMatrixMode (GL_PROJECTION);
+	glLoadIdentity ();
+	gluPerspective (60.0, (GLdouble)WindowWidth / (GLdouble)WindowHeight, 0.1, 100.0);
+	glMatrixMode(GL_MODELVIEW);
+
+	glutPostRedisplay ();
+}
+
+void glutRender::Cleanup ()
+{
+	if (glutWindowHandle != 0)
+	{
+		glutDestroyWindow (glutWindowHandle);
+		glutWindowHandle = 0;
+	}
+
+	exit(0);
+}
+
+void glutRender::IdleGL_ ()
+{
+	glutRender::Instance.IdleGL ();
+}
+
+void glutRender::DisplayGL_ ()
+{
+	glutRender::Instance.DisplayGL ();
+}
+
+void glutRender::KeyboardGL_ (unsigned char c, int x, int y)
+{
+	glutRender::Instance.KeyboardGL (c, x, y);
+}
+
+void glutRender::MouseGL_ (int button, int state, int x, int y)
+{
+	glutRender::Instance.MouseGL (button, state, x, y);
+}
+
+void glutRender::MotionGL_ (int x, int y)
+{
+	glutRender::Instance.MotionGL (x, y);
+}
+
+void glutRender::ReshapeGL_ (int w, int h)
+{
+	glutRender::Instance.ReshapeGL (w, h);
+}

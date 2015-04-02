@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <iomanip>
+#include "glutRender.h"
 
 #define TIMELOSS 5000
 
@@ -36,6 +37,8 @@ int main(int argc, char * argv[])
     }
 	Table t("table.cfg");
 
+
+    #ifdef DENIS_TEST
     int ret = 0;
     int time = 0;
 
@@ -59,6 +62,10 @@ int main(int argc, char * argv[])
         }
         if (time % TIMELOSS == 0) cout << endl;
     }while(ret);
+    #endif // DENIS_TEST
+
+    glutRender::Instance.Init (&argc, argv);
+
 	return 0;
 
 }

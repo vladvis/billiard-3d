@@ -21,3 +21,38 @@
 1427902933 source:/home/denisk/Documents/billiard-3d/Teormech/vec.cpp
 	"vec.h"
 
+1427993981 source:/home/kir/Рабочий стол/billiard-3d/Teormech/table.cpp
+	<cmath>
+	<fstream>
+	<iostream>
+	"table.h"
+
+1427993981 /home/kir/Рабочий стол/billiard-3d/Teormech/table.h
+	"vec.h"
+
+1427993981 /home/kir/Рабочий стол/billiard-3d/Teormech/vec.h
+
+1427993981 source:/home/kir/Рабочий стол/billiard-3d/Teormech/vec.cpp
+	"vec.h"
+
+1427897952 source:/home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.cpp
+	"glutRender.h"
+
+1427658288 /home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.h
+	<cmath>
+	<iostream>
+	<ctime>
+	<stdio.h>
+	<assert.h>
+	<GL/glut.h>
+	<glut.h>
+
+1427994302 source:/home/kir/Рабочий стол/billiard-3d/Teormech/test.cpp
+	"vec.h"
+	"table.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<iomanip>
+	"glutRender.h"
+
