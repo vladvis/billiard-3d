@@ -1,13 +1,24 @@
-#include <cmath>
-#include <fstream>
-#include <iostream>
 #include "table.h"
 
 #define isnan(f) (f != f)
 #define sign(f) (f>0 ? 1 : -1);
 
-Table::Table(const char * name){
-	std::ifstream file(name);
+int Table::NextStep(double mintime){
+    int ret = 0;
+    for(std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
+        for(std::vector<Ball>::iterator jt = it+1; jt != balls.end(); ++jt)
+            it->Collide(*this, *jt);
+
+    for(std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it){
+        int retb = it->NextStep(*this, mintime);
+        if (retb != 1) ret |= (retb);
+    }
+
+    return ret;
+}
+
+Table::Table(const std::string name){
+	std::ifstream file(name.c_str());
 
 	if (file.is_open())
 	{
@@ -21,13 +32,15 @@ Table::Table(const char * name){
 	file.close();
 };
 
-Ball::Ball(const char * name, vec r, vec phi, vec v, vec w) :
+Table::Table(){};
+
+Ball::Ball(const  std::string name, vec r, vec phi, vec v, vec w) :
 	r(r),
 	phi(phi),
 	v(v),
 	w(w)
 {
-	std::ifstream file(name);
+	std::ifstream file(name.c_str());
 
 	if (file.is_open())
 	{
@@ -91,7 +104,7 @@ int Ball::Collide(Table t, Ball &b)
     return 1;
 };
 
-int Ball::NextStep(Table t)
+int Ball::NextStep(Table t, double mintime)
 {
     int ret = 0;
 	vec k = vec(0,0,1);
@@ -106,7 +119,7 @@ int Ball::NextStep(Table t)
 	double J = 2.0/5.0*a*a;
 
 	if (std::abs(w.z) > EPS){
-        double dwz = -t.s*g/J * (w.z>0 ? 1 : -1)*MINTIME;
+        double dwz = -t.s*g/J * (w.z>0 ? 1 : -1)*mintime;
 		w.z += dwz;
 		ret = 1;
 	}
@@ -117,17 +130,17 @@ int Ball::NextStep(Table t)
         ret += 2;
         if (!isnan(beta) && mw > EPS){ //Rolling -> rolling friction
             ret += 4;
-            double dbeta = (t.f*g*a/J/mw*cos(beta-alpha))*MINTIME;
+            double dbeta = (t.f*g*a/J/mw*cos(beta-alpha))*mintime;
             beta += dbeta;
 
-            double dalpha = -t.d*g*a/J/mu*cos(beta-alpha)*MINTIME;
+            double dalpha = -t.d*g*a/J/mu*cos(beta-alpha)*mintime;
             alpha += dalpha;
 
-            double dw = (t.f*g*a/J*sin(beta-alpha)-t.d*g/J)*MINTIME;
+            double dw = (t.f*g*a/J*sin(beta-alpha)-t.d*g/J)*mintime;
             mw += dw;
             if (mw < 0) mw=0; //Solvability check
 
-            double du = (t.d*g*a/J*sin(beta-alpha) - t.f*g*(1+a*a/J))*MINTIME;
+            double du = (t.d*g*a/J*sin(beta-alpha) - t.f*g*(1+a*a/J))*mintime;
             mu += du;
             if (mu < 0) mu=0; //Solvability check
 
@@ -136,11 +149,11 @@ int Ball::NextStep(Table t)
             w.x = mw * cos(beta);
             w.y = mw * sin(beta);
         }else{ //No rolling -> start of rolling TODO
-            double du = (-t.f*g*(1+a*a/J))*MINTIME;
+            double du = (-t.f*g*(1+a*a/J))*mintime;
             mu += du;
             if (mu < 0) mu=0; //Solvability check
 
-            double dw = (t.f*g*a)*MINTIME;
+            double dw = (t.f*g*a)*mintime;
             mw += dw;
             if (mw < 0) mw=0; //Solvability check
 
@@ -151,7 +164,7 @@ int Ball::NextStep(Table t)
         }
 	}else{ //No slippage -> no sliding friction, only rolling
 	    ret += 4;
-        double dw = -t.d*g/J*MINTIME;
+        double dw = -t.d*g/J*mintime;
         mw += dw;
         if (mw < 0) mw=0; //Solvability check
 
@@ -160,8 +173,8 @@ int Ball::NextStep(Table t)
 	}
 
 	v = u - a * (k ^ w);
-	r += (MINTIME * v);
-	phi += (MINTIME * w);
+	r += (mintime * v);
+	phi += (mintime * w);
 
 	return ret;
 };

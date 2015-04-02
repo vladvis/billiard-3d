@@ -1,5 +1,4 @@
-﻿#include <cmath>
-#include "vec.h"
+﻿#include "vec.h"
 
 vec::vec() {};
 

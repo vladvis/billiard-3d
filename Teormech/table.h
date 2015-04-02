@@ -1,11 +1,19 @@
 #ifndef BILLIARD_TABLE
 #define BILLIARD_TABLE
 
-#define MINTIME 0.000001
 #define EPS 0.00000001
 
 #include "vec.h"
+#include "vector"
+#include <string>
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
 const double g = 9.8036;
+
+class Ball;
 
 class Table{
 public:
@@ -17,7 +25,11 @@ public:
 	double f;//ball-table sliding friction
 	double re;//ball-rail restitution TODO
 
-	Table(const char * cfgfileName);
+    std::vector <Ball> balls;
+
+	Table(const std::string cfgfileName);
+	Table();
+	int NextStep(double mintime);
 };
 
 class Ball{
@@ -29,11 +41,12 @@ public:
 	vec phi;
 	vec v;
 	vec w;
-public:
-	Ball(const char * cfgfileName, vec r, vec phi, vec v, vec w);
+
+	Ball(const std::string cfgfileName, vec r, vec phi, vec v, vec w);
 	int Collide(Table t, Ball &);
-	int NextStep(Table t);//Return 0 is stops
 	double Distance(Ball);
+	int NextStep(Table t, double mintime);//Return 0 is stops
 };
+
 
 #endif

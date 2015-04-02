@@ -1,25 +1,26 @@
 #include "glutRender.h"
 
-double alpha = 1.8*3.14/3;
-double multipluer = 6.0;
-
-float3 balls[3] = {float3(2.0f, 0.085f, -3.0f),
-					float3(-3.0f, 0.085f, -3.0f),
-					float3(2.0f, 0.085f, -1.0f)};
-
-float3 colors[3] = {float3(0.8f, 0.0f, 0.0f),
-					float3(0.0f, 0.8f, 0.0f),
-					float3(0.0f, 0.0f, 0.8f)};
-
-int cure_ball = 2;
 
 /* there is only one copy of glutRender, so we are have to use this lifehack to deal with C GLUT library on C++, it is ok */
 glutRender glutRender::Instance;
 
-void glutRender::Init (int* argc, char* argv[])
+void glutRender::Init (int* argc, char* argv[], const char *table_config, const char *balls_config)
 {
 	srand(time(0));
+	multipluer = 4.5f;
+	alpha = 1.8*3.14/3;
+	curre_ball = 0;
 
+    table_config_filename = std::string(table_config);
+    balls_config_filename = std::string(balls_config);
+
+    if (*argc > 1)
+        start_state_config_filename = std::string(argv[1]);
+    else
+        start_state_config_filename = std::string("lunev");
+
+
+    LoadConfig (table_config_filename, balls_config_filename, start_state_config_filename);
 	PreviousTicks = std::clock();
 
 	glutInit (argc, argv);
@@ -80,7 +81,7 @@ void glutRender::Init (int* argc, char* argv[])
 	#else
 	glFogi(GL_FOG_MODE, GL_EXP2);
 	glFogfv(GL_FOG_COLOR, fogColor);
-	glFogf(GL_FOG_DENSITY, 0.025f);
+	glFogf(GL_FOG_DENSITY, 0.015f);
 	#endif
 	/* fog end */
 
@@ -91,10 +92,34 @@ void glutRender::Init (int* argc, char* argv[])
 	Cleanup(); //guess, is never calling
 }
 
+void glutRender::LoadConfig(const std::string table_config, const std::string balls_config, const std::string start_state_config)
+{
+    calculations_started = false;
+
+    glutRender::GameTable = Table(table_config);
+
+    std::ifstream file(start_state_config.c_str());
+    double px, py, pz, rx, ry, rz, vx, vy, vz, wx, wy, wz;
+    if (!file.is_open())
+    {
+        std::cout << "Failed to open file!";
+        return;
+    }
+    while(file >> rx >> ry >> rz >> px >> py >> pz >> vx >> vy >> vz >> wx >> wy >> wz)
+        glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), vec(px, py, pz), vec(vx, vy, vz), vec(wx, wy, wz)));
+
+    if (GameTable.balls.empty()){
+        std::cout << "Больше мячей богу мячей!";
+        return;
+    }
+
+    std::cout << "Loaded configurations " << table_config << "; " << balls_config << std::endl;
+}
+
 void init_l()
 {
 	GLfloat light0_diffuse[] = {1.0f, 1.0f, 1.0f};
-    GLfloat light0_direction[] = {1.0, 6.0, 1.0, 0.0};
+    GLfloat light0_direction[] = {1.0, 8.0, 1.0, 0.0};
 
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
@@ -172,7 +197,7 @@ void DrawBilliardTable(const GLfloat width, const GLfloat height, const GLfloat 
 					hheight = height / 2;
 
 	GLfloat fhborder_ = -0.5f * border_h;
-	//the part of the border which should be under the table besk level
+	//the part of the border which should be under the table desk level
 
 	const GLfloat  	fhwidth = hwidth - fhborder_,
 					fhheight = hheight - fhborder_;
@@ -335,30 +360,30 @@ void glutRender::DisplayGL ()
 
 	// sensative
     glLoadIdentity();
- 	gluLookAt (balls[cure_ball].x + multipluer*sin(alpha), balls[cure_ball].y + 2*log(multipluer), balls[cure_ball].z + multipluer*cos(alpha),
-    			balls[cure_ball].x, balls[cure_ball].y, balls[cure_ball].z,
+ 	gluLookAt (GameTable.balls[curre_ball].r.x + multipluer*sin(alpha), GameTable.balls[curre_ball].a + 1.3*log(multipluer),GameTable.balls[curre_ball].r.y + multipluer*cos(alpha),
+    			GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.y,
 			   0.0f, 1.0f, 0.0f);
 
     DrawGroundGrid (-6);
 
 	init_l();
 
-	DrawBilliardTable (13.7f, 6.8f, 0.3f, 12);
+	DrawBilliardTable (6.8f,13.7f,  0.1f, 12);
 
+    const GLfloat ball_r = GameTable.balls[0].a;
 
-	for (int i = 0; i<3; i++)
-	{
-		glPushMatrix();
+    for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
+    {
+        glPushMatrix();
+            if (curre_ball != it - GameTable.balls.begin())
+                glColor3f (1.0f, 1.0f, 1.0f);
+            else
+                glColor3f (0.8f, 0.0f, 0.0f);
 
-		if (i != cure_ball)
-			glColor3f (colors[i].x, colors[i].y, colors[i].z);
-		else
-			glColor3f (1.0f, 1.0f, 1.0f);
-
-		glTranslatef(balls[i].x, balls[i].y, balls[i].z);
-		glutSolidSphere (0.085f, 30, 30);
+            glTranslatef(it->r.x, ball_r + it->r.z, it->r.y);
+            glutSolidSphere (ball_r, 30, 30);
 		glPopMatrix ();
-	}
+    }
 
 	glDisable(GL_LIGHT0);
 	glDisable(GL_LIGHT1);
@@ -367,10 +392,17 @@ void glutRender::DisplayGL ()
 
 void glutRender::IdleGL ()
 {
-	//TODO: all calculations here
+    //TODO: all calculations here
 	std::clock_t CurrentTicks = std::clock ();
 	//float deltaTicks = (CurrentTicks - PreviousTicks);
 	PreviousTicks = CurrentTicks;
+
+    if (calculations_started)
+    {
+        const double MINTIME = 0.000001;
+        for (int i = 0; i < 15000; i++)
+            GameTable.NextStep(MINTIME);
+    }
 	//float fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC; // TODO: fps here
 
 	glutPostRedisplay ();
@@ -384,11 +416,11 @@ void glutRender::MouseGL (int button, int state, int x, int y)
 		{
 			if (state == GLUT_UP)
 			{
-				MouseManipulator.LeftKeyPressed = false;
+//				MouseManipulator.LeftKeyPressed = false;
 			}
 			else
 			{
-				MouseManipulator.LeftKeyPressed = true;
+	//			MouseManipulator.LeftKeyPressed = true;
 			}
 		}
 		break;
@@ -406,7 +438,7 @@ void glutRender::MouseGL (int button, int state, int x, int y)
 void glutRender::MotionGL (int x, int y)
 {
 	// TODO: normal mouse reaction
-	if (MouseManipulator.LeftKeyPressed)
+//	if (MouseManipulator.LeftKeyPressed)
 	{
 
 	}
@@ -474,9 +506,22 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
 		case '\t': //TAB
 		{
-			cure_ball = (cure_ball + 1) % 3;
+			curre_ball = (curre_ball + 1) % GameTable.balls.size();
 		}
 		break;
+
+		case 'R':
+        case 'r':
+        {
+            LoadConfig (table_config_filename, balls_config_filename, start_state_config_filename);
+        }
+        break;
+
+		case ' ':
+        {
+            calculations_started = !calculations_started;
+        }
+        break;
 	}
 
 	glutPostRedisplay ();
@@ -501,7 +546,7 @@ void glutRender::ReshapeGL (int w, int h)
 
 void glutRender::Cleanup ()
 {
-	if (glutWindowHandle != 0)
+    if (glutWindowHandle != 0)
 	{
 		glutDestroyWindow (glutWindowHandle);
 		glutWindowHandle = 0;

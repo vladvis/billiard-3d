@@ -1,6 +1,8 @@
 ﻿#ifndef BILLIARD_VEC
 #define BILLIARD_VEC
 
+#include <cmath>
+
 class vec{
 public:
 	double x;

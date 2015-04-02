@@ -6,6 +6,10 @@
 #include <ctime>
 #include <stdio.h>
 #include <assert.h>
+#include <fstream>
+#include <string>
+
+#include "table.h"
 
 #ifdef LINUX_PLATFORM
 	#include <GL/glut.h>
@@ -17,7 +21,7 @@ class float3
 {
 		public:
 			GLfloat x, y, z;
-			float3 (GLfloat _x = 0, GLfloat _y = 0, GLfloat _z = 0) : 
+			float3 (GLfloat _x = 0, GLfloat _y = 0, GLfloat _z = 0) :
 				x(_x), y(_y), z(_z) {};
 };
 
@@ -28,31 +32,21 @@ class float2
 			float2 (GLfloat _x = 0, GLfloat _y = 0) : x(_x), y(_y) {};
 };
 
-class Mouse
-{
-		public:
-			int x, y;
-			bool LeftKeyPressed;
-			bool RightKeyPressed;
-			Mouse (int _x = 0, int _y = 0, bool _LeftKeyPressed = false, bool _RightKeyPressed = false) :
-				x(_x), y(_y), LeftKeyPressed(_LeftKeyPressed), RightKeyPressed(_RightKeyPressed) {};
-};
-
-
 class glutRender
 {
 		public:
-			void Init (int* argc, char* argv[]);
+		    static glutRender Instance;
+		    Table GameTable;
+
+			void Init (int* argc, char* argv[], const char *table_config, const char *balls_config);
+
 			void DisplayGL ();
-				
 			void IdleGL ();
 			void Cleanup ();
 			void MouseGL (int button, int state, int x, int y);
 			void MotionGL (int x, int y);
 			void ReshapeGL (int w, int h);
 			void KeyboardGL (unsigned char c, int x, int y);
-
-			static glutRender Instance;
 
 		private:
 			glutRender (int _WindowWidth = 900, int _WindowHeight = 700) :
@@ -65,15 +59,21 @@ class glutRender
 			static void MotionGL_ (int x, int y);
 			static void ReshapeGL_ (int w, int h);
 
+            void LoadConfig(const std::string table_config, const std::string balls_config, const std::string start_state_config);
 			int glutWindowHandle;
 
 			int WindowWidth;
 			int WindowHeight;
 
-			Mouse MouseManipulator;
-			
-			float3 camera_position;
-			GLfloat camera_distance;
+			double alpha;
+            double multipluer;
+            int curre_ball;
+
+            bool calculations_started;
+
+            std::string table_config_filename;
+            std::string balls_config_filename;
+            std::string start_state_config_filename;
 
 			std::clock_t PreviousTicks;
 };
