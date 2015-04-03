@@ -10,6 +10,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	multipluer = 4.5f;
 	alpha = 1.8*3.14/3;
 	curre_ball = 0;
+	cam_height_h = 1.5;
 
     table_config_filename = std::string(table_config);
     balls_config_filename = std::string(balls_config);
@@ -61,12 +62,11 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Ask for nicest perspective correction
     glEnable(GL_CULL_FACE); // Do not draw polygons facing away from us
 
-    glEnable(GL_LIGHTING);
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //TODO: GL_LIGHT_MODEL_LOCAL_VIEWER
-
     glEnable(GL_NORMALIZE);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //TODO: GL_LIGHT_MODEL_LOCAL_VIEWER
+
     // ----------------------------
 
     glEnable(GL_MULTISAMPLE);
@@ -74,17 +74,10 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     /* fog */
 	glEnable(GL_FOG);
 	GLfloat fogColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
-	#ifndef LINEAR_FOG
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	glFogf(GL_FOG_START, 25);
 	glFogf(GL_FOG_END, 60);
 	glFogfv(GL_FOG_COLOR, fogColor);
-	//glFogf(GL_FOG_DENSITY, 0.08f);/*0.08*/
-	#else
-	glFogi(GL_FOG_MODE, GL_EXP2);
-	glFogfv(GL_FOG_COLOR, fogColor);
-	glFogf(GL_FOG_DENSITY, 0.025f);
-	#endif
 	/* fog end */
 
     checkGLError ("glutRender::Init");
@@ -120,6 +113,8 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 
 void init_l()
 {
+    glEnable(GL_LIGHTING);
+
 	GLfloat light0_diffuse[] = {0.6f, 0.6f, 0.6f};
     GLfloat light0_direction[] = {1.0f, 8.0f, 1.0f, 0.0f};
 
@@ -224,7 +219,7 @@ void DrawBilliardTable(const GLfloat width, const GLfloat height, const GLfloat 
 					fhheight = hheight - fhborder_;
 
 	/*------------------|framing|------------------------*/
-	glColor3f(0.52f, 0.12f, 0.04f);// brown 102.51.0
+    glColor3f(0.52f, 0.12f, 0.04f);// brown 102.51.0
 
 	glBegin(GL_QUADS);
 	/* head border */
@@ -299,7 +294,7 @@ void DrawBilliardTable(const GLfloat width, const GLfloat height, const GLfloat 
 
 
 	/*------------------|desk surface|------------------------*/
-	glColor3ub(0, 150, 0); //dark green
+	glColor3ub(0, 120, 0); //dark green
 	glBegin(GL_QUADS);
 	glNormal3f(0.0f, 		1.0f, 		0.0f);
 	glVertex3f(-hwidth, 	0.0f, 		hheight);
@@ -381,13 +376,11 @@ void glutRender::DisplayGL ()
 
 	// sensative
     glLoadIdentity();
- 	gluLookAt (GameTable.balls[curre_ball].r.x + multipluer*sin(alpha), GameTable.balls[curre_ball].a + 1.3*log(multipluer),GameTable.balls[curre_ball].r.y + multipluer*cos(alpha),
+ 	gluLookAt (GameTable.balls[curre_ball].r.x + multipluer*sin(alpha), GameTable.balls[curre_ball].a + cam_height_h*log(multipluer),GameTable.balls[curre_ball].r.y + multipluer*cos(alpha),
     			GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.y,
 			   0.0f, 1.0f, 0.0f);
 
-    glDisable(GL_LIGHTING);
     DrawGroundGrid (-6);
-    glEnable(GL_LIGHTING);
 
 	init_l();
 
@@ -401,12 +394,13 @@ void glutRender::DisplayGL ()
             if (curre_ball != it - GameTable.balls.begin())
                 glColor3f (1.0f, 1.0f, 1.0f);
             else
-                glColor3f (0.8f, 0.0f, 0.0f);
+                glColor3f (1.0f, 0.0f, 0.0f);
 
             glTranslatef(it->r.x, ball_r + it->r.z, it->r.y);
             glutSolidSphere (ball_r, 30, 30);
 		glPopMatrix ();
     }
+
 
 	glutSwapBuffers ();
 }
@@ -541,6 +535,18 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 		case ' ':
         {
             calculations_started = !calculations_started;
+        }
+        break;
+
+        case '+':
+        {
+            if (cam_height_h < 7) cam_height_h += 0.2f;
+        }
+        break;
+
+        case '-':
+        {
+            if (cam_height_h > 0.5) cam_height_h -= 0.2f;
         }
         break;
 	}

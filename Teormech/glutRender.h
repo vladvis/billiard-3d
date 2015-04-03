@@ -65,8 +65,9 @@ class glutRender
 			int WindowWidth;
 			int WindowHeight;
 
-			double alpha;
-            double multipluer;
+			float alpha;
+            float multipluer;
+            float cam_height_h;
             int curre_ball;
 
             bool calculations_started;
