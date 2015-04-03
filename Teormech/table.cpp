@@ -219,7 +219,7 @@ int Ball::NextStep(Table t, double mintime)
 
         v = u - a * (k ^ w);
     }
-    if (v.z != 0){ //We are in the air
+    if (std::abs(r.z) > EPS || std::abs(v.z) > EPS ){ //We are in the air
         ret += 8;
         v.z -= G*mintime;
 
