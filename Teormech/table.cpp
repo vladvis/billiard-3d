@@ -5,6 +5,10 @@
 
 int Table::NextStep(double mintime){
     int ret = 0;
+
+    for(std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
+        it->BoardCollide(*this);
+
     for(std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
         for(std::vector<Ball>::iterator jt = it+1; jt != balls.end(); ++jt)
             it->Collide(*this, *jt);
@@ -22,7 +26,7 @@ Table::Table(const std::string name){
 
 	if (file.is_open())
 	{
-		file >> bb >> e >> je >> d >> s >> f >> re;
+		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny;
 	}
 	else
     {
@@ -103,6 +107,48 @@ int Ball::Collide(Table t, Ball &b)
 
     return 1;
 };
+
+int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
+    int ret = 0;
+    if (std::abs(r.x) > t.lenx)
+    {
+        double hi = 2.0/5.0;
+        double vn = v.x;
+        double vt = v.y;
+
+        double S = std::sqrt((a*w.y)*(a*w.y) + (vt+a*w.z)*(vt+a*w.z));
+
+        double cost = (vt + a*w.z)/S;
+        double sint = (a*w.y)/S;
+
+        v.x = -t.re * vn;
+        v.y -= t.rf * (1+t.re) * vn * cost;
+
+        w.y += 1/hi * t.rf * (1+t.re) * vn * sint;
+        w.x -= 1/hi * t.rf * (1+t.re) * vn * cost;
+        ret = 1;
+    }
+
+    if (std::abs(r.y) > t.leny)
+    {
+        double hi = 2.0/5.0;
+        double vn = v.y;
+        double vt = v.x;
+
+        double S = std::sqrt((a*w.x)*(a*w.x) + (vt+a*w.z)*(vt+a*w.z));
+
+        double cost = (vt + a*w.z)/S;
+        double sint = (a*w.y)/S;
+
+        v.y = -t.re * vn;
+        v.x -= t.rf * (1+t.re) * vn * cost;
+
+        w.x += 1/hi * t.rf * (1+t.re) * vn * sint;
+        w.y -= 1/hi * t.rf * (1+t.re) * vn * cost;
+        ret = 1;
+    }
+    return ret;
+}
 
 int Ball::NextStep(Table t, double mintime)
 {

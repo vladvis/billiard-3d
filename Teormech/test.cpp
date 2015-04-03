@@ -15,6 +15,10 @@ using namespace std;
 int main(int argc, char * argv[])
 {
     #ifndef KIR_TEST
+    const double MINTIME = 0.000001;
+    const int TIMELOSS = 5000;
+
+    Table t("table.cfg");
     int time = 0;
 
     cout << t.balls.size() << endl;

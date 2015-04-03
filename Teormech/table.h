@@ -23,7 +23,11 @@ public:
 	double d;//ball-table rolling friction
 	double s;//ball-table spinning friction
 	double f;//ball-table sliding friction
-	double re;//ball-rail restitution TODO
+	double rf;//ball-rail friction
+	double re;//ball-rail restitution
+
+    double lenx;//half size
+    double leny;
 
     std::vector <Ball> balls;
 
@@ -44,6 +48,7 @@ public:
 
 	Ball(const std::string cfgfileName, vec r, vec phi, vec v, vec w);
 	int Collide(Table t, Ball &);
+	int BoardCollide(Table t);
 	double Distance(Ball);
 	int NextStep(Table t, double mintime);//Return 0 is stops
 };
