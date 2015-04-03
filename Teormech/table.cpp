@@ -1,7 +1,7 @@
 #include "table.h"
 
 #define isnan(f) (f != f)
-#define sign(f) (f>0 ? 1 : -1);
+#define sign(f) (f>0 ? 1 : -1)
 
 int Table::NextStep(double mintime){
     int ret = 0;
@@ -110,7 +110,7 @@ int Ball::Collide(Table t, Ball &b)
 
 int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
     int ret = 0;
-    if (std::abs(r.x) > t.lenx)
+    if (std::abs(r.x) > t.lenx && sign(v.x) == sign(r.x))
     {
         double hi = 2.0/5.0;
         double vn = v.x;
@@ -129,7 +129,7 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
         ret = 1;
     }
 
-    if (std::abs(r.y) > t.leny)
+    if (std::abs(r.y) > t.leny && sign(v.y) == sign(r.y))
     {
         double hi = 2.0/5.0;
         double vn = v.y;

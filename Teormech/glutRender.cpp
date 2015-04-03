@@ -37,7 +37,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	glutWindowHandle = glutCreateWindow ("Billiard 3D Project");
 	assert (glutWindowHandle != 0);
 
-	#ifdef FULLSCREEN
+	#ifndef FULLSCREEN
 	glutGameModeString ("1920x1080:32@60");
 	glutEnterGameMode();
 	#endif
@@ -121,7 +121,7 @@ void init_l()
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-	float ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
@@ -174,7 +174,7 @@ void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
 	const GLfloat  	hwidth = edge_size / 2,
 					hheight = height / 2;
 
-	glColor3f(0.26f, 0.06f, 0.02f);// brown 102.51.0
+	glColor3f(0.52f, 0.12f, 0.04f);// brown 102.51.0
 
 	glBegin(GL_QUADS);
 
@@ -380,7 +380,9 @@ void glutRender::DisplayGL ()
     			GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.y,
 			   0.0f, 1.0f, 0.0f);
 
+    glDisable(GL_LIGHTING);
     DrawGroundGrid (-6);
+    glEnable(GL_LIGHTING);
 
 	init_l();
 
@@ -508,14 +510,14 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 		case 'S':
 		case 's':
 		{
-			if (multipluer < 15) multipluer += 0.5f;
+			if (multipluer < 14.8) multipluer += 0.2f;
 		}
 		break;
 
 		case 'W':
 		case 'w':
 		{
-			if (multipluer > 2) multipluer -= 0.5f;
+			if (multipluer > 1.6) multipluer -= 0.2f;
 		}
 		break;
 
