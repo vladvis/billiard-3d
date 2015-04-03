@@ -24,7 +24,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	PreviousTicks = std::clock();
 
 	glutInit (argc, argv);
-	glutInitDisplayMode (GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode (GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 
 	int ScreenWidth = glutGet (GLUT_SCREEN_WIDTH);
 	int ScreenHeight = glutGet (GLUT_SCREEN_HEIGHT);
@@ -69,19 +69,21 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     // ----------------------------
 
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_AUTO_NORMAL);
     /* fog */
 	glEnable(GL_FOG);
-	GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
-	#ifdef LINEAR_FOG
+	GLfloat fogColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+	#ifndef LINEAR_FOG
 	glFogi(GL_FOG_MODE, GL_LINEAR);
-	glFogf(GL_FOG_START, 20);
-	glFogf(GL_FOG_END, 40);
+	glFogf(GL_FOG_START, 25);
+	glFogf(GL_FOG_END, 60);
 	glFogfv(GL_FOG_COLOR, fogColor);
-	glFogf(GL_FOG_DENSITY, 0.08f);/*0.08*/
+	//glFogf(GL_FOG_DENSITY, 0.08f);/*0.08*/
 	#else
 	glFogi(GL_FOG_MODE, GL_EXP2);
 	glFogfv(GL_FOG_COLOR, fogColor);
-	glFogf(GL_FOG_DENSITY, 0.015f);
+	glFogf(GL_FOG_DENSITY, 0.025f);
 	#endif
 	/* fog end */
 
@@ -96,7 +98,7 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 {
     calculations_started = false;
 
-    glutRender::GameTable = Table(table_config);
+    GameTable = Table(table_config);
 
     std::ifstream file(start_state_config.c_str());
     double px, py, pz, rx, ry, rz, vx, vy, vz, wx, wy, wz;
@@ -118,25 +120,44 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 
 void init_l()
 {
-	GLfloat light0_diffuse[] = {1.0f, 1.0f, 1.0f};
-    GLfloat light0_direction[] = {1.0, 8.0, 1.0, 0.0};
+	GLfloat light0_diffuse[] = {0.6f, 0.6f, 0.6f};
+    GLfloat light0_direction[] = {1.0f, 8.0f, 1.0f, 0.0f};
 
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-
-    glEnable(GL_LIGHT1);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, light0_diffuse);
-    glLightfv(GL_LIGHT1, GL_POSITION, light0_direction);
+	float ambient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
 
 void DrawGroundGrid (const GLfloat groundLevel)
 {
-    GLfloat extent      = 40.0f;
-    GLfloat stepSize    = 3.0f;
+    GLfloat stepSize    = 2.0f;
+    int numSteps = 30;
 
     glLineWidth(1.1f);
+    glColor3ub(90, 90, 90);
+
+    glBegin(GL_LINES);
+    for (GLint x = -numSteps; x <= numSteps; x++)
+        for (GLint y = -numSteps; y <= numSteps; y++)
+        {
+            GLfloat xx = x * stepSize;
+            GLfloat yy = y * stepSize;
+
+            glVertex3f(xx, groundLevel, yy);
+            glVertex3f(xx, groundLevel, (y+1) * stepSize);
+
+            glVertex3f(xx, groundLevel, yy);
+            glVertex3f((x+1) * stepSize, groundLevel, yy);
+        }
+    glEnd();
+
+    /*GLfloat extent      = 80.0f;
+    GLfloat stepSize    = 6.0f;
+
+    glLineWidth(10.1f);
     glColor3ub(255, 255, 255);
 
     glBegin(GL_LINES);
@@ -148,7 +169,7 @@ void DrawGroundGrid (const GLfloat groundLevel)
         glVertex3f(-extent, groundLevel, loop);
         glVertex3f(extent,  groundLevel, loop);
     }
-    glEnd();
+    glEnd();*/
 }
 
 void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
@@ -203,7 +224,7 @@ void DrawBilliardTable(const GLfloat width, const GLfloat height, const GLfloat 
 					fhheight = hheight - fhborder_;
 
 	/*------------------|framing|------------------------*/
-	glColor3f(0.26f, 0.06f, 0.02f);// brown 102.51.0
+	glColor3f(0.52f, 0.12f, 0.04f);// brown 102.51.0
 
 	glBegin(GL_QUADS);
 	/* head border */
@@ -278,7 +299,7 @@ void DrawBilliardTable(const GLfloat width, const GLfloat height, const GLfloat 
 
 
 	/*------------------|desk surface|------------------------*/
-	glColor3ub(0, 41, 0); //dark green
+	glColor3ub(0, 150, 0); //dark green
 	glBegin(GL_QUADS);
 	glNormal3f(0.0f, 		1.0f, 		0.0f);
 	glVertex3f(-hwidth, 	0.0f, 		hheight);
@@ -364,7 +385,9 @@ void glutRender::DisplayGL ()
     			GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.y,
 			   0.0f, 1.0f, 0.0f);
 
+    glDisable(GL_LIGHTING);
     DrawGroundGrid (-6);
+    glEnable(GL_LIGHTING);
 
 	init_l();
 
@@ -385,8 +408,6 @@ void glutRender::DisplayGL ()
 		glPopMatrix ();
     }
 
-	glDisable(GL_LIGHT0);
-	glDisable(GL_LIGHT1);
 	glutSwapBuffers ();
 }
 

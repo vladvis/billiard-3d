@@ -30,6 +30,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-DLINUX_PLATFORM -DDEBUG -lGLU -lGL -lglut -Wall -Werror" />
 		</Compiler>
 		<Linker>
 			<Add option="-lGL -lGLU -lglut -Wall -Werror -DDEBUG -DLINUX_TARGET" />
