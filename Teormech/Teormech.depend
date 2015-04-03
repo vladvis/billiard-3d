@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1428071942 source:/home/denisk/Documents/billiard-3d/Teormech/table.cpp
+1428092729 source:/home/denisk/Documents/billiard-3d/Teormech/table.cpp
 	"table.h"
 
-1428059559 /home/denisk/Documents/billiard-3d/Teormech/table.h
+1428088957 /home/denisk/Documents/billiard-3d/Teormech/table.h
 	"vec.h"
 	"vector"
 	<string>
@@ -14,7 +14,7 @@
 1428011240 /home/denisk/Documents/billiard-3d/Teormech/vec.h
 	<cmath>
 
-1428060818 source:/home/denisk/Documents/billiard-3d/Teormech/test.cpp
+1428092357 source:/home/denisk/Documents/billiard-3d/Teormech/test.cpp
 	"vec.h"
 	"table.h"
 	<iostream>
@@ -66,7 +66,7 @@
 	<iomanip>
 	"glutRender.h"
 
-1428070819 source:/home/denisk/Documents/billiard-3d/Teormech/glutRender.cpp
+1428072121 source:/home/denisk/Documents/billiard-3d/Teormech/glutRender.cpp
 	"glutRender.h"
 
 1428051737 /home/denisk/Documents/billiard-3d/Teormech/glutRender.h

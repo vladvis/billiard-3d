@@ -2,6 +2,7 @@
 #define BILLIARD_TABLE
 
 #define EPS 0.00000001
+#define G 9.801
 
 #include "vec.h"
 #include "vector"
