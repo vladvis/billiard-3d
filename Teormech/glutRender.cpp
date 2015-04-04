@@ -471,6 +471,9 @@ void glutRender::DisplayGL ()
                 glColor3f (1.0f, 0.0f, 0.0f);
 
             glTranslatef(it->r.x, ball_r + it->r.z, it->r.y);
+            glRotatef(it->phi.x, 1, 0, 0);
+            glRotatef(it->phi.y, 0, 1, 0);
+            glRotatef(it->phi.z, 0, 0, 1);
             glutSolidSphere (ball_r, 15, 15);
 		glPopMatrix ();
     }
@@ -570,11 +573,19 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 		}
 		break;
 
-		case 'P':
+		case 'L':
+        case 'l':
+        {
+            glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+        }
+        break;
+
+        case 'P':
         case 'p':
         {
-            glPolygonMode (GL_FRONT_AND_BACK, GL_LINE) ;
+            glPolygonMode (GL_FRONT_AND_BACK, GL_FILL) ;
         }
+        break;
 
 		case  'A':
 		case  'a':
