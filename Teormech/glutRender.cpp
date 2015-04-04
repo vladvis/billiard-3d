@@ -7,7 +7,8 @@ glutRender glutRender::Instance;
 void glutRender::Init (int* argc, char* argv[], const char *table_config, const char *balls_config)
 {
 	srand(time(0));
-	multipluer = 4.5f;
+
+	multipluer = 2.5f;
 	alpha = 1.8*3.14/3;
 	curre_ball = 0;
 	cam_height_h = 1.5;
@@ -37,7 +38,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	glutWindowHandle = glutCreateWindow ("Billiard 3D Project");
 	assert (glutWindowHandle != 0);
 
-	#ifndef FULLSCREEN
+	#ifdef FULLSCREEN
 	glutGameModeString ("1920x1080:32@60");
 	glutEnterGameMode();
 	#endif
@@ -65,8 +66,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glEnable(GL_NORMALIZE);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); //TODO: GL_LIGHT_MODEL_LOCAL_VIEWER
-
+    glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE); //TODO: GL_LIGHT_MODEL_LOCAL_VIEWER
     // ----------------------------
 
     glEnable(GL_MULTISAMPLE);
@@ -75,8 +75,8 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	glEnable(GL_FOG);
 	GLfloat fogColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 	glFogi(GL_FOG_MODE, GL_LINEAR);
-	glFogf(GL_FOG_START, 25);
-	glFogf(GL_FOG_END, 60);
+	glFogf(GL_FOG_START, 15);
+	glFogf(GL_FOG_END, 40);
 	glFogfv(GL_FOG_COLOR, fogColor);
 	/* fog end */
 
@@ -116,12 +116,12 @@ void init_l()
     glEnable(GL_LIGHTING);
 
 	GLfloat light0_diffuse[] = {0.6f, 0.6f, 0.6f};
-    GLfloat light0_direction[] = {1.0f, 8.0f, 1.0f, 0.0f};
+    GLfloat light0_direction[] = {6.0f, 4.0f, 1.0f, 0.0f};
 
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-	float ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	float ambient[] = { 0.05f, 0.05f, 0.05f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
@@ -129,7 +129,7 @@ void init_l()
 void DrawGroundGrid (const GLfloat groundLevel)
 {
     GLfloat stepSize    = 2.0f;
-    int numSteps = 30;
+    int numSteps = 20;
 
     glLineWidth(1.1f);
     glColor3ub(90, 90, 90);
@@ -148,23 +148,45 @@ void DrawGroundGrid (const GLfloat groundLevel)
             glVertex3f((x+1) * stepSize, groundLevel, yy);
         }
     glEnd();
+}
 
-    /*GLfloat extent      = 80.0f;
-    GLfloat stepSize    = 6.0f;
+void DrawNiceRectangle(const GLfloat xleft, const GLfloat xright, const GLfloat yleft, const GLfloat yright)
+{
+    assert (xright > xleft); assert (yright > yleft);
 
-    glLineWidth(10.1f);
-    glColor3ub(255, 255, 255);
+    const float grid_period = 30;
 
-    glBegin(GL_LINES);
-    for (GLint loop = -extent; loop < extent; loop += stepSize)
+    GLfloat step = std::max(xright - xleft, yright - yleft)/grid_period;
+
+    for (GLfloat i = xleft; i < xright; i += step)
     {
-        glVertex3f(loop, groundLevel,  extent);
-        glVertex3f(loop, groundLevel, -extent);
+        GLfloat ir;
+        if (i + step > xright)
+            ir = xright;
+        else
+            ir = i + step;
 
-        glVertex3f(-extent, groundLevel, loop);
-        glVertex3f(extent,  groundLevel, loop);
+        for (GLfloat j = yleft; j < yright; j += step)
+        {
+            GLfloat jr;
+            if (j + step > yright)
+                jr = yright;
+            else
+                jr = j + step;
+
+            glBegin(GL_TRIANGLES);
+                glNormal3f(0.0f, 		1.0f, 		0.0f);
+                glVertex3f(i, 0, jr);
+                glVertex3f(ir, 0, j);
+                glVertex3f(i, 0, j);
+
+                glNormal3f(0.0f, 		1.0f, 		0.0f);
+                glVertex3f(ir, 0.0f, jr);
+                glVertex3f(ir, 0.0f, j);
+                glVertex3f(i, 0.0f, jr);
+            glEnd();
+        }
     }
-    glEnd();*/
 }
 
 void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
@@ -173,157 +195,207 @@ void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
 
 	const GLfloat  	hwidth = edge_size / 2,
 					hheight = height / 2;
+    const GLfloat   hhwidth = hwidth / 2;
 
-	glColor3f(0.52f, 0.12f, 0.04f);// brown 102.51.0
-
-	glBegin(GL_QUADS);
-
-	glNormal3f(1.0f, 		0.0f, 		0.0f);
-	glVertex3f(hwidth,		0.0f,		-hwidth);
-	glVertex3f(hwidth,		0.0f,		hwidth);
-	glVertex3f(hwidth,		-hheight,	hwidth);
-	glVertex3f(hwidth,		-hheight,	-hwidth);
-
-	glNormal3f(-1.0f, 		0.0f, 		0.0f);
-	glVertex3f(-hwidth,		-hheight,	-hwidth);
-	glVertex3f(-hwidth,		-hheight,	hwidth);
-	glVertex3f(-hwidth,		0.0f,		hwidth);
-	glVertex3f(-hwidth,		0.0f,		-hwidth);
-
-	glNormal3f(0.0f, 		0.0f, 		1.0f);
-	glVertex3f(hwidth,		0.0f,		hwidth);
-	glVertex3f(-hwidth,		0.0f,		hwidth);
-	glVertex3f(-hwidth,		-hheight,	hwidth);
-	glVertex3f(hwidth,		-hheight,	hwidth);
-
-	glNormal3f(0.0f, 		0.0f, 		-1.0f);
-	glVertex3f(hwidth,		-hheight,	-hwidth);
-	glVertex3f(-hwidth,		-hheight,	-hwidth);
-	glVertex3f(-hwidth,		0.0f,		-hwidth);
-	glVertex3f(hwidth,		0.0f,		-hwidth);
-
-	glEnd();
+	glPushMatrix();
+        glTranslatef(hhwidth, 0, 0);
+        glRotatef(-90, 0, 0, 1);
+        DrawNiceRectangle(0, hheight, 0, hwidth);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(-hhwidth, 0, 0);
+        glRotatef(90, 0, 0, 1);
+        DrawNiceRectangle(-hheight, 0, 0, hwidth);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(-hhwidth, 0, hwidth);
+        glRotatef(90, 1, 0, 0);
+        DrawNiceRectangle(0, hwidth, 0, hheight);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(-hhwidth, -hheight, 0);
+        glRotatef(-90, 1, 0, 0);
+        DrawNiceRectangle(0, hwidth, 0, hheight);
+    glPopMatrix();
 }
 
-void DrawBilliardTable(const GLfloat width, const GLfloat height, const GLfloat border_h, const GLfloat leg_height)
+void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloat border_h, const GLfloat leg_height)
 {
-	assert (width > 0); assert (height > 0); assert (border_h > 0);
+	assert (hwidth > 0); assert (hheight > 0); assert (border_h > 0);
 
-	const GLfloat  	hwidth = width / 2,
-					hheight = height / 2;
+	GLfloat fhborder_ = border_h / 1.2;
 
-	GLfloat fhborder_ = -0.5f * border_h;
-	//the part of the border which should be under the table desk level
+    glColor3ub(0, 150, 0);
+    DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
 
-	const GLfloat  	fhwidth = hwidth - fhborder_,
-					fhheight = hheight - fhborder_;
+    glColor3f(0.44f, 0.14f, 0.03f);
 
-	/*------------------|framing|------------------------*/
-    glColor3f(0.52f, 0.12f, 0.04f);// brown 102.51.0
+    glBegin(GL_QUADS);
+        glVertex3f(hwidth - fhborder_, -fhborder_, hheight+fhborder_);
+        glVertex3f(hwidth - fhborder_, -fhborder_, hheight);
+        glVertex3f(hwidth - fhborder_, border_h, hheight);
+        glVertex3f(hwidth - fhborder_, border_h, hheight+fhborder_);
 
-	glBegin(GL_QUADS);
-	/* head border */
-	glNormal3f(0.0f, 		1.0f, 		0.0f);
-	glVertex3f(-fhwidth,	border_h,	fhheight);
-	glVertex3f(fhwidth,		border_h,	fhheight);
-	glVertex3f(fhwidth,		border_h,	hheight);
-	glVertex3f(-fhwidth,	border_h,	hheight);
-
-	glVertex3f(-fhwidth, 	border_h, 	-hheight);
-	glVertex3f(fhwidth, 	border_h, 	-hheight);
-	glVertex3f(fhwidth, 	border_h, 	-fhheight);
-	glVertex3f(-fhwidth, 	border_h, 	-fhheight);
-
-	glVertex3f(-fhwidth, 	border_h, 	hheight);
-	glVertex3f(-hwidth, 	border_h, 	hheight);
-	glVertex3f(-hwidth, 	border_h, 	-hheight);
-	glVertex3f(-fhwidth, 	border_h, 	-hheight);
-
-	glVertex3f(fhwidth, 	border_h, 	-hheight);
-	glVertex3f(hwidth, 		border_h, 	-hheight);
-	glVertex3f(hwidth, 		border_h, 	hheight);
-	glVertex3f(fhwidth, 	border_h, 	hheight);
-	/* ----------- */
-
-	glNormal3f(0.0f, 		0.0f, 		-1.0f);
-	glVertex3f(-fhwidth, 	fhborder_, 	fhheight);
-	glVertex3f(fhwidth, 	fhborder_, 	fhheight);
-	glVertex3f(fhwidth, 	border_h, 	fhheight);
-	glVertex3f(-fhwidth, 	border_h, 	fhheight);
-
-	glVertex3f(-hwidth, 	0.0f, 		-hheight);
-	glVertex3f(hwidth, 		0.0f, 		-hheight);
-	glVertex3f(hwidth, 		border_h, 	-hheight);
-	glVertex3f(-hwidth, 	border_h, 	-hheight);
-
-	glNormal3f(0.0f,		0.0f, 		1.0f);
-	glVertex3f(-fhwidth, 	border_h,	-fhheight);
-	glVertex3f(fhwidth, 	border_h, 	-fhheight);
-	glVertex3f(fhwidth, 	fhborder_, 	-fhheight);
-	glVertex3f(-fhwidth, 	fhborder_, 	-fhheight);
-
-	glVertex3f(-hwidth, 	border_h, 	hheight);
-	glVertex3f(hwidth, 		border_h, 	hheight);
-	glVertex3f(hwidth, 		0.0f, 		hheight);
-	glVertex3f(-hwidth, 	0.0f, 		hheight);
+        glVertex3f(-hwidth + fhborder_, border_h, hheight+fhborder_);
+        glVertex3f(-hwidth + fhborder_, border_h, hheight);
+        glVertex3f(-hwidth + fhborder_, -fhborder_, hheight);
+        glVertex3f(-hwidth + fhborder_, -fhborder_, hheight+fhborder_);
 
 
-	glNormal3f(1.0f, 		0.0f, 		0.0f);
-	glVertex3f(fhwidth, 	border_h, 	-fhheight);
-	glVertex3f(fhwidth, 	border_h, 	fhheight);
-	glVertex3f(fhwidth, 	fhborder_, 	fhheight);
-	glVertex3f(fhwidth, 	fhborder_, -fhheight);
 
-	glVertex3f(-hwidth, 	border_h, 	-hheight);
-	glVertex3f(-hwidth, 	border_h, 	hheight);
-	glVertex3f(-hwidth, 	0.0f, 		hheight);
-	glVertex3f(-hwidth, 	0.0f, 		-hheight);
-
-	glNormal3f(-1.0f, 		0.0f, 		0.0f);
-	glVertex3f(-fhwidth, 	fhborder_, 	-fhheight);
-	glVertex3f(-fhwidth, 	fhborder_, 	fhheight);
-	glVertex3f(-fhwidth, 	border_h, 	fhheight);
-	glVertex3f(-fhwidth, 	border_h, 	-fhheight);
-
-	glVertex3f(hwidth, 		0.0f, 		-hheight);
-	glVertex3f(hwidth, 		0.0f, 		hheight);
-	glVertex3f(hwidth, 		border_h, 	hheight);
-	glVertex3f(hwidth, 		border_h, 	-hheight);
-	glEnd();
-	/*------------------!framing!------------------------*/
+        glVertex3f(hwidth - fhborder_, border_h, -hheight-fhborder_);
+        glVertex3f(hwidth - fhborder_, border_h, -hheight);
+        glVertex3f(hwidth - fhborder_, -fhborder_, -hheight);
+        glVertex3f(hwidth - fhborder_, -fhborder_, -hheight-fhborder_);
 
 
-	/*------------------|desk surface|------------------------*/
-	glColor3ub(0, 120, 0); //dark green
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 		1.0f, 		0.0f);
-	glVertex3f(-hwidth, 	0.0f, 		hheight);
-	glVertex3f(hwidth, 		0.0f, 		hheight);
-	glVertex3f(hwidth, 		0.0f, 		-hheight);
-	glVertex3f(-hwidth, 	0.0f, 		-hheight);
-	glEnd();
-	/*------------------!desk surface!------------------------*/
+        glVertex3f(-hwidth + fhborder_, -fhborder_, -hheight-fhborder_);
+        glVertex3f(-hwidth + fhborder_, -fhborder_, -hheight);
+        glVertex3f(-hwidth + fhborder_, border_h, -hheight);
+        glVertex3f(-hwidth + fhborder_, border_h, -hheight-fhborder_);
+    glEnd();
 
-	GLfloat table_leg_edge = width * height / 160.0f;
+    glBegin(GL_QUADS);//here
+        glVertex3f(hwidth+fhborder_, -fhborder_, hheight-fhborder_);
+        glVertex3f(hwidth+fhborder_, border_h, hheight-fhborder_);
+        glVertex3f(hwidth, border_h, hheight-fhborder_);
+        glVertex3f(hwidth, -fhborder_, hheight-fhborder_);
+
+        glVertex3f(hwidth+fhborder_, -fhborder_, -fhborder_);
+        glVertex3f(hwidth+fhborder_, border_h, -fhborder_);
+        glVertex3f(hwidth, border_h, -fhborder_);
+        glVertex3f(hwidth, -fhborder_, -fhborder_);
+
+        glVertex3f(hwidth, -fhborder_, -hheight+fhborder_);
+        glVertex3f(hwidth, border_h, -hheight+fhborder_);
+        glVertex3f(hwidth+fhborder_, border_h, -hheight+fhborder_);
+        glVertex3f(hwidth+fhborder_, -fhborder_, -hheight+fhborder_);
+
+        glVertex3f(hwidth, -fhborder_, fhborder_);
+        glVertex3f(hwidth, border_h, fhborder_);
+        glVertex3f(hwidth+fhborder_, border_h, fhborder_);
+        glVertex3f(hwidth+fhborder_, -fhborder_, fhborder_);
+
+
+        glVertex3f(-hwidth, -fhborder_, hheight-fhborder_);
+        glVertex3f(-hwidth, border_h, hheight-fhborder_);
+        glVertex3f(-hwidth-fhborder_, border_h, hheight-fhborder_);
+        glVertex3f(-hwidth-fhborder_, -fhborder_, hheight-fhborder_);
+
+        glVertex3f(-hwidth, -fhborder_, -fhborder_);
+        glVertex3f(-hwidth, border_h, -fhborder_);
+        glVertex3f(-hwidth-fhborder_, border_h, -fhborder_);
+        glVertex3f(-hwidth-fhborder_, -fhborder_, -fhborder_);
+
+        glVertex3f(-hwidth-fhborder_, -fhborder_, -hheight+fhborder_);
+        glVertex3f(-hwidth-fhborder_, border_h, -hheight+fhborder_);
+        glVertex3f(-hwidth, border_h, -hheight+fhborder_);
+        glVertex3f(-hwidth, -fhborder_, -hheight+fhborder_);
+
+        glVertex3f(-hwidth-fhborder_, -fhborder_, fhborder_);
+        glVertex3f(-hwidth-fhborder_, border_h, fhborder_);
+        glVertex3f(-hwidth, border_h, fhborder_);
+        glVertex3f(-hwidth, -fhborder_, fhborder_);
+    glEnd();
+
+    glPushMatrix();
+        glTranslatef(hwidth, border_h, 0);
+        DrawNiceRectangle(0, fhborder_, fhborder_, hheight - fhborder_);
+        DrawNiceRectangle(0, fhborder_, -hheight + fhborder_, -fhborder_);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(hwidth, 0, 0);
+        glRotatef(90, 0, 0, 1);
+        DrawNiceRectangle(0, border_h, fhborder_, hheight - fhborder_);
+        DrawNiceRectangle(0, border_h, -hheight + fhborder_, -fhborder_);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(hwidth + fhborder_, border_h, 0);
+        glRotatef(-90, 0, 0, 1);
+        DrawNiceRectangle(0, border_h + fhborder_, fhborder_, hheight - fhborder_);
+        DrawNiceRectangle(0, border_h + fhborder_, -hheight + fhborder_, -fhborder_);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(-hwidth - fhborder_, border_h, 0);
+        DrawNiceRectangle(0, fhborder_, fhborder_, hheight - fhborder_);
+        DrawNiceRectangle(0, fhborder_, -hheight + fhborder_, -fhborder_);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(-hwidth, 0, 0);
+        glRotatef(-90, 0, 0, 1);
+        DrawNiceRectangle(-border_h, 0, fhborder_, hheight - fhborder_);
+        DrawNiceRectangle(-border_h, 0, -hheight + fhborder_, -fhborder_);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(-hwidth - fhborder_, border_h, 0);
+        glRotatef(90, 0, 0, 1);
+        DrawNiceRectangle(-border_h - fhborder_, 0, fhborder_, hheight - fhborder_);
+        DrawNiceRectangle(-border_h - fhborder_, 0, -hheight + fhborder_, -fhborder_);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(0, border_h, hheight);
+        DrawNiceRectangle(-hwidth + fhborder_, hwidth - fhborder_, 0, fhborder_);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(0, 0, hheight);
+        glRotatef(-90, 1, 0, 0);
+        DrawNiceRectangle(-hwidth + fhborder_, hwidth - fhborder_, 0, border_h);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(0, border_h, hheight + fhborder_);
+        glRotatef(90, 1, 0, 0);
+        DrawNiceRectangle(-hwidth + fhborder_, hwidth - fhborder_, 0, border_h + fhborder_);
+    glPopMatrix();
+
+
+    glPushMatrix();
+        glTranslatef(0, border_h, -hheight - fhborder_);
+        DrawNiceRectangle(-hwidth + fhborder_, hwidth - fhborder_, 0, fhborder_);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(0, border_h, -hheight);
+        glRotatef(90, 1, 0, 0);
+        DrawNiceRectangle(-hwidth + fhborder_, hwidth - fhborder_, 0, border_h);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(0, -fhborder_, -hheight - fhborder_);
+        glRotatef(-90, 1, 0, 0);
+        DrawNiceRectangle(-hwidth + fhborder_, hwidth - fhborder_, 0, border_h + fhborder_);
+    glPopMatrix();
+
+	GLfloat table_leg_edge = hwidth * hheight / 10.0f;
+	GLfloat htable_leg_edge = table_leg_edge/2;
 
 	glPushMatrix();
-	glTranslatef(hwidth - table_leg_edge, 0, hheight - table_leg_edge);
-	DrawTableLeg(table_leg_edge, leg_height);
+        glTranslatef(hwidth - htable_leg_edge, 0, hheight - htable_leg_edge);
+        DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(hwidth - table_leg_edge, 0, -hheight + table_leg_edge);
-	DrawTableLeg(table_leg_edge, leg_height);
+        glTranslatef(hwidth - htable_leg_edge, 0, -hheight);
+        DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(-hwidth + table_leg_edge, 0, hheight - table_leg_edge);
-	DrawTableLeg(table_leg_edge, leg_height);
+        glTranslatef(-hwidth + htable_leg_edge, 0, hheight - htable_leg_edge);
+        DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(-hwidth + table_leg_edge, 0, -hheight + table_leg_edge);
-	DrawTableLeg(table_leg_edge, leg_height);
+        glTranslatef(-hwidth + htable_leg_edge, 0, -hheight);
+        DrawTableLeg(table_leg_edge, leg_height);
+	glPopMatrix();
+
+	glPushMatrix();
+        glTranslatef(-hwidth + htable_leg_edge, 0, -htable_leg_edge/2);
+        DrawTableLeg(table_leg_edge, leg_height);
+	glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(hwidth - htable_leg_edge, 0, -htable_leg_edge/2);
+        DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 }
 
@@ -381,12 +453,12 @@ void glutRender::DisplayGL ()
 			   0.0f, 1.0f, 0.0f);
 
     glDisable(GL_LIGHTING);
-    DrawGroundGrid (-6);
+    DrawGroundGrid (-3);
     glEnable(GL_LIGHTING);
 
 	init_l();
 
-	DrawBilliardTable (6.8f,13.7f,  0.1f, 12);
+	DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 6);
 
     const GLfloat ball_r = GameTable.balls[0].a;
 
@@ -394,12 +466,12 @@ void glutRender::DisplayGL ()
     {
         glPushMatrix();
             if (curre_ball != it - GameTable.balls.begin())
-                glColor3f (1.0f, 1.0f, 1.0f);
+                glColor3f (0.5f, 0.5f, 0.7f);
             else
                 glColor3f (1.0f, 0.0f, 0.0f);
 
             glTranslatef(it->r.x, ball_r + it->r.z, it->r.y);
-            glutSolidSphere (ball_r, 30, 30);
+            glutSolidSphere (ball_r, 15, 15);
 		glPopMatrix ();
     }
 
@@ -498,6 +570,12 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 		}
 		break;
 
+		case 'P':
+        case 'p':
+        {
+            glPolygonMode (GL_FRONT_AND_BACK, GL_LINE) ;
+        }
+
 		case  'A':
 		case  'a':
 		{
@@ -510,14 +588,14 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 		case 'S':
 		case 's':
 		{
-			if (multipluer < 14.8) multipluer += 0.2f;
+			if (multipluer < 6.8) multipluer += 0.2f;
 		}
 		break;
 
 		case 'W':
 		case 'w':
 		{
-			if (multipluer > 1.6) multipluer -= 0.2f;
+			if (multipluer > 1.4) multipluer -= 0.2f;
 		}
 		break;
 
@@ -542,13 +620,13 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
         case '+':
         {
-            if (cam_height_h < 7) cam_height_h += 0.2f;
+            if (cam_height_h < 5) cam_height_h += 0.2f;
         }
         break;
 
         case '-':
         {
-            if (cam_height_h > 0.5) cam_height_h -= 0.2f;
+            if (cam_height_h > 0.6) cam_height_h -= 0.2f;
         }
         break;
 	}

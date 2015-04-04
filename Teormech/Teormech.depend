@@ -25,10 +25,10 @@
 
 1428011243 source:/home/denisk/Documents/billiard-3d/Teormech/vec.cpp
 
-1428040014 source:/home/kir/Рабочий стол/billiard-3d/Teormech/table.cpp
+1428150716 source:/home/kir/Рабочий стол/billiard-3d/Teormech/table.cpp
 	"table.h"
 
-1428040014 /home/kir/Рабочий стол/billiard-3d/Teormech/table.h
+1428150716 /home/kir/Рабочий стол/billiard-3d/Teormech/table.h
 	"vec.h"
 	"vector"
 	<string>
@@ -37,15 +37,15 @@
 	<iostream>
 	<vector>
 
-1428040014 /home/kir/Рабочий стол/billiard-3d/Teormech/vec.h
+1428150716 /home/kir/Рабочий стол/billiard-3d/Teormech/vec.h
 	<cmath>
 
-1428040014 source:/home/kir/Рабочий стол/billiard-3d/Teormech/vec.cpp
+1428150716 source:/home/kir/Рабочий стол/billiard-3d/Teormech/vec.cpp
 
-1428040629 source:/home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.cpp
+1428183722 source:/home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.cpp
 	"glutRender.h"
 
-1428040937 /home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.h
+1428150715 /home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.h
 	<cmath>
 	<iostream>
 	<ctime>
@@ -57,7 +57,7 @@
 	<GL/glut.h>
 	<glut.h>
 
-1428040014 source:/home/kir/Рабочий стол/billiard-3d/Teormech/test.cpp
+1428150716 source:/home/kir/Рабочий стол/billiard-3d/Teormech/test.cpp
 	"vec.h"
 	"table.h"
 	<iostream>
