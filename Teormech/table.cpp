@@ -62,8 +62,6 @@ int Ball::Collide(Table t, Ball &b)
 {
 	if (Distance(b) > b.a + a) return 0;//No collide for you
 
-    double hi = 5.0/2.0;
-
     vec k = (b.r - r).normalized();
 
     double v1n = v * k;
@@ -71,6 +69,7 @@ int Ball::Collide(Table t, Ball &b)
 
     if (v2n >= v1n) return 0;//They don't move to each other :(
 
+    double hi = 5.0/2.0;
     vec v1t = v - v1n * k;
     vec v2t = b.v - v2n * k;
 
@@ -108,41 +107,42 @@ int Ball::Collide(Table t, Ball &b)
 
 int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
     int ret = 0;
+
+    vec k(0,0,0);
+
     if (std::abs(r.x) > t.lenx - a && sign(v.x) == sign(r.x))
     {
-        double hi = 2.0/5.0;
-        double vn = v.x;
-        double vt = v.y;
-
-        double S = std::sqrt((a*w.y)*(a*w.y) + (vt+a*w.z)*(vt+a*w.z));
-
-        double cost = (vt + a*w.z)/S;
-        double sint = (a*w.y)/S;
-
-        v.x = -t.re * vn;
-        v.y -= t.rf * (1+t.re) * vn * cost;
-
-        w.y += 1/hi * t.rf * (1+t.re) * vn * sint;
-        w.x -= 1/hi * t.rf * (1+t.re) * vn * cost;
+        k = vec(sign(r.x),0,0);
         ret = 1;
     }
 
     if (std::abs(r.y) > t.leny - a && sign(v.y) == sign(r.y))
     {
+        k = vec(0,sign(r.y),0);
+        ret = 1;
+    }
+
+    if (ret){
         double hi = 2.0/5.0;
-        double vn = v.y;
-        double vt = v.x;
+        double vn = v * k;
+        vec vt = v - k * (v * k);
 
-        double S = std::sqrt((a*w.x)*(a*w.x) + (vt+a*w.z)*(vt+a*w.z));
+        vec u = v - k * (v * k) + a * (w ^ k);
+        double itr_v = t.rf * (1+t.re) * vn;
 
-        double cost = (vt + a*w.z)/S;
-        double sint = (a*w.y)/S;
+        vec itr;
 
-        v.y = -t.re * vn;
-        v.x -= t.rf * (1+t.re) * vn * cost;
+        if (u.mod() < itr_v){
+            itr = u;
+        }else{
+            itr = u.normalized() * itr_v;
+        }
 
-        w.x += 1/hi * t.rf * (1+t.re) * vn * sint;
-        w.y -= 1/hi * t.rf * (1+t.re) * vn * cost;
+        vn = -t.re * vn;
+        vt -= itr;
+
+        v = vt + vn * k;
+        w -= 1/hi * (itr ^ k);
         ret = 1;
     }
     return ret;
@@ -151,7 +151,7 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 int Ball::NextStep(Table t, double mintime)
 {
     int ret = 0;
-    if (std::abs(r.z) < a){ //We are not very high : on cloth - moving
+    if (std::abs(r.z) < EPS){ //We are not very high : on cloth - moving
         vec k = vec(0,0,1);
         vec u = v + a * (k ^ w);
 
