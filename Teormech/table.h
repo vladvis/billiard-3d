@@ -48,7 +48,7 @@ public:
 	vec w;
 
 	Ball(const std::string cfgfileName, vec r, vec phi, vec v, vec w);
-	int Collide(Table t, Ball &);
+	int Collide(Table t, Ball &, double mintime);
 	int BoardCollide(Table t);
 	double Distance(Ball);
 	int NextStep(Table t, double mintime);//Return 0 is stops

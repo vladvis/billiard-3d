@@ -1,4 +1,5 @@
 #include "table.h"
+#include <cstdlib>
 
 #define isnan(f) (f != f)
 #define sign(f) (f>0 ? 1 : -1)
@@ -11,7 +12,7 @@ int Table::NextStep(double mintime){
 
     for(std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
         for(std::vector<Ball>::iterator jt = it+1; jt != balls.end(); ++jt)
-            it->Collide(*this, *jt);
+            it->Collide(*this, *jt, mintime);
 
     for(std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it){
         int retb = it->NextStep(*this, mintime);
@@ -58,7 +59,7 @@ Ball::Ball(const  std::string name, vec r, vec phi, vec v, vec w) :
 	file.close();
 };
 
-int Ball::Collide(Table t, Ball &b)
+int Ball::Collide(Table t, Ball &b, double mintime)
 {
 	if (Distance(b) > b.a + a) return 0;//No collide for you
 
@@ -99,6 +100,12 @@ int Ball::Collide(Table t, Ball &b)
     v = v1t + k * v1n_n;
     b.v = v2t + k * v2n_n;
 
+
+    r += vec(rand(), rand(), rand()).normalized() * mintime;
+    w += vec(rand(), rand(), rand()).normalized() * mintime;
+
+    b.r += vec(rand(), rand(), rand()).normalized() * mintime;
+    b.w += vec(rand(), rand(), rand()).normalized() * mintime;
     //v.z = 0;
     //b.v.z = 0;
 
