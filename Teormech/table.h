@@ -1,17 +1,17 @@
 #ifndef BILLIARD_TABLE
 #define BILLIARD_TABLE
 
-#define EPS 0.00000001
-#define G 9.801
-
 #include "vec.h"
-#include "vector"
+#include "GlutHFunc.h"
 #include <string>
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <vector>
 
+
+const double EPS = 0.00000001;
+const double G = 9.801;
 const double g = 9.8036;
 
 class Ball;
@@ -30,6 +30,8 @@ public:
     double lenx;//half size
     double leny;
 
+    unsigned texture;
+
     std::vector <Ball> balls;
 
 	Table(const std::string cfgfileName);
@@ -46,6 +48,8 @@ public:
 	vec phi;
 	vec v;
 	vec w;
+
+    GLuint texture;
 
 	Ball(const std::string cfgfileName, vec r, vec phi, vec v, vec w);
 	int Collide(Table t, Ball &);

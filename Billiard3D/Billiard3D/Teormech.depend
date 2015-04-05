@@ -1,0 +1,102 @@
+# depslib dependency file v1.0
+1428095137 source:/home/denisk/Documents/billiard-3d/Teormech/table.cpp
+	"table.h"
+
+1428088957 /home/denisk/Documents/billiard-3d/Teormech/table.h
+	"vec.h"
+	"vector"
+	<string>
+	<cmath>
+	<fstream>
+	<iostream>
+	<vector>
+
+1428011240 /home/denisk/Documents/billiard-3d/Teormech/vec.h
+	<cmath>
+
+1428092998 source:/home/denisk/Documents/billiard-3d/Teormech/test.cpp
+	"vec.h"
+	"table.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<iomanip>
+	"glutRender.h"
+
+1428011243 source:/home/denisk/Documents/billiard-3d/Teormech/vec.cpp
+
+1428229045 source:/home/kir/Рабочий стол/billiard-3d/Teormech/table.cpp
+	"table.h"
+
+1428225325 /home/kir/Рабочий стол/billiard-3d/Teormech/table.h
+	"vec.h"
+	"GlutHFunc.h"
+	<string>
+	<cmath>
+	<fstream>
+	<iostream>
+	<vector>
+
+1428150716 /home/kir/Рабочий стол/billiard-3d/Teormech/vec.h
+	<cmath>
+
+1428150716 source:/home/kir/Рабочий стол/billiard-3d/Teormech/vec.cpp
+
+1428231887 source:/home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.cpp
+	"glutRender.h"
+
+1428221913 /home/kir/Рабочий стол/billiard-3d/Teormech/glutRender.h
+	<cmath>
+	<iostream>
+	<ctime>
+	<assert.h>
+	"table.h"
+	"DrawFunc.h"
+	"GlutHFunc.h"
+	<GL/glut.h>
+	<glut.h>
+
+1428227802 source:/home/kir/Рабочий стол/billiard-3d/Teormech/test.cpp
+	"vec.h"
+	"table.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<iomanip>
+	"glutRender.h"
+
+1428072121 source:/home/denisk/Documents/billiard-3d/Teormech/glutRender.cpp
+	"glutRender.h"
+
+1428051737 /home/denisk/Documents/billiard-3d/Teormech/glutRender.h
+	<cmath>
+	<iostream>
+	<ctime>
+	<stdio.h>
+	<assert.h>
+	<fstream>
+	<string>
+	"table.h"
+	<GL/glut.h>
+	<glut.h>
+
+1428230682 /home/kir/Рабочий стол/billiard-3d/Teormech/DrawFunc.h
+	<assert.h>
+	<iostream>
+	<GL/glut.h>
+	<glut.h>
+
+1428230117 source:/home/kir/Рабочий стол/billiard-3d/Teormech/DrawFunc.cpp
+	"DrawFunc.h"
+
+1428231525 /home/kir/Рабочий стол/billiard-3d/Teormech/GlutHFunc.h
+	<cstdlib>
+	<iostream>
+	<fstream>
+	<assert.h>
+	<GL/glut.h>
+	<glut.h>
+
+1428231718 source:/home/kir/Рабочий стол/billiard-3d/Teormech/GlutHFunc.cpp
+	"GlutHFunc.h"
+

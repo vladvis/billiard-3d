@@ -4,12 +4,11 @@
 #include <cmath>
 #include <iostream>
 #include <ctime>
-#include <stdio.h>
 #include <assert.h>
-#include <fstream>
-#include <string>
 
 #include "table.h"
+#include "DrawFunc.h"
+#include "GlutHFunc.h"
 
 #ifdef LINUX_PLATFORM
 	#include <GL/glut.h>

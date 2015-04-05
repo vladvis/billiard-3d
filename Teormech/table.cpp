@@ -26,7 +26,11 @@ Table::Table(const std::string name){
 
 	if (file.is_open())
 	{
-		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny;
+        texture = 0;
+	    char texture_filename[255] = {0};
+		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> texture_filename;
+		std::cout << texture_filename << "\n";
+		texture = LoadTexture(texture_filename);
 	}
 	else
     {
