@@ -35,13 +35,15 @@
 		<Linker>
 			<Add option="-lGL -lGLU -lglut -Wall -Werror -DDEBUG -DLINUX_TARGET" />
 		</Linker>
-		<Unit filename="glutRender.cpp" />
-		<Unit filename="glutRender.h" />
-		<Unit filename="table.cpp" />
-		<Unit filename="table.h" />
-		<Unit filename="test.cpp" />
-		<Unit filename="vec.cpp" />
-		<Unit filename="vec.h" />
+		<Unit filename="graphics/glutRender.cpp" />
+		<Unit filename="graphics/glutRender.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="math/vec.cpp" />
+		<Unit filename="math/vec.h" />
+		<Unit filename="physics/ball.cpp" />
+		<Unit filename="physics/ball.h" />
+		<Unit filename="physics/table.cpp" />
+		<Unit filename="physics/table.h" />
 		<Extensions>
 			<envvars />
 			<code_completion />

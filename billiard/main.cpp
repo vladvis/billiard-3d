@@ -1,14 +1,16 @@
-#include "vec.h"
-#include "table.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <iomanip>
-#include "glutRender.h"
 
 #define KIR_TEST
 
-
+#ifndef KIR_TEST
+#include "math/vec.h"
+#include "physics/table.h"
+#else
+#include "graphics/glutRender.h"
+#endif // KIR_TEST
 
 using namespace std;
 
