@@ -99,14 +99,14 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
     GameTable = Table(table_config);
 
     std::ifstream file(start_state_config.c_str());
-    double px, py, pz, rx, ry, rz, vx, vy, vz, wx, wy, wz;
+    double rx, ry, rz, vx, vy, vz, wx, wy, wz;
     if (!file.is_open())
     {
         std::cout << "Failed to open file!";
         return;
     }
-    while(file >> rx >> ry >> rz >> px >> py >> pz >> vx >> vy >> vz >> wx >> wy >> wz)
-        glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), vec(px, py, pz), vec(vx, vy, vz), vec(wx, wy, wz)));
+    while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz)
+        glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(1, vec(0, 0, 0)), vec(vx, vy, vz), vec(wx, wy, wz)));
 
     if (GameTable.balls.empty())
     {
@@ -165,25 +165,29 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				char s1[255], s2[255], s3[255];
 				sprintf(s1, "w(%.2f, %.2f, %.2f)", GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
 				sprintf(s2, "v(%.2f, %.2f, %.2f)", GameTable.balls[curre_ball].v.x, GameTable.balls[curre_ball].v.y, GameTable.balls[curre_ball].v.z);
-				sprintf(s3, "phi(%.2f, %.2f, %.2f)", GameTable.balls[curre_ball].phi.x, GameTable.balls[curre_ball].phi.y, GameTable.balls[curre_ball].phi.z);
+				sprintf(s3, "phi(%.2f, %.2f, %.2f, %.2f)", GameTable.balls[curre_ball].phi.l, GameTable.balls[curre_ball].phi.v.x, GameTable.balls[curre_ball].phi.v.y, GameTable.balls[curre_ball].phi.v.z);
 
 				glPushMatrix();
 					glTranslatef(GameTable.balls[curre_ball].r.y, 0.5f, GameTable.balls[curre_ball].r.x);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.0f, 0.0f, (void *)font, s1);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.3f, 0.0f, (void *)font, s2);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.6f, 0.0f, (void *)font, s3);
-					renderStrokeFontString(0.0f, -0.2f, 0.0f, (void *)font, "y\0");
-					renderStrokeFontString(0.2f, -0.4f, 0.0f, (void *)font, "x\0");
-					renderStrokeFontString(0.0f, -0.4f, 0.2f, (void *)font, "z\0");
+					renderStrokeFontString(0.0f, -0.2f, 0.0f, (void *)font, (char *)"y\0");
+					renderStrokeFontString(0.2f, -0.4f, 0.0f, (void *)font, (char *)"x\0");
+					renderStrokeFontString(0.0f, -0.4f, 0.2f, (void *)font, (char *)"z\0");
 				glPopMatrix();
 
 				glColor3f(1.0f, 0.0f, 0.0f);
 			}
 
 			glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
-            glRotatef(it->phi.y+90, -1, 0, 0);
-            glRotatef(it->phi.z, 0, -1, 0);
-			glRotatef(it->phi.x, 0, 0, -1);
+
+            //glRotatef(it->phi.z, 0, -1, 0);
+            double angle = 360*acos(it->phi.l)/M_PI;
+            double modif = sin(angle);
+            glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y/modif, it->phi.v.z/modif, it->phi.v.x/modif);
+            //glRotatef(it->phi.z, 0, -1, 0);
+			//glRotatef(it->phi.x, 0, 0, -1);
             glutSolidSphere (ball_r, 13, 13);
             //glDisable(GL_TEXTURE_2D);
         glPopMatrix ();
@@ -194,7 +198,7 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
 	glColor3f(1.0f, 1.0f, 1.0f);
-	renderStrokeFontString(0.1f, -0.1f, GameTable.lenx + 0.1f, (void *)font, "Billiard 3D PROJECT 2015");
+	renderStrokeFontString(0.1f, -0.1f, GameTable.lenx + 0.1f, (void *)font, (char *)"Billiard 3D PROJECT 2015");
 	glPopMatrix();
 
     glFlush();
@@ -210,9 +214,8 @@ void glutRender::IdleGL ()
 
     if (calculations_started)
     {
-        const double MINTIME = 0.000005;
-		int s = 0;
-		for (int i = 0; i < 1000; i++)
+        const double MINTIME = 0.000001;
+		for (int i = 0; i < 5000; i++)
 		{
 			GameTable.NextStep(MINTIME);
 		}
@@ -269,7 +272,7 @@ void glutRender::setOrthographicProjection()
 }
 
 
-void glutRender::restorePerspectiveProjection() 
+void glutRender::restorePerspectiveProjection()
 {
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

@@ -4,6 +4,7 @@
 #define _USE_MATH_DEFINES
 
 #include "vec.h"
+#include "quat.h"
 #include "GlutHFunc.h"
 #include <string>
 #include <cmath>
@@ -47,13 +48,13 @@ public:
 	double m;//mass
 
 	vec r;
-	vec phi;
+	quat phi;
 	vec v;
 	vec w;
 
     GLuint texture;
 
-	Ball(const std::string cfgfileName, vec r, vec phi, vec v, vec w);
+	Ball(const std::string cfgfileName, vec r, quat phi, vec v, vec w);
 	int Collide(Table t, Ball &);
 	int BoardCollide(Table t);
 	double Distance(Ball);

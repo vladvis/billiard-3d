@@ -42,7 +42,7 @@ Table::Table(const std::string name){
 
 Table::Table(){};
 
-Ball::Ball(const  std::string name, vec r, vec phi, vec v, vec w) :
+Ball::Ball(const  std::string name, vec r, quat phi, vec v, vec w) :
 r(r),
 phi(phi),
 v(v),
@@ -178,7 +178,8 @@ int Ball::NextStep(Table t, double mintime)
 
 		if (((isnan(alpha)) && (isnan(beta)))){
 			r += (mintime * v);
-			phi += (mintime * w);
+			phi += mintime/2 * (phi * quat(0, w));
+			phi = phi.normalized();
 			return ret;
 		}
 		//it means that v=0 TODO L1
@@ -232,6 +233,7 @@ int Ball::NextStep(Table t, double mintime)
 		}
 
 		v = u - a * (k ^ w);
+
 	}
 	if (std::abs(r.z) > EPS || std::abs(v.z) > EPS){ //We are in the air
 		ret += 8;
@@ -263,7 +265,8 @@ int Ball::NextStep(Table t, double mintime)
 	}
 
 	r += (mintime * v);
-	phi += (mintime * w);
+	phi += (quat(0, w) * phi) / 2 * mintime;
+	phi = phi.normalized();
 	return ret;
 };
 
