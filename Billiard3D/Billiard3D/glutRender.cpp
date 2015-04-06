@@ -172,9 +172,6 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.0f, 0.0f, (void *)font, s1);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.3f, 0.0f, (void *)font, s2);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.6f, 0.0f, (void *)font, s3);
-					renderStrokeFontString(0.0f, -0.2f, 0.0f, (void *)font, (char *)"y\0");
-					renderStrokeFontString(0.2f, -0.4f, 0.0f, (void *)font, (char *)"x\0");
-					renderStrokeFontString(0.0f, -0.4f, 0.2f, (void *)font, (char *)"z\0");
 				glPopMatrix();
 
 				glColor3f(1.0f, 0.0f, 0.0f);
@@ -183,9 +180,9 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
 
             //glRotatef(it->phi.z, 0, -1, 0);
-            double angle = 360*acos(it->phi.l)/M_PI;
+            double angle = 2*acos(it->phi.l);
             double modif = sin(angle);
-            glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y/modif, it->phi.v.z/modif, it->phi.v.x/modif);
+            glRotatef(180*angle/M_PI, it->phi.v.y/modif, it->phi.v.z/modif, it->phi.v.x/modif);
             //glRotatef(it->phi.z, 0, -1, 0);
 			//glRotatef(it->phi.x, 0, 0, -1);
             glutSolidSphere (ball_r, 13, 13);
@@ -214,8 +211,8 @@ void glutRender::IdleGL ()
 
     if (calculations_started)
     {
-        const double MINTIME = 0.000001;
-		for (int i = 0; i < 5000; i++)
+        const double MINTIME = 0.000005;
+		for (int i = 0; i < 500; i++)
 		{
 			GameTable.NextStep(MINTIME);
 		}

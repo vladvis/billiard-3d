@@ -178,7 +178,7 @@ int Ball::NextStep(Table t, double mintime)
 
 		if (((isnan(alpha)) && (isnan(beta)))){
 			r += (mintime * v);
-			phi += mintime/2 * (phi * quat(0, w));
+			phi += (quat(0, w) * phi) / 2 * mintime;
 			phi = phi.normalized();
 			return ret;
 		}

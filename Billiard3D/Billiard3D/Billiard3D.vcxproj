@@ -158,6 +158,7 @@
     <ClCompile Include="DrawFunc.cpp" />
     <ClCompile Include="GlutHFunc.cpp" />
     <ClCompile Include="glutRender.cpp" />
+    <ClCompile Include="quat.cpp" />
     <ClCompile Include="table.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="vec.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="DrawFunc.h" />
     <ClInclude Include="GlutHFunc.h" />
     <ClInclude Include="glutRender.h" />
+    <ClInclude Include="quat.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="vec.h" />
   </ItemGroup>

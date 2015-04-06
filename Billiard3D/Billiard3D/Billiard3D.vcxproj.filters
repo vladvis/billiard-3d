@@ -41,6 +41,9 @@
     <ClCompile Include="vec.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="quat.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawFunc.h">
@@ -56,6 +59,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="vec.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="quat.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

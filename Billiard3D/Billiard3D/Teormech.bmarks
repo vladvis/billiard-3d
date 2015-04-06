@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<BrowseTracker_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="test.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="509" topLine="0" />
+	</File>
+	<File name="table.h" open="1" top="0" tabpos="3">
+		<Cursor position="802" topLine="21" />
+	</File>
+	<File name="vec.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="table.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="1295" topLine="16" />
+	</File>
+	<File name="glutRender.h" open="0" top="0" tabpos="0">
+		<Cursor position="614" topLine="0" />
+	</File>
+	<File name="glutRender.cpp" open="1" top="1" tabpos="4">
+		<Cursor position="17888" topLine="557" />
+		<BrowseMarks positions="" />
+		<Book_Marks positions="" />
+	</File>
+</BrowseTracker_layout_file>

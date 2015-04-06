@@ -168,3 +168,62 @@
 	"vec.h"
 	<cmath>
 
+1428300164 source:c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\glutrender.cpp
+	"glutRender.h"
+
+1428256272 c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\glutrender.h
+	<cmath>
+	<iostream>
+	<ctime>
+	<assert.h>
+	"table.h"
+	"DrawFunc.h"
+	"GlutHFunc.h"
+	<GL/glut.h>
+	<glut.h>
+
+1428300164 c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\table.h
+	"vec.h"
+	"quat.h"
+	"GlutHFunc.h"
+	<string>
+	<cmath>
+	<fstream>
+	<iostream>
+	<vector>
+
+1428150716 c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\vec.h
+	<cmath>
+
+1428300164 c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\quat.h
+	"vec.h"
+	<cmath>
+
+1428256325 c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\gluthfunc.h
+	<cstdlib>
+	<iostream>
+	<fstream>
+	<assert.h>
+	<GL/glut.h>
+	<glut.h>
+
+1428255097 c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\drawfunc.h
+	<assert.h>
+	<iostream>
+	<GL/glut.h>
+	<glut.h>
+
+1428300164 source:c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\table.cpp
+	"table.h"
+
+1428252269 source:c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\test.cpp
+	"vec.h"
+	"table.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<iomanip>
+	"glutRender.h"
+
+1428150716 source:c:\users\кирилл\desktop\billiard-3d\billiard3d\billiard3d\vec.cpp
+
