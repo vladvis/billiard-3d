@@ -96,6 +96,10 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 void glutRender::LoadConfig(const std::string table_config, const std::string balls_config, const std::string start_state_config)
 {
     calculations_started = false;
+
+    double oldMINTIME = GameTable.MINTIME;
+    double oldCLOCK = GameTable.CLOCK;
+
     GameTable = Table(table_config);
 
     std::ifstream file(start_state_config.c_str());
@@ -126,7 +130,12 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
     }
 
     std::cout << "Loaded configurations " << table_config << "; " << balls_config << std::endl;
-    fpsMeasure(GameTable);
+    if (oldCLOCK == 0) {
+        fpsMeasure(GameTable);
+    }else{
+        GameTable.CLOCK = oldCLOCK;
+        GameTable.MINTIME = oldMINTIME;
+    }
     std::cout << GameTable.MINTIME << " "<< GameTable.CLOCK << std::endl;
 }
 
