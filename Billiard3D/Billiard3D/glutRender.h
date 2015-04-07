@@ -12,6 +12,7 @@
 #include "table.h"
 #include "DrawFunc.h"
 #include "GlutHFunc.h"
+#include "fpsMeasurer.h"
 
 #ifdef LINUX_PLATFORM
 	#include <GL/glut.h>

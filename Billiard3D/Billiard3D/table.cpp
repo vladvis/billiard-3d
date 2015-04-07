@@ -3,25 +3,26 @@
 #define isnan(f) (f != f)
 #define sign(f) (f>0 ? 1 : -1)
 
-int Table::NextStep(double mintime){
+int Table::NextStep(){
 	int ret = 0;
 
-	for (std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
-		it->BoardCollide(*this);
+	//for (std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
+    for (Ball& b: balls)
+		b.BoardCollide(*this);
 
-	for (std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
-		for (std::vector<Ball>::iterator jt = it + 1; jt != balls.end(); ++jt)
+	for (auto it = balls.begin(); it != balls.end(); ++it)
+		for (auto jt = it + 1; jt != balls.end(); ++jt)
 			it->Collide(*this, *jt);
 
-	for (std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it){
-		int retb = it->NextStep(*this, mintime);
+	for (Ball& b: balls){
+		int retb = b.NextStep(*this, MINTIME);
 		if (retb != 1) ret |= (retb);
 	}
 
 	return ret;
 }
 
-Table::Table(const std::string name){
+Table::Table(const std::string name): MINTIME(0.000001), CLOCK(500), FPS(60), SLOWFACTOR(100){
 	std::ifstream file(name.c_str());
 
 	if (file.is_open())

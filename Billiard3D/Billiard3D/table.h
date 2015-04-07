@@ -33,13 +33,18 @@ public:
     double lenx;//half size
     double leny;
 
+    double MINTIME;//mintime used in physics
+    double CLOCK;//how much time will be NextStep will be executed during frame
+    double FPS;
+    double SLOWFACTOR;//IGT/RTA
+
     unsigned texture;
 
     std::vector <Ball> balls;
 
 	Table(const std::string cfgfileName);
 	Table();
-	int NextStep(double mintime);
+	int NextStep();
 };
 
 class Ball{

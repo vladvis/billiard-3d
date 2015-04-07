@@ -115,6 +115,7 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
     }
 
     std::cout << "Loaded configurations " << table_config << "; " << balls_config << std::endl;
+    fpsMeasure(GameTable);
 }
 
 void glutRender::DisplayGL ()
@@ -208,10 +209,10 @@ void glutRender::IdleGL ()
 
     if (calculations_started)
     {
-        const double MINTIME = 0.000001;
-		for (int i = 0; i < 500; i++)
+        //const double MINTIME = 0.000001;
+		for (int i = 0; i < GameTable.CLOCK; i++)
 		{
-			GameTable.NextStep(MINTIME);
+			GameTable.NextStep();
 		}
     }
     //float fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC; // TODO: fps here
