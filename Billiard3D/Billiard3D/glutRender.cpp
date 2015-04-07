@@ -110,7 +110,7 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 
     if (GameTable.balls.empty())
     {
-        std::cout << "Больше мячей богу мячей!";
+        std::cout << "Table don't contain any ball!";
         return;
     }
 
@@ -179,10 +179,7 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
 
-            //glRotatef(it->phi.z, 0, -1, 0);
-            double angle = 2*acos(it->phi.l);
-            double modif = sin(angle);
-            glRotatef(180*angle/M_PI, it->phi.v.y/modif, it->phi.v.z/modif, it->phi.v.x/modif);
+            glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
             //glRotatef(it->phi.z, 0, -1, 0);
 			//glRotatef(it->phi.x, 0, 0, -1);
             glutSolidSphere (ball_r, 13, 13);
@@ -211,7 +208,7 @@ void glutRender::IdleGL ()
 
     if (calculations_started)
     {
-        const double MINTIME = 0.000005;
+        const double MINTIME = 0.000001;
 		for (int i = 0; i < 500; i++)
 		{
 			GameTable.NextStep(MINTIME);
