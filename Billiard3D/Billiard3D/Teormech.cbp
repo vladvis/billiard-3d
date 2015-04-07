@@ -35,8 +35,14 @@
 		<Linker>
 			<Add option="-lGL -lGLU -lglut -Wall -Werror -DDEBUG -DLINUX_TARGET" />
 		</Linker>
+		<Unit filename="DrawFunc.cpp" />
+		<Unit filename="DrawFunc.h" />
+		<Unit filename="GlutHFunc.cpp" />
+		<Unit filename="GlutHFunc.h" />
 		<Unit filename="glutRender.cpp" />
 		<Unit filename="glutRender.h" />
+		<Unit filename="quat.cpp" />
+		<Unit filename="quat.h" />
 		<Unit filename="table.cpp" />
 		<Unit filename="table.h" />
 		<Unit filename="test.cpp" />
