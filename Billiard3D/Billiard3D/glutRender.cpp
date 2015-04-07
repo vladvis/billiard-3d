@@ -105,8 +105,19 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
         std::cout << "Failed to open file!";
         return;
     }
+
+    if (!(file >> GameTable.SLOWFACTOR)){
+        std::cout << "Failed to read slowfactor!";
+        return;
+    }
+
     while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz)
         glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(1, vec(0, 0, 0)), vec(vx, vy, vz), vec(wx, wy, wz)));
+
+    if (!file.eof()){
+        std::cout << "Incorrect file format!";
+        return;
+    }
 
     if (GameTable.balls.empty())
     {
@@ -116,6 +127,7 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 
     std::cout << "Loaded configurations " << table_config << "; " << balls_config << std::endl;
     fpsMeasure(GameTable);
+    std::cout << GameTable.MINTIME << " "<< GameTable.CLOCK << std::endl;
 }
 
 void glutRender::DisplayGL ()

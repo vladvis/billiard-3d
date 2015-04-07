@@ -42,4 +42,7 @@ void fpsMeasure(Table &t){
             r = m;
         }
     }
+
+    t.CLOCK = (l+r)/2/t.FPS;
+    t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
 }

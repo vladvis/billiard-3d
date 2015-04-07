@@ -22,7 +22,7 @@ int Table::NextStep(){
 	return ret;
 }
 
-Table::Table(const std::string name): MINTIME(0.000001), CLOCK(500), FPS(60), SLOWFACTOR(100){
+Table::Table(const std::string name): MINTIME(0.000001), CLOCK(500), FPS(60), SLOWFACTOR(1){
 	std::ifstream file(name.c_str());
 
 	if (file.is_open())
