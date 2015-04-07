@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-lGL -lGLUT -lGLU -std=c++11 -DDEBUG -DKIR_TEST" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -39,6 +40,7 @@
 		<Unit filename="DrawFunc.h" />
 		<Unit filename="GlutHFunc.cpp" />
 		<Unit filename="GlutHFunc.h" />
+		<Unit filename="fpsMeasurer.cpp" />
 		<Unit filename="glutRender.cpp" />
 		<Unit filename="glutRender.h" />
 		<Unit filename="quat.cpp" />

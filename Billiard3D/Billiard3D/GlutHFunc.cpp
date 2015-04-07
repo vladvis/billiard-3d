@@ -47,6 +47,8 @@
 // Works only for uncompressed bmp files of 24-bit color.
 BitMapFile *getBMPData(const char *filename)
 {
+  std::cout << "getBMPData : "<<filename<<std::endl;
+
    BitMapFile *bmp = new BitMapFile;
    unsigned int size, offset, headerSize;
 
@@ -87,25 +89,31 @@ BitMapFile *getBMPData(const char *filename)
 
 GLuint LoadTexture(const char *filename)
 {
+    /*
+    assert (filename);
+    std::cout << "LoadTexture : "<<filename<<std::endl;
+
     GLuint ret_tex = 0;
 
     BitMapFile *image;
     image = getBMPData(filename);
+    std::cout << "getBMPData with "<<image<<std::endl;
+
 
     glBindTexture(GL_TEXTURE_2D, ret_tex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->sizeX, image->sizeY, 0,
 	            GL_RGB, GL_UNSIGNED_BYTE, image->data);
 
     delete image;
-
+*/
     return ret_tex;
 }
 
-void renderBitmapString(float x, float y, float z, void *font, char *string) 
+void renderBitmapString(float x, float y, float z, void *font, char *string)
 {
 	char *c;
 	glRasterPos3f(x, y, z);

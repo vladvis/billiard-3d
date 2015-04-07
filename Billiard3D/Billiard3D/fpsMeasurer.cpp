@@ -3,9 +3,9 @@
 #define CURTIME std::chrono::system_clock::now()
 
 void fpsMeasure(Table &t){
-    int numballs = t.balls.size();
+    //int numballs = t.balls.size();
 
-    std::cout << "Start fps measurements!" << std::endl;
+    /*std::cout << "Start fps measurements!" << std::endl;
 
     //CLOCK binary search
     int l = 1;
@@ -41,8 +41,10 @@ void fpsMeasure(Table &t){
         }else{
             r = m;
         }
-    }
+    }*/
 
+    double l = 1;
+    double r = 3000000;
     t.CLOCK = (l+r)/2/t.FPS;
     t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
 }

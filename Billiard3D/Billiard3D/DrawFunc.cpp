@@ -45,7 +45,7 @@ void DrawNiceRectangle(const GLfloat xleft, const GLfloat xright, const GLfloat 
 {
     assert (xright > xleft); assert (yright > yleft);
 
-    const float grid_period = 30;
+    const float grid_period = 50;
 
     GLfloat step = max(xright - xleft, yright - yleft)/grid_period;
 
@@ -122,7 +122,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
             glEnable (GL_TEXTURE_2D);
             glBindTexture (GL_TEXTURE_2D, g_texture);
         } else */
-		glColor3ub(0, 75, 0);
+		glColor3ub(0, 100, 0);
 
         DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
         glDisable(GL_TEXTURE_2D);

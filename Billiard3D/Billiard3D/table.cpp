@@ -28,10 +28,9 @@ Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(
 	if (file.is_open())
 	{
 		texture = 0;
-		char texture_filename[255] = { 0 };
+		char texture_filename[255];
 		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> texture_filename;
-		std::cout << texture_filename << "\n";
-		texture = LoadTexture(texture_filename);
+		//texture = LoadTexture(texture_filename);
 	}
 	else
 	{
@@ -43,7 +42,7 @@ Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(
 
 Table::Table(): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1){};
 
-Ball::Ball(const  std::string name, vec r, quat phi, vec v, vec w) :
+Ball::Ball(const  std::string name, vec r, quat phi, vec v, vec w, const char *texture_filename) :
 r(r),
 phi(phi),
 v(v),
@@ -53,7 +52,13 @@ w(w)
 
 	if (file.is_open())
 	{
-		file >> a >> m;
+	    file >> a >> m;
+	    if (texture == 0)
+        {
+            std::cout << texture_filename << "!\n";
+            texture = LoadTexture(texture_filename);
+            std::cout << texture << " -<<\n";
+        }
 	}
 	else
 	{

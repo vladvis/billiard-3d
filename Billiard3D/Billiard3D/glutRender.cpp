@@ -1,6 +1,8 @@
 #include "glutRender.h"
 
-//GLuint ball_texture;
+GLuint ball_texture;
+GLUquadricObj *sphere = NULL;
+
 void *font = GLUT_STROKE_ROMAN;
 
 /* there is only one copy of glutRender, so we are have to use this lifehack to deal with C GLUT library on C++, it is ok */
@@ -85,7 +87,10 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     LoadConfig (table_config_filename, balls_config_filename, start_state_config_filename);
     PreviousTicks = std::clock();
 
-    //ball_texture = LoadTexture("textures/9.bmp");
+    sphere = gluNewQuadric();
+    gluQuadricDrawStyle(sphere, GLU_FILL);
+    gluQuadricTexture(sphere, GL_TRUE);
+    gluQuadricNormals(sphere, GLU_SMOOTH);
 
     glutMainLoop ();
 
@@ -115,8 +120,13 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
         return;
     }
 
-    while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz)
-        glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(1, vec(0, 0, 0)), vec(vx, vy, vz), vec(wx, wy, wz)));
+    char texture_filename[255];
+    while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz >> texture_filename)
+    {
+        std::cout << texture_filename << std::endl;
+        glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(1, vec(0, 0, 0)), vec(vx, vy, vz), vec(wx, wy, wz), texture_filename));
+
+    }
 
     if (!file.eof()){
         std::cout << "Incorrect file format!";
@@ -175,9 +185,9 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
     {
         glPushMatrix();
-            //glEnable(GL_TEXTURE_2D);
-            //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-            //glBindTexture(GL_TEXTURE_2D, ball_texture);
+            glEnable(GL_TEXTURE_2D);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+            glBindTexture(GL_TEXTURE_2D, it->texture);
 
             if (curre_ball != it - GameTable.balls.begin())
                 glColor3f (1.0f, 1.0f, 1.0f);
@@ -196,7 +206,8 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.6f, 0.0f, (void *)font, s3);
 				glPopMatrix();
 
-				glColor3f(1.0f, 0.0f, 0.0f);
+                glColor3f(1.0f, 1.0f, 1.0f);
+
 			}
 
 			glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
@@ -204,7 +215,11 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
             //glRotatef(it->phi.z, 0, -1, 0);
 			//glRotatef(it->phi.x, 0, 0, -1);
-            glutSolidSphere (ball_r, 13, 13);
+
+
+            gluSphere(sphere, ball_r, 35, 35);
+
+            //glutSolidSphere (ball_r, 13, 13);
             //glDisable(GL_TEXTURE_2D);
         glPopMatrix ();
     }

@@ -6,8 +6,6 @@
 #include <iomanip>
 #include "glutRender.h"
 
-#define KIR_TEST
-
 
 
 using namespace std;
