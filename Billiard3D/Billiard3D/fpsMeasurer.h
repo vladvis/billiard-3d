@@ -14,8 +14,9 @@ public:
     void fpsMeasure();
 
 private:
-    int fpsCount(int numballs);
-    void fpsTest(std::vector<Ball> &balls, double mt);
+    int fpsBinSearch(int numballs);
+    void NextStep(std::vector<Ball> &balls, double mt);
+    void fpsCount();
 };
 
 #endif
