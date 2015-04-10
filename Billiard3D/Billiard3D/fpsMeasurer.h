@@ -6,6 +6,16 @@
 #include <vector>
 #include <iostream>
 
-void fpsMeasure(Table &t);
+class fpsMeasurer{
+    Table &t;
+
+public:
+    fpsMeasurer(Table& t);
+    void fpsMeasure();
+
+private:
+    int fpsCount(int numballs);
+    void fpsTest(std::vector<Ball> &balls, double mt);
+};
 
 #endif

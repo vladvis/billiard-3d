@@ -141,7 +141,8 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 
     std::cout << "Loaded configurations " << table_config << "; " << balls_config << std::endl;
     if (oldCLOCK == 0) {
-        fpsMeasure(GameTable);
+        fpsMeasurer f(GameTable);
+        f.fpsMeasure();
     }else{
         GameTable.CLOCK = oldCLOCK;
         GameTable.MINTIME = oldMINTIME;

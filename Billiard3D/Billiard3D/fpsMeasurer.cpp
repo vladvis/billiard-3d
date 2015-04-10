@@ -2,7 +2,9 @@
 
 #define CURTIME std::chrono::system_clock::now()
 
-void fpsTest(std::vector<Ball> &balls, Table &t, double mt){
+fpsMeasurer::fpsMeasurer(Table& t): t(t) {};
+
+void fpsMeasurer::fpsTest(std::vector<Ball> &balls, double mt){
     for (Ball& b: balls)
         b.BoardCollide(t);
 
@@ -15,7 +17,7 @@ void fpsTest(std::vector<Ball> &balls, Table &t, double mt){
 }
 
 
-int fpsCount(int numballs, Table t){
+int fpsMeasurer::fpsCount(int numballs){
     std::cout << "Start fps measurements!" << std::endl;
 
     //CLOCK binary search
@@ -37,7 +39,7 @@ int fpsCount(int numballs, Table t){
         int i;
 
         for (i = 0; i < m && ((std::chrono::duration<double>)(CURTIME-start)).count() < 1; i++){
-            fpsTest(balls, t, mt);
+            fpsTest(balls, mt);
         }
         if (i == m){
             l = m;
@@ -48,14 +50,14 @@ int fpsCount(int numballs, Table t){
     return (l+r)/2;
 }
 
-void fpsMeasure(Table &t){
+void fpsMeasurer::fpsMeasure(){
     std::ifstream file("fps.cfg");
     if (!file.is_open())
     {
         std::cout << "No fps file found, measuring..." << std::endl;
         int numballs = t.balls.size();
 
-        t.CLOCK = fpsCount(numballs, t)/t.FPS;
+        t.CLOCK = fpsCount(numballs)/t.FPS;
         t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
 
         std::ofstream file_out("fps.cfg");
@@ -64,7 +66,7 @@ void fpsMeasure(Table &t){
         if(!(file >> t.CLOCK)){
             std::cout << "Your fps file is bad, I have to retest" << std::endl;
             int numballs = t.balls.size();
-            t.CLOCK = fpsCount(numballs, t)/t.FPS;
+            t.CLOCK = fpsCount(numballs)/t.FPS;
             t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
 
             std::ofstream file_out("fps.cfg");
@@ -88,7 +90,7 @@ void fpsMeasure(Table &t){
             double time;
 
             for (i = 0; i < m && (time = ((std::chrono::duration<double>)(CURTIME-start)).count()) < 1.15; i++){
-                fpsTest(balls, t, mt);
+                fpsTest(balls, mt);
             }
 
             if (i == m){
@@ -108,7 +110,7 @@ void fpsMeasure(Table &t){
                     }else{
                         std::cout << "Good choice!" << std::endl;
                         int numballs = t.balls.size();
-                        t.CLOCK = fpsCount(numballs, t)/t.FPS;
+                        t.CLOCK = fpsCount(numballs)/t.FPS;
                         t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
                         std::ofstream file_out("fps.cfg");
                         file_out << t.CLOCK;
@@ -117,7 +119,7 @@ void fpsMeasure(Table &t){
             }else{
                 std::cout << "You lied me! I hate you, have to remeasure it!" << std::endl;
                 int numballs = t.balls.size();
-                t.CLOCK = fpsCount(numballs, t)/t.FPS;
+                t.CLOCK = fpsCount(numballs)/t.FPS;
                 t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
 
                 std::ofstream file_out("fps.cfg");
