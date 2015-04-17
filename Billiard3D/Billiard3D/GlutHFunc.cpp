@@ -89,9 +89,9 @@ BitMapFile *getBMPData(const char *filename)
 
 GLuint LoadTexture(const char *filename)
 {
-    /*
+
     assert (filename);
-    std::cout << "LoadTexture : "<<filename<<std::endl;
+/*    std::cout << "LoadTexture : "<<filename<<std::endl;
 
     GLuint ret_tex = 0;
 
@@ -108,9 +108,8 @@ GLuint LoadTexture(const char *filename)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->sizeX, image->sizeY, 0,
 	            GL_RGB, GL_UNSIGNED_BYTE, image->data);
 
-    delete image;
-*/
-    return ret_tex;
+    delete image;*/
+    return 0;//ret_tex;
 }
 
 void renderBitmapString(float x, float y, float z, void *font, char *string)

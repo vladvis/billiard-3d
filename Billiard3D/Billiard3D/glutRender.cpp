@@ -36,7 +36,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glutWindowHandle = glutCreateWindow ("Billiard 3D Project - [q]uit");
     assert (glutWindowHandle != 0);
 
-#ifdef FULLSCREEN
+#ifndef FULLSCREEN
     glutGameModeString ("1920x1080:32@60");
     glutEnterGameMode();
 #endif
