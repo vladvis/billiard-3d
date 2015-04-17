@@ -376,6 +376,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
     {
         if (multipluer > 1.4) multipluer -= 0.2f;
     }
+
     break;
 
     case '\t': //TAB
