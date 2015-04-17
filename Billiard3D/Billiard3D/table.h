@@ -38,7 +38,7 @@ public:
     double FPS;
     double SLOWFACTOR;//IGT/RTA
 
-    unsigned texture;
+    GLuint grass_texture, tree_texture;
 
     std::vector <Ball> balls;
 

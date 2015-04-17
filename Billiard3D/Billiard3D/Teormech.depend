@@ -2,6 +2,8 @@
 1428095137 source:/home/denisk/Documents/billiard-3d/Teormech/table.cpp
 	"table.h"
 
+1428422069 
+
 1428088957 /home/denisk/Documents/billiard-3d/Teormech/table.h
 	"vec.h"
 	"vector"
@@ -22,6 +24,8 @@
 	<vector>
 	<iomanip>
 	"glutRender.h"
+
+1428435490 r.h"
 
 1428011243 source:/home/denisk/Documents/billiard-3d/Teormech/vec.cpp
 
@@ -89,6 +93,8 @@
 1428230117 source:/home/kir/Рабочий стол/billiard-3d/Teormech/DrawFunc.cpp
 	"DrawFunc.h"
 
+1428435605 h"
+
 1428231525 /home/kir/Рабочий стол/billiard-3d/Teormech/GlutHFunc.h
 	<cstdlib>
 	<iostream>
@@ -99,6 +105,8 @@
 
 1428231718 source:/home/kir/Рабочий стол/billiard-3d/Teormech/GlutHFunc.cpp
 	"GlutHFunc.h"
+
+1428436411 .h"
 
 1428501428 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.cpp
 	"table.h"
@@ -231,6 +239,8 @@
 1428665107 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
 	"fpsMeasurer.h"
 
+1428435850 er.h"
+
 1428664821 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.h
 	"table.h"
 	<chrono>
@@ -314,4 +324,82 @@
 
 1428435850 source:/home/kir/Рабочий стол/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
 	"fpsMeasurer.h"
+
+1429274686 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
+	"DrawFunc.h"
+
+1428654626 /home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/DrawFunc.h
+	<assert.h>
+	<iostream>
+	<GL/glut.h>
+	<glut.h>
+
+1428654626 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
+	"fpsMeasurer.h"
+
+1428654626 /home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.h
+	"table.h"
+	<chrono>
+	<vector>
+	<iostream>
+
+1429273772 /home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/table.h
+	"vec.h"
+	"quat.h"
+	"GlutHFunc.h"
+	<string>
+	<cmath>
+	<fstream>
+	<iostream>
+	<vector>
+
+1428654626 /home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/vec.h
+	<cmath>
+
+1428654626 /home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/quat.h
+	"vec.h"
+	<cmath>
+
+1429270380 /home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.h
+	<cstdlib>
+	<iostream>
+	<fstream>
+	<assert.h>
+	<GL/glut.h>
+	<glut.h>
+
+1429270321 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
+	"GlutHFunc.h"
+
+1429275107 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
+	"glutRender.h"
+
+1429275050 /home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/glutRender.h
+	<cmath>
+	<iostream>
+	<ctime>
+	<assert.h>
+	"table.h"
+	"DrawFunc.h"
+	"GlutHFunc.h"
+	"fpsMeasurer.h"
+	<GL/glut.h>
+	<glut.h>
+
+1428654626 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/quat.cpp
+	"quat.h"
+
+1429274608 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/table.cpp
+	"table.h"
+
+1428654626 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/test.cpp
+	"vec.h"
+	"table.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<iomanip>
+	"glutRender.h"
+
+1428654626 source:/home/kir/Desktop/billiard-3d/Billiard3D/Billiard3D/vec.cpp
 

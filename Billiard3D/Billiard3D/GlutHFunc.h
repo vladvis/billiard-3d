@@ -24,6 +24,7 @@ void checkGLError (const char * errorLocation);
 BitMapFile *getBMPData(const char *filename);
 GLuint LoadTexture(const char *filename);
 void renderBitmapString(float x, float y, float z, void *font, char *string);
+GLuint raw_texture_load(const char *filename, int width, int height);
 void setOrthographicProjection();
 void renderStrokeFontString(
 	float x,

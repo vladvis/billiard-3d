@@ -27,10 +27,12 @@ Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(
 
 	if (file.is_open())
 	{
-		texture = 0;
-		char texture_filename[255];
-		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> texture_filename;
-		//texture = LoadTexture(texture_filename);
+		grass_texture = 0;
+		tree_texture = 0;
+		char grass_texture_filename[255], tree_texture_filename[255];
+		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> grass_texture_filename >> tree_texture_filename;
+		//grass_texture = raw_texture_load(grass_texture_filename, 128, 128);
+		//tree_texture = raw_texture_load(tree_texture_filename, 256, 256);
 	}
 	else
 	{
@@ -53,12 +55,7 @@ w(w)
 	if (file.is_open())
 	{
 	    file >> a >> m;
-	    if (texture == 0)
-        {
-            std::cout << texture_filename << "!\n";
-            texture = LoadTexture(texture_filename);
-            std::cout << texture << " -<<\n";
-        }
+        texture = raw_texture_load(texture_filename, 500, 250);
 	}
 	else
 	{

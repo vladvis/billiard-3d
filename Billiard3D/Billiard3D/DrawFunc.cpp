@@ -68,12 +68,16 @@ void DrawNiceRectangle(const GLfloat xleft, const GLfloat xright, const GLfloat 
             glBegin(GL_TRIANGLES);
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
                 glVertex3f(i, 0, jr);
+                glNormal3f(0.0f, 		1.0f, 		0.0f);
                 glVertex3f(ir, 0, j);
+                glNormal3f(0.0f, 		1.0f, 		0.0f);
                 glVertex3f(i, 0, j);
 
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
                 glVertex3f(ir, 0.0f, jr);
+                glNormal3f(0.0f, 		1.0f, 		0.0f);
                 glVertex3f(ir, 0.0f, j);
+                glNormal3f(0.0f, 		1.0f, 		0.0f);
                 glVertex3f(i, 0.0f, jr);
             glEnd();
         }
@@ -116,19 +120,26 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
 
 	GLfloat fhborder_ = border_h / 1.2;
 
-    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        /*if (g_texture > 0)
+    glPushMatrix();
+        if (g_texture > 0)
         {
             glEnable (GL_TEXTURE_2D);
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
             glBindTexture (GL_TEXTURE_2D, g_texture);
-        } else */
-		glColor3ub(0, 100, 0);
+			glColor3f(1.0f, 1.0f, 1.0f);
+        } else glColor3f(0.0f, 0.5f, 0.0f);
 
         DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
         glDisable(GL_TEXTURE_2D);
-    glPopAttrib();
+    glPopMatrix();
 
-    glColor3f(0.44f, 0.14f, 0.03f);
+	if (tree_texture > 0)
+	{
+		glEnable (GL_TEXTURE_2D);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+         glBindTexture (GL_TEXTURE_2D, tree_texture);
+		 glColor3f(1.0f, 1.0f, 1.0f);
+	} else glColor3f(0.44f, 0.14f, 0.03f);
 
     glBegin(GL_QUADS);
         glVertex3f(hwidth - fhborder_, -fhborder_, hheight+fhborder_);
@@ -296,4 +307,6 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
         glTranslatef(hwidth - htable_leg_edge, 0, -htable_leg_edge/2);
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
+
+	glDisable(GL_TEXTURE_2D);
 }

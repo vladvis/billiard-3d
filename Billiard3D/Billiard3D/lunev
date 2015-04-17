@@ -3,81 +3,81 @@
 0 -0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/01.data
 
 -0.1 -0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/02.data
 
 -0.2 -0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/03.data
 
 0.1 -0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/04.data
 
 0.2 -0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/05.data
 
 -0.05 0 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/06.data
 
 0.05 0 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/07.data
 
 0.15 0 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/08.data
 
 -0.15 0 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/09.data
 
 -0.1 0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/10.data
 
 0.1 0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/11.data
 
 0 0.1 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/12.data
 
 0.05 0.2 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/13.data
 
 -0.05 0.2 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/14.data
 
 0 0.3 0
 0 0 0
 0 0 0
-textures/01.bmp
+textures/15.data
 
 0 1 0
 0 -100 0
 10 0 0
-textures/01.bmp
+textures/00.data
 
 

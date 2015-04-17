@@ -1,6 +1,5 @@
 #include "glutRender.h"
 
-GLuint ball_texture;
 GLUquadricObj *sphere = NULL;
 
 void *font = GLUT_STROKE_ROMAN;
@@ -36,7 +35,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glutWindowHandle = glutCreateWindow ("Billiard 3D Project - [q]uit");
     assert (glutWindowHandle != 0);
 
-#ifndef FULLSCREEN
+#ifdef FULLSCREEN
     glutGameModeString ("1920x1080:32@60");
     glutEnterGameMode();
 #endif
@@ -120,11 +119,15 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
         return;
     }
 
+
     char texture_filename[255];
     while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz >> texture_filename)
     {
+        //srand(time(0));
         std::cout << texture_filename << std::endl;
-        glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(1, vec(0, 0, 0)), vec(vx, vy, vz), vec(wx, wy, wz), texture_filename));
+        double phi = (rand() % 100) / 50.0 * M_PI;
+        std::cout << phi;
+        glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(cos(phi), sin(phi) * vec(rand(), rand(), rand()).normalized()), vec(vx, vy, vz), vec(wx, wy, wz), texture_filename));
 
     }
 
@@ -156,9 +159,14 @@ void glutRender::DisplayGL ()
 
     // sensative
     glLoadIdentity();
-    gluLookAt (GameTable.balls[curre_ball].r.y + multipluer*sin(alpha), GameTable.balls[curre_ball].a + cam_height_h*log(multipluer),GameTable.balls[curre_ball].r.x + multipluer*cos(alpha),
-               GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.x,
-               0.0f, 1.0f, 0.0f);
+    if (curre_ball < GameTable.balls.size())
+        gluLookAt (GameTable.balls[curre_ball].r.y + multipluer*sin(alpha), GameTable.balls[curre_ball].a + cam_height_h*log(multipluer),GameTable.balls[curre_ball].r.x + multipluer*cos(alpha),
+                   GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.x,
+                   0.0f, 1.0f, 0.0f);
+    else
+        gluLookAt (multipluer*sin(alpha), cam_height_h*log(multipluer), multipluer*cos(alpha),
+                   0.0f, 0.0f, 0.0f,
+                   0.0f, 1.0f, 0.0f);
 
     glDisable(GL_LIGHTING);
     DrawGroundGrid (-3);
@@ -167,22 +175,11 @@ void glutRender::DisplayGL ()
     init_l();
 	glPushMatrix();
 		glRotatef(90, 0, 1, 0);
-		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 6, GameTable.texture, 0);
+		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 6, GameTable.grass_texture, GameTable.tree_texture);
 	glPopMatrix();
     const GLfloat ball_r = GameTable.balls[0].a;
 
-/*
-glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        if (g_texture > 0)
-        {
-            glEnable (GL_TEXTURE_2D);
-            glBindTexture (GL_TEXTURE_2D, g_texture);
-        } else glColor3ub(0, 150, 0);
 
-        DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
-        glDisable(GL_TEXTURE_2D);
-
-    */
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
     {
         glPushMatrix();
@@ -195,7 +192,7 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			else
 			{
 				glColor3f(1.0f, 1.0f, 1.0f);
-				char s1[255], s2[255], s3[255];
+				/*char s1[255], s2[255], s3[255];
 				sprintf(s1, "w(%.2f, %.2f, %.2f)", GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
 				sprintf(s2, "v(%.2f, %.2f, %.2f)", GameTable.balls[curre_ball].v.x, GameTable.balls[curre_ball].v.y, GameTable.balls[curre_ball].v.z);
 				sprintf(s3, "phi(%.2f, %.2f, %.2f, %.2f)", GameTable.balls[curre_ball].phi.l, GameTable.balls[curre_ball].phi.v.x, GameTable.balls[curre_ball].phi.v.y, GameTable.balls[curre_ball].phi.v.z);
@@ -207,21 +204,15 @@ glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.6f, 0.0f, (void *)font, s3);
 				glPopMatrix();
 
-                glColor3f(1.0f, 1.0f, 1.0f);
+                glColor3f(1.0f, 1.0f, 1.0f);*/
 
 			}
 
 			glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
-
             glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
-            //glRotatef(it->phi.z, 0, -1, 0);
-			//glRotatef(it->phi.x, 0, 0, -1);
+            gluSphere(sphere, ball_r, 25, 25);
 
-
-            gluSphere(sphere, ball_r, 35, 35);
-
-            //glutSolidSphere (ball_r, 13, 13);
-            //glDisable(GL_TEXTURE_2D);
+            glDisable(GL_TEXTURE_2D);
         glPopMatrix ();
     }
 
@@ -415,6 +406,12 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
     case '-':
     {
         if (cam_height_h > 0.6) cam_height_h -= 0.2f;
+    }
+    break;
+    case 'h':
+    case 'H':
+    {
+        curre_ball = GameTable.balls.size();
     }
     break;
     }
