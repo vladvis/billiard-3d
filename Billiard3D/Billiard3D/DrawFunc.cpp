@@ -113,7 +113,7 @@ void DrawGrid(GLfloat ball_r,  GLfloat border_down_height)
 {
     glDisable(GL_LIGHTING);
 
-    glLineWidth(0.75f);
+    glLineWidth(1.6f);
     glColor3f (0.85f, 0.75f, 0.65f);
 
     int amountSegments = 9;
@@ -392,7 +392,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 	glPushMatrix();
-        glTranslatef(hwidth, border_h - 0.005f, hheight);
+        glTranslatef(hwidth - 0.005f, border_h - 0.005f, hheight - 0.005f);
         glRotatef(45, 0, 1, 0);
         DrawGrid(ball_r, -border_h);
 	glPopMatrix();
@@ -403,7 +403,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 	glPushMatrix();
-        glTranslatef(hwidth, border_h - 0.005f, -hheight);
+        glTranslatef(hwidth - 0.005f, border_h - 0.005f, -hheight + 0.005f);
         glRotatef(135, 0, 1, 0);
         DrawGrid(ball_r, -border_h);
 	glPopMatrix();
@@ -414,7 +414,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 	glPushMatrix();
-        glTranslatef(-hwidth, border_h - 0.005f, hheight);
+        glTranslatef(-hwidth + 0.005f, border_h - 0.005f, hheight - 0.005f);
         glRotatef(-45, 0, 1, 0);
         DrawGrid(ball_r, -border_h);
 	glPopMatrix();
@@ -425,7 +425,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 	glPushMatrix();
-        glTranslatef(-hwidth, border_h - 0.005f, -hheight);
+        glTranslatef(-hwidth + 0.005f, border_h - 0.005f, -hheight + 0.005f);
         glRotatef(-135, 0, 1, 0);
         DrawGrid(ball_r, -border_h);
 	glPopMatrix();
