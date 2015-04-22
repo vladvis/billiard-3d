@@ -101,13 +101,13 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 {
     calculations_started = false;
 
-    double oldMINTIME = GameTable.MINTIME;
-    double oldCLOCK = GameTable.CLOCK;
+    float oldMINTIME = GameTable.MINTIME;
+    float oldCLOCK = GameTable.CLOCK;
 
     GameTable = Table(table_config);
 
     std::ifstream file(start_state_config.c_str());
-    double rx, ry, rz, vx, vy, vz, wx, wy, wz;
+    float rx, ry, rz, vx, vy, vz, wx, wy, wz;
     if (!file.is_open())
     {
         std::cout << "Failed to open file!";
@@ -123,7 +123,7 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
     char texture_filename[255];
     while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz >> texture_filename)
     {
-        double phi = (rand() % 100) / 50.0 * M_PI;
+        float phi = (rand() % 100) / 50.0 * M_PI;
         glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(cos(phi), sin(phi) * vec(rand(), rand(), rand()).normalized()), vec(vx, vy, vz), vec(wx, wy, wz), texture_filename));
     }
 
@@ -208,9 +208,10 @@ void glutRender::DisplayGL ()
         glPopMatrix ();
     }
 
+    glDisable(GL_LIGHTING);
 	glPushMatrix();
-        glColor3f(1.0f, 1.0f, 1.0f);
-        renderStrokeFontString(0.1f, -0.1f, GameTable.lenx + 0.1f, (void *)font, (char *)"Billiard 3D PROJECT 2015");
+        glColor3f(0.7f, 0.7f, 0.7f);
+        renderStrokeFontString(0.49f, -0.03f, GameTable.lenx + 0.09005f, (void *)font, (char *)"Billiard 3D PROJECT 2015");
 	glPopMatrix();
     glFlush();
 
@@ -225,7 +226,7 @@ void glutRender::IdleGL ()
 
     if (calculations_started)
     {
-        //const double MINTIME = 0.000001;
+        //const float MINTIME = 0.000001;
 		for (int i = 0; i < GameTable.CLOCK; i++)
 		{
 			GameTable.NextStep();
@@ -419,7 +420,7 @@ void glutRender::ReshapeGL (int w, int h)
 
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
-    gluPerspective (60.0, (GLdouble)WindowWidth / (GLdouble)WindowHeight, 0.1, 100.0);
+    gluPerspective (60.0, (GLfloat)WindowWidth / (GLfloat)WindowHeight, 0.1, 100.0);
     glMatrixMode(GL_MODELVIEW);
 
     glutPostRedisplay ();

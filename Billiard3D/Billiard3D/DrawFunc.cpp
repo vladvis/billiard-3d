@@ -49,13 +49,13 @@ void DrawVerticalPLine()
 {
     glDisable(GL_LIGHTING);
 
-    GLfloat stepSize    = 0.04f;
-    glLineWidth(0.8f);
+    GLfloat stepSize    = 0.03f;
+    glLineWidth(1.0f);
 
     glColor3f (0.9f, 0.9f, 0.9f);
 
     glBegin(GL_LINES);
-    for (GLfloat y = -0.38; y < 0.38; y += 2*stepSize)
+    for (GLfloat y = -0.28; y < 0.28; y += 2*stepSize)
     {
         glVertex3f (0, y, 0);
         glVertex3f (0, y + stepSize, 0);
