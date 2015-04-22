@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1429691329 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
+1429710481 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
 	"fpsMeasurer.h"
 
 1429175247 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.h
@@ -33,7 +33,7 @@
 	<GL/glut.h>
 	<glut.h>
 
-1429688291 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
+1429710629 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
 	"GlutHFunc.h"
 
 1429709855 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
@@ -75,6 +75,6 @@
 
 1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/vec.cpp
 
-1429709713 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
+1429710403 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
 	"DrawFunc.h"
 

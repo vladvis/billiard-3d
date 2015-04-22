@@ -57,7 +57,8 @@
      data = (unsigned char*) malloc(width * height * 4);
 
      // read texture data
-     fread(data, width * height * 4, 1, file);
+     int res = fread(data, width * height * 4, 1, file);
+     if (res < 0) assert ("Bad input file!");
      fclose(file);
 
      // allocate a texture name

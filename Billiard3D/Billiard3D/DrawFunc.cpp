@@ -12,7 +12,7 @@ void init_l()
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-	float ambient[] = {0.2f, 0.2f, 0.2f, 1.0f };
+	float ambient[] = {0.4f, 0.4f, 0.4f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
@@ -24,7 +24,7 @@ void DrawGroundGrid (const GLfloat groundLevel)
     GLfloat stepSize    = 2.0f;
     int numSteps = 16;
 
-    glLineWidth(0.1f);
+    glLineWidth(0.4f);
     glColor3ub(6, 6, 6);
 
     glBegin(GL_LINES);
@@ -114,7 +114,7 @@ void DrawGrid(GLfloat ball_r,  GLfloat border_down_height)
     glDisable(GL_LIGHTING);
 
     glLineWidth(1.6f);
-    glColor3f (0.85f, 0.75f, 0.65f);
+    glColor3f (0.510f, 0.450f, 0.390f);
 
     int amountSegments = 9;
 
