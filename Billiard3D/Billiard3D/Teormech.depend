@@ -1,10 +1,15 @@
 # depslib dependency file v1.0
 1429710481 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
 	"fpsMeasurer.h"
+	"fpsMeasurer.h"
 
 1429711065 er.h"
 
 1429175247 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.h
+	"table.h"
+	<chrono>
+	<vector>
+	<iostream>
 	"table.h"
 	<chrono>
 	<vector>
@@ -21,11 +26,22 @@
 	<fstream>
 	<iostream>
 	<vector>
+	"vec.h"
+	"quat.h"
+	"GlutHFunc.h"
+	<string>
+	<cmath>
+	<fstream>
+	<iostream>
+	<vector>
 
 1429709175 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/vec.h
 	<cmath>
+	<cmath>
 
 1429709175 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/quat.h
+	"vec.h"
+	<cmath>
 	"vec.h"
 	<cmath>
 
@@ -36,18 +52,36 @@
 	<assert.h>
 	<GL/glut.h>
 	<glut.h>
+	<cstdlib>
+	<iostream>
+	<fstream>
+	<assert.h>
+	<GL/glut.h>
+	<glut.h>
 
 1429710629 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
+	"GlutHFunc.h"
 	"GlutHFunc.h"
 
 1429711065 .h"
 
-1429709855 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
+1429712050 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
+	"glutRender.h"
 	"glutRender.h"
 
 1429708467 r.h"
 
 1429689821 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/glutRender.h
+	<cmath>
+	<iostream>
+	<ctime>
+	<assert.h>
+	"table.h"
+	"DrawFunc.h"
+	"GlutHFunc.h"
+	"fpsMeasurer.h"
+	<GL/glut.h>
+	<glut.h>
 	<cmath>
 	<iostream>
 	<ctime>
@@ -65,11 +99,18 @@
 	<math.h>
 	<GL/glut.h>
 	<glut.h>
+	<assert.h>
+	<iostream>
+	<math.h>
+	<GL/glut.h>
+	<glut.h>
 
 1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/quat.cpp
 	"quat.h"
+	"quat.h"
 
 1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/table.cpp
+	"table.h"
 	"table.h"
 
 1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/test.cpp
@@ -80,15 +121,23 @@
 	<vector>
 	<iomanip>
 	"glutRender.h"
+	"vec.h"
+	"table.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<iomanip>
+	"glutRender.h"
 
 1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/vec.cpp
 
-1429710403 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
+1429712108 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
+	"DrawFunc.h"
 	"DrawFunc.h"
 
 1429711392 h"
 
-1429711392 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
+1429727767 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
 	"DrawFunc.h"
 
 1429707925 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/DrawFunc.h
@@ -107,7 +156,7 @@
 	<vector>
 	<iostream>
 
-1429716801 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.h
+1429729549 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.h
 	"vec.h"
 	"quat.h"
 	"GlutHFunc.h"
@@ -117,6 +166,7 @@
 	<iostream>
 	<vector>
 	<thread>
+	<algorithm>
 
 1429708524 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/vec.h
 	<cmath>
@@ -136,7 +186,7 @@
 1429711065 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
 	"GlutHFunc.h"
 
-1429716119 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
+1429727767 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
 	"glutRender.h"
 
 1429707925 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/glutRender.h
@@ -154,7 +204,7 @@
 1429708464 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/quat.cpp
 	"quat.h"
 
-1429727518 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.cpp
+1429727678 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.cpp
 	"table.h"
 
 1429708467 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/test.cpp
@@ -167,83 +217,4 @@
 	"glutRender.h"
 
 1429708467 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/vec.cpp
-
-1429712108 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
-	"DrawFunc.h"
-
-1429701272 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/DrawFunc.h
-	<assert.h>
-	<iostream>
-	<math.h>
-	<GL/glut.h>
-	<glut.h>
-
-1429710481 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
-	"fpsMeasurer.h"
-
-1429175247 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.h
-	"table.h"
-	<chrono>
-	<vector>
-	<iostream>
-
-1429709175 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/table.h
-	"vec.h"
-	"quat.h"
-	"GlutHFunc.h"
-	<string>
-	<cmath>
-	<fstream>
-	<iostream>
-	<vector>
-
-1429709175 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/vec.h
-	<cmath>
-
-1429709175 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/quat.h
-	"vec.h"
-	<cmath>
-
-1429688353 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.h
-	<cstdlib>
-	<iostream>
-	<fstream>
-	<assert.h>
-	<GL/glut.h>
-	<glut.h>
-
-1429710629 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
-	"GlutHFunc.h"
-
-1429712050 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
-	"glutRender.h"
-
-1429689821 /media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/glutRender.h
-	<cmath>
-	<iostream>
-	<ctime>
-	<assert.h>
-	"table.h"
-	"DrawFunc.h"
-	"GlutHFunc.h"
-	"fpsMeasurer.h"
-	<GL/glut.h>
-	<glut.h>
-
-1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/quat.cpp
-	"quat.h"
-
-1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/table.cpp
-	"table.h"
-
-1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/test.cpp
-	"vec.h"
-	"table.h"
-	<iostream>
-	<fstream>
-	<vector>
-	<iomanip>
-	"glutRender.h"
-
-1429709175 source:/media/sf_K_DRIVE/Работа/billiard-3d/Billiard3D/Billiard3D/vec.cpp
 

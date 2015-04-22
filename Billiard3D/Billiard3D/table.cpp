@@ -10,6 +10,7 @@ int Table::NextStep(){
     for (Ball& b: balls)
 		b.BoardCollide(*this);
 
+    //std::random_shuffle(balls.begin(), balls.end()); //Not sure if good idea..
 	for (auto it = balls.begin(); it != balls.end(); ++it)
 		for (auto jt = it + 1; jt != balls.end(); ++jt)
 			it->Collide(*this, *jt);
@@ -75,9 +76,9 @@ int Ball::Collide(Table t, Ball &b)
 	vec v1t = v - v1n * k;
 	vec v2t = b.v - v2n * k;
 
-	//Normal components is not affected by friction - only restitution
-	float v1n_n = (t.e*(v2n - v1n) + (v1n + v2n)) / 2;
-	float v2n_n = (t.e*(v1n - v2n) + (v1n + v2n)) / 2;
+	//Normal components is not affected by friction - only restitution. Adding rand value make mpore real
+	float v1n_n = (t.e*(v2n - v1n) + (v1n + v2n)) / 2 * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
+	float v2n_n = (t.e*(v1n - v2n) + (v1n + v2n)) / 2 * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
 
 	vec u = b.v - v + a * ((b.w + w) ^ k) - k * ((b.v - v) * k);
 	float mu = u.mod();
@@ -142,7 +143,7 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 			itr = u.normalized() * itr_v;
 		}
 
-		vn = -t.re * vn;
+		vn = -t.re * vn * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
 		vt -= itr;
 
 		v = vt + vn * k;
