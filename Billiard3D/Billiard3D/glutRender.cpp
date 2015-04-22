@@ -74,8 +74,8 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glEnable(GL_FOG);
     GLfloat fogColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogf(GL_FOG_START, 10);
-    glFogf(GL_FOG_END, 20);
+    glFogf(GL_FOG_START, 15);
+    glFogf(GL_FOG_END, 35);
     glFogfv(GL_FOG_COLOR, fogColor);
     /* fog end */
 
@@ -356,14 +356,14 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
     case 'S':
     case 's':
     {
-        if (multipluer < 4.8) multipluer += 0.2f;
+        if (multipluer < 4.4) multipluer += 0.2f;
     }
     break;
 
     case 'W':
     case 'w':
     {
-        if (multipluer > 1.4) multipluer -= 0.2f;
+        if (multipluer > 1.3) multipluer -= 0.2f;
     }
 
     break;
@@ -389,13 +389,13 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
     case '+':
     {
-        if (cam_height_h < 5) cam_height_h += 0.2f;
+        if (cam_height_h < 7) cam_height_h += 0.2f;
     }
     break;
 
     case '-':
     {
-        if (cam_height_h > 0.6) cam_height_h -= 0.2f;
+        if (cam_height_h > 0.4) cam_height_h -= 0.2f;
     }
     break;
     case 'h':
