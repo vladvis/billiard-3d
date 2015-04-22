@@ -12,7 +12,7 @@ void init_l()
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-	float ambient[] = {0.35f, 0.35f, 0.35f, 1.0f };
+	float ambient[] = {0.2f, 0.2f, 0.2f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
@@ -22,10 +22,10 @@ void DrawGroundGrid (const GLfloat groundLevel)
     glDisable(GL_LIGHTING);
 
     GLfloat stepSize    = 2.0f;
-    int numSteps = 22;
+    int numSteps = 16;
 
-    glLineWidth(1.1f);
-    glColor3ub(90, 90, 90);
+    glLineWidth(0.1f);
+    glColor3ub(6, 6, 6);
 
     glBegin(GL_LINES);
     for (GLint x = -numSteps; x <= numSteps; x++)
@@ -211,7 +211,7 @@ void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
 {
 	assert (height > 0); assert (edge_size > 0);
 
-    glColor3f(0.34f, 0.12f, 0.03f);
+    glColor3f(0.27f, 0.11f, 0.03f);
 
 	const GLfloat  	hwidth = edge_size / 2;
     const GLfloat   hhwidth = hwidth / 2;
@@ -242,11 +242,11 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
 {
 	GLfloat fhborder_ = border_h / 1.2;
 
-    glColor3f(0.0f, 0.45f, 0.0f);
+    glColor3f(0.0f, 0.38f, 0.0f);
 
     DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
 
-	glColor3f(0.34f, 0.12f, 0.03f);
+	glColor3f(0.27f, 0.11f, 0.03f);
 
     glBegin(GL_QUADS);
         glVertex3f(hwidth - fhborder_, -fhborder_, hheight+fhborder_);
@@ -436,7 +436,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 	glPushMatrix();
-        glTranslatef(-hwidth - 0.005f, border_h - 0.005f, 0);
+        glTranslatef(-hwidth - 0.015f, border_h - 0.01f, 0);
         glRotatef(-90, 0, 1, 0);
         DrawGrid(ball_r, -border_h);
 	glPopMatrix();
@@ -447,7 +447,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
 	glPushMatrix();
-        glTranslatef(hwidth + 0.005f, border_h  - 0.005f, 0);
+        glTranslatef(hwidth + 0.015f, border_h  - 0.01f, 0);
         glRotatef(90, 0, 1, 0);
         DrawGrid(ball_r, -border_h);
 	glPopMatrix();

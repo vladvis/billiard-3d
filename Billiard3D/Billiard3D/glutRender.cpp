@@ -74,8 +74,8 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glEnable(GL_FOG);
     GLfloat fogColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogf(GL_FOG_START, 15);
-    glFogf(GL_FOG_END, 40);
+    glFogf(GL_FOG_START, 10);
+    glFogf(GL_FOG_END, 20);
     glFogfv(GL_FOG_COLOR, fogColor);
     /* fog end */
 
@@ -202,7 +202,7 @@ void glutRender::DisplayGL ()
             glColor3f (1.0f, 1.0f, 1.0f);
             glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
             glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
-            gluSphere(sphere, ball_r, 15, 15);
+            gluSphere(sphere, ball_r, 12, 12);
 
             glDisable(GL_TEXTURE_2D);
         glPopMatrix ();
@@ -356,7 +356,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
     case 'S':
     case 's':
     {
-        if (multipluer < 6.8) multipluer += 0.2f;
+        if (multipluer < 4.8) multipluer += 0.2f;
     }
     break;
 
