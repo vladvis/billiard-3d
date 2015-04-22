@@ -123,12 +123,8 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
     char texture_filename[255];
     while(file >> rx >> ry >> rz >> vx >> vy >> vz >> wx >> wy >> wz >> texture_filename)
     {
-        //srand(time(0));
-        std::cout << texture_filename << std::endl;
         double phi = (rand() % 100) / 50.0 * M_PI;
-        std::cout << phi;
         glutRender::GameTable.balls.push_back(Ball(balls_config, vec(rx, ry, rz), quat(cos(phi), sin(phi) * vec(rand(), rand(), rand()).normalized()), vec(vx, vy, vz), vec(wx, wy, wz), texture_filename));
-
     }
 
     if (!file.eof()){
@@ -159,7 +155,6 @@ void glutRender::DisplayGL ()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // sensative
     glLoadIdentity();
     if (curre_ball < (int)GameTable.balls.size())
         gluLookAt (GameTable.balls[curre_ball].r.y + multipluer*sin(alpha), GameTable.balls[curre_ball].a + cam_height_h*log(multipluer),GameTable.balls[curre_ball].r.x + multipluer*cos(alpha),
@@ -172,32 +167,29 @@ void glutRender::DisplayGL ()
 
     const GLfloat ball_r = GameTable.balls[0].a;
 
-    glDisable(GL_LIGHTING);
+    DrawGroundGrid (groundLevel);
 
-        DrawGroundGrid (groundLevel);
+    if (curre_ball < (int)GameTable.balls.size())
+    {
+        Ball &ActiveBall = GameTable.balls[curre_ball];
 
-        if (curre_ball < (int)GameTable.balls.size())
-        {
-            Ball &ActiveBall = GameTable.balls[curre_ball];
+        glPushMatrix();
+            glTranslatef(ActiveBall.r.y, 0.001f, ActiveBall.r.x);
+            DrawCoolRoundAround(ball_r, 2*M_PI);
+        glPopMatrix();
 
-            glPushMatrix();
-                glTranslatef(ActiveBall.r.y, 0.001f, ActiveBall.r.x);
-                DrawCoolRoundAround(ball_r, 2*M_PI);
-            glPopMatrix();
-
-            glPushMatrix();
-                glTranslatef(ActiveBall.r.y, ball_r + ActiveBall.r.z, ActiveBall.r.x);
-                glRotatef(360*acos(ActiveBall.phi.l)/M_PI, ActiveBall.phi.v.y, ActiveBall.phi.v.z, ActiveBall.phi.v.x);
-                DrawVerticalPLine();
-            glPopMatrix();
-        }
-    glEnable(GL_LIGHTING);
+        glPushMatrix();
+            glTranslatef(ActiveBall.r.y, ball_r + ActiveBall.r.z, ActiveBall.r.x);
+            glRotatef(360*acos(ActiveBall.phi.l)/M_PI, ActiveBall.phi.v.y, ActiveBall.phi.v.z, ActiveBall.phi.v.x);
+            DrawVerticalPLine();
+        glPopMatrix();
+    }
 
     init_l();
 
 	glPushMatrix();
 		glRotatef(90, 0, 1, 0);
-		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 1.2*abs(groundLevel));
+		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 1.2*abs(groundLevel), ball_r);
 	glPopMatrix();
 
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
@@ -220,12 +212,6 @@ void glutRender::DisplayGL ()
         glColor3f(1.0f, 1.0f, 1.0f);
         renderStrokeFontString(0.1f, -0.1f, GameTable.lenx + 0.1f, (void *)font, (char *)"Billiard 3D PROJECT 2015");
 	glPopMatrix();
-
-	glPushMatrix();
-        glTranslatef(0, 1.0f, 0);
-        DrawGrid(ball_r, -0.08f);
-	glPopMatrix();
-
     glFlush();
 
     glutSwapBuffers ();
