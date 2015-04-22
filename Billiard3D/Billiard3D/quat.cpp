@@ -2,24 +2,24 @@
 
 quat::quat() {};
 
-quat::quat(double l, vec v): l(l), v(v) {};
+quat::quat(float l, vec v): l(l), v(v) {};
 
-quat operator* (double a, quat b)
+quat operator* (float a, quat b)
 {
 	return quat(a*b.l, a*b.v);
 };
 
-quat operator* (quat b, double a)
+quat operator* (quat b, float a)
 {
 	return quat(a*b.l, a*b.v);
 };
 
-quat operator/ (double a, quat b)
+quat operator/ (float a, quat b)
 {
 	return quat(a/b.l, a/b.v);
 };
 
-quat operator/ (quat b, double a)
+quat operator/ (quat b, float a)
 {
 	return quat(b.l/a, b.v/a);
 };
@@ -51,7 +51,7 @@ quat quat::operator-=(quat b)
 	return *this;
 };
 
-double quat::mod()
+float quat::mod()
 {
 	return sqrt(l*l + v.x*v.x + v.y*v.y + v.z*v.z);
 };

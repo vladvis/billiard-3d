@@ -5,14 +5,14 @@
 
 class vec{
 public:
-	double x;
-	double y;
-	double z;
+	float x;
+	float y;
+	float z;
 
 	vec();
-	vec(double x, double y, double z);
+	vec(float x, float y, float z);
 
-	double mod();
+	float mod();
 
 	vec operator+ (vec b);
 	vec operator+= (vec b);
@@ -22,13 +22,13 @@ public:
 
 	vec normalized();
 
-	friend vec operator* (double a, vec b);
-	friend vec operator* (vec b, double a);
+	friend vec operator* (float a, vec b);
+	friend vec operator* (vec b, float a);
 
-	friend vec operator/ (double a, vec b);
-	friend vec operator/ (vec b, double a);
+	friend vec operator/ (float a, vec b);
+	friend vec operator/ (vec b, float a);
 
-	double operator*(vec b); //Scalar product
+	float operator*(vec b); //Scalar product
 	vec operator^(vec b); //Vector product
 
 };

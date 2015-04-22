@@ -13,14 +13,14 @@ using namespace std;
 int main(int argc, char * argv[])
 {
     #ifndef KIR_TEST
-    const double MINTIME = 0.000001;
+    const float MINTIME = 0.000001;
     const int TIMELOSS = 5000;
 
     Table GameTable("table.cfg");
     int time = 0;
 
     std::ifstream file(argc > 1 ? argv[1]: "data");
-    double px, py, pz, rx, ry, rz, vx, vy, vz, wx, wy, wz;
+    float px, py, pz, rx, ry, rz, vx, vy, vz, wx, wy, wz;
     if (!file.is_open())
     {
         std::cout << "Failed to open file!";

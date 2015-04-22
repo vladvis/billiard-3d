@@ -12,31 +12,30 @@
 #include <iostream>
 #include <vector>
 
-
-const double EPS = 0.00000001;
-const double G = 9.801;
-const double g = 9.8036;
+const float EPS = 0.0000001;
+const float G = 9.801;
+const float g = 9.8036;
 
 class Ball;
 
 class Table{
 public:
-	double bb;//ball-ball friction
-	double e;//ball-ball restitution
-	double je;//ball-table restitution TODO
-	double d;//ball-table rolling friction
-	double s;//ball-table spinning friction
-	double f;//ball-table sliding friction
-	double rf;//ball-rail friction
-	double re;//ball-rail restitution
+	float bb;//ball-ball friction
+	float e;//ball-ball restitution
+	float je;//ball-table restitution TODO
+	float d;//ball-table rolling friction
+	float s;//ball-table spinning friction
+	float f;//ball-table sliding friction
+	float rf;//ball-rail friction
+	float re;//ball-rail restitution
 
-    double lenx;//half size
-    double leny;
+    float lenx;//half size
+    float leny;
 
-    double MINTIME;//mintime used in physics
-    double CLOCK;//how much time will be NextStep will be executed during frame
-    double FPS;
-    double SLOWFACTOR;//IGT/RTA
+    float MINTIME;//mintime used in physics
+    float CLOCK;//how much time will be NextStep will be executed during frame
+    float FPS;
+    float SLOWFACTOR;//IGT/RTA
 
     std::vector <Ball> balls;
 
@@ -47,8 +46,8 @@ public:
 
 class Ball{
 public:
-	double a;//radius
-	double m;//mass
+	float a;//radius
+	float m;//mass
 
 	vec r;
 	quat phi;
@@ -60,8 +59,8 @@ public:
 	Ball(const std::string cfgfileName, vec r, quat phi, vec v, vec w, const char *texture_filename);
 	int Collide(Table t, Ball &);
 	int BoardCollide(Table t);
-	double Distance(Ball);
-	int NextStep(Table t, double mintime);//Return 0 is stops
+	float Distance(Ball);
+	int NextStep(Table t, float mintime);//Return 0 is stops
 };
 
 

@@ -66,24 +66,24 @@ int Ball::Collide(Table t, Ball &b)
 
 	vec k = (b.r - r).normalized();
 
-	double v1n = v * k;
-	double v2n = b.v * k;
+	float v1n = v * k;
+	float v2n = b.v * k;
 
 	if (v2n >= v1n) return 0;//They don't move to each other :(
 
-	double hi = 5.0 / 2.0;
+	float hi = 5.0 / 2.0;
 	vec v1t = v - v1n * k;
 	vec v2t = b.v - v2n * k;
 
 	//Normal components is not affected by friction - only restitution
-	double v1n_n = (t.e*(v2n - v1n) + (v1n + v2n)) / 2;
-	double v2n_n = (t.e*(v1n - v2n) + (v1n + v2n)) / 2;
+	float v1n_n = (t.e*(v2n - v1n) + (v1n + v2n)) / 2;
+	float v2n_n = (t.e*(v1n - v2n) + (v1n + v2n)) / 2;
 
 	vec u = b.v - v + a * ((b.w + w) ^ k) - k * ((b.v - v) * k);
-	double mu = u.mod();
+	float mu = u.mod();
 	vec tau = u.normalized();
 
-	double itr_v = t.bb * (1 + t.e) * (v1n - v2n) / 2;
+	float itr_v = t.bb * (1 + t.e) * (v1n - v2n) / 2;
 
 	vec itr;//We use that friction vector is constant in it's direction - Coriolis
 	if (2 * itr_v < mu){ //Always friction
@@ -126,12 +126,12 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 	}
 
 	if (ret){
-		double hi = 2.0 / 5.0;
-		double vn = v * k;
+		float hi = 2.0 / 5.0;
+		float vn = v * k;
 		vec vt = v - k * (v * k);
 
 		vec u = v - k * (v * k) + a * (w ^ k);
-		double itr_v = t.rf * (1 + t.re) * vn;
+		float itr_v = t.rf * (1 + t.re) * vn;
 
 		vec itr;
 
@@ -152,7 +152,7 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 	return ret;
 }
 
-int Ball::NextStep(Table t, double mintime)
+int Ball::NextStep(Table t, float mintime)
 {
 	int ret = 0;
 	if (std::abs(r.z) < EPS)
@@ -160,16 +160,16 @@ int Ball::NextStep(Table t, double mintime)
 		vec k = vec(0, 0, 1);
 		vec u = v + a * (k ^ w);
 
-		double mu = sqrt(u.x*u.x + u.y*u.y);
-		double mw = sqrt(w.x*w.x + w.y*w.y);
+		float mu = sqrt(u.x*u.x + u.y*u.y);
+		float mw = sqrt(w.x*w.x + w.y*w.y);
 
-		double alpha = acos((u.y < 0 ? -1 : 1) * u.x / mu) + (u.y < 0 ? M_PI : 0);
-		double beta = acos((w.y < 0 ? -1 : 1) * w.x / mw) + (w.y < 0 ? M_PI : 0);
+		float alpha = acos((u.y < 0 ? -1 : 1) * u.x / mu) + (u.y < 0 ? M_PI : 0);
+		float beta = acos((w.y < 0 ? -1 : 1) * w.x / mw) + (w.y < 0 ? M_PI : 0);
 
-		double J = 2.0 / 5.0*a*a;
+		float J = 2.0 / 5.0*a*a;
 
 		if (std::abs(w.z) > EPS){
-			double dwz = -t.s*g / J * (w.z > 0 ? 1 : -1)*mintime;
+			float dwz = -t.s*g / J * (w.z > 0 ? 1 : -1)*mintime;
 			w.z += dwz;
 			ret = 1;
 		}
@@ -186,17 +186,17 @@ int Ball::NextStep(Table t, double mintime)
 			ret += 2;
 			if (!isnan(beta) && mw > EPS){ //Rolling -> rolling friction
 				ret += 4;
-				double dbeta = (t.f*g*a / J / mw*cos(beta - alpha))*mintime;
+				float dbeta = (t.f*g*a / J / mw*cos(beta - alpha))*mintime;
 				beta += dbeta;
 
-				double dalpha = -t.d*g*a / J / mu*cos(beta - alpha)*mintime;
+				float dalpha = -t.d*g*a / J / mu*cos(beta - alpha)*mintime;
 				alpha += dalpha;
 
-				double dw = (t.f*g*a / J*sin(beta - alpha) - t.d*g / J)*mintime;
+				float dw = (t.f*g*a / J*sin(beta - alpha) - t.d*g / J)*mintime;
 				mw += dw;
 				if (mw < 0) mw = 0; //Solvability check
 
-				double du = (t.d*g*a / J*sin(beta - alpha) - t.f*g*(1 + a*a / J))*mintime;
+				float du = (t.d*g*a / J*sin(beta - alpha) - t.f*g*(1 + a*a / J))*mintime;
 				mu += du;
 				if (mu < 0) mu = 0; //Solvability check
 
@@ -206,11 +206,11 @@ int Ball::NextStep(Table t, double mintime)
 				w.y = mw * sin(beta);
 			}
 			else{ //No rolling -> start of rolling TODO
-				double du = (-t.f*g*(1 + a*a / J))*mintime;
+				float du = (-t.f*g*(1 + a*a / J))*mintime;
 				mu += du;
 				if (mu < 0) mu = 0; //Solvability check
 
-				double dw = (t.f*g*a)*mintime;
+				float dw = (t.f*g*a)*mintime;
 				mw += dw;
 				if (mw < 0) mw = 0; //Solvability check
 
@@ -222,7 +222,7 @@ int Ball::NextStep(Table t, double mintime)
 		}
 		else{ //No slippage -> no sliding friction, only rolling
 			ret += 4;
-			double dw = -t.d*g / J*mintime;
+			float dw = -t.d*g / J*mintime;
 			mw += dw;
 			if (mw < 0) mw = 0; //Solvability check
 
@@ -239,12 +239,12 @@ int Ball::NextStep(Table t, double mintime)
 
 		if (r.z < 0 && v.z < 0){//Floor hit (or underground)
 			vec k(0, 0, -1);
-			double hi = 2.0 / 5.0;
-			double vn = v * k;
+			float hi = 2.0 / 5.0;
+			float vn = v * k;
 			vec u = v - k*(v*k) + a * (w ^ k);
 
-			double vn_n = -t.je * vn;
-			double itr_v = t.f * (1 + t.je) * vn;
+			float vn_n = -t.je * vn;
+			float itr_v = t.f * (1 + t.je) * vn;
 
 			vec itr;
 			if (u.mod() > itr_v){
@@ -268,7 +268,7 @@ int Ball::NextStep(Table t, double mintime)
 	return ret;
 };
 
-double Ball::Distance(Ball b)
+float Ball::Distance(Ball b)
 {
 	return sqrt((r.x - b.r.x)*(r.x - b.r.x) + (r.y - b.r.y)*(r.y - b.r.y) + (r.z - b.r.z)*(r.z - b.r.z));
 }

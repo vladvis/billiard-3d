@@ -2,30 +2,30 @@
 
 vec::vec() {};
 
-vec::vec(double x, double y, double z) :
+vec::vec(float x, float y, float z) :
 	x(x), y(y), z(z) {};
 
-vec operator* (double a, vec b)
+vec operator* (float a, vec b)
 {
 	return vec(a*b.x, a*b.y, a*b.z);
 };
 
-vec operator* (vec b, double a)
+vec operator* (vec b, float a)
 {
 	return vec(a*b.x, a*b.y, a*b.z);
 };
 
-vec operator/ (double a, vec b)
+vec operator/ (float a, vec b)
 {
 	return vec(a/b.x, a/b.y, a/b.z);
 };
 
-vec operator/ (vec b, double a)
+vec operator/ (vec b, float a)
 {
 	return vec(b.x/a, b.y/a, b.z/a);
 };
 
-double vec::operator*(vec b)
+float vec::operator*(vec b)
 {
 	return x*b.x + y*b.y + z*b.z;
 };
@@ -57,7 +57,7 @@ vec vec::operator-=(vec b)
 	return *this;
 };
 
-double vec::mod()
+float vec::mod()
 {
 	return sqrt(x*x + y*y + z*z);
 };
