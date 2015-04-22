@@ -226,7 +226,6 @@ void glutRender::IdleGL ()
 
     if (calculations_started)
     {
-        //const float MINTIME = 0.000001;
 		for (int i = 0; i < GameTable.CLOCK; i++)
 		{
 			GameTable.NextStep();

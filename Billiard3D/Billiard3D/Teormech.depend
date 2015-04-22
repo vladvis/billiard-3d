@@ -97,7 +97,7 @@
 	<vector>
 	<iostream>
 
-1429708570 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.h
+1429716801 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.h
 	"vec.h"
 	"quat.h"
 	"GlutHFunc.h"
@@ -106,6 +106,7 @@
 	<fstream>
 	<iostream>
 	<vector>
+	<thread>
 
 1429708524 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/vec.h
 	<cmath>
@@ -125,7 +126,7 @@
 1429711065 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
 	"GlutHFunc.h"
 
-1429711278 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
+1429716119 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
 	"glutRender.h"
 
 1429707925 /home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/glutRender.h
@@ -143,7 +144,7 @@
 1429708464 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/quat.cpp
 	"quat.h"
 
-1429710211 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.cpp
+1429727518 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/table.cpp
 	"table.h"
 
 1429708467 source:/home/denisk/Documents/billiard-3d/Billiard3D/Billiard3D/test.cpp

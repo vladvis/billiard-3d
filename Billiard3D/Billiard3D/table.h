@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <thread>
 
 const float EPS = 0.0000001;
 const float G = 9.801;
@@ -22,7 +23,7 @@ class Table{
 public:
 	float bb;//ball-ball friction
 	float e;//ball-ball restitution
-	float je;//ball-table restitution TODO
+	float je;//ball-table restitution
 	float d;//ball-table rolling friction
 	float s;//ball-table spinning friction
 	float f;//ball-table sliding friction

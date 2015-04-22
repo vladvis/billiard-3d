@@ -154,119 +154,95 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 
 int Ball::NextStep(Table t, float mintime)
 {
-	int ret = 0;
-	if (std::abs(r.z) < EPS)
-	{ //We are not very high : on cloth - moving
-		vec k = vec(0, 0, 1);
-		vec u = v + a * (k ^ w);
+    int ret = 0;
+    if (std::abs(r.z) < EPS && std::abs(v.z) < EPS){ //On the cloth
+        vec k(0, 0, 1);
+        double hi = 2.0 / 5.0;
 
-		float mu = sqrt(u.x*u.x + u.y*u.y);
-		float mw = sqrt(w.x*w.x + w.y*w.y);
+        vec dw(0, 0, 0);
+        vec dv(0, 0, 0);
 
-		float alpha = acos((u.y < 0 ? -1 : 1) * u.x / mu) + (u.y < 0 ? M_PI : 0);
-		float beta = acos((w.y < 0 ? -1 : 1) * w.x / mw) + (w.y < 0 ? M_PI : 0);
+        if (w.mod() < EPS && v.mod() < EPS) return 0;
 
-		float J = 2.0 / 5.0*a*a;
+        if (std::abs(w.z) > EPS)
+            dw -= t.s*G/hi/a/a * sign(w.z) * k, ret += 1;
 
-		if (std::abs(w.z) > EPS){
-			float dwz = -t.s*g / J * (w.z > 0 ? 1 : -1)*mintime;
-			w.z += dwz;
-			ret = 1;
+        vec omega = w - k*w.z;
+        if (omega.mod() > EPS)
+            dw -= t.d*G/hi/a/a * omega.normalized(), ret += 2;
+
+        vec u = v + a * (k ^ w);
+        if (u.mod() > EPS){
+            dw += t.f*G/hi/a * (k ^ u.normalized());
+            dv -= t.f*G*u.normalized();
+            ret += 4;
+        }
+
+        dv = dv * mintime; dw = dw * mintime;
+        vec new_w = w; vec new_v = v;
+
+        int sign = sign(w.z);
+        if (sign(w.z+dw.z) != sign)
+            new_w.z = 0;
+        else
+            new_w.z += dw.z;
+
+        vec rmac = omega.normalized() - (omega + dw - dw.z*k).normalized();
+        if (rmac.mod() > sqrt(2)) //vector changed it's direction when delta added - it's very near to zero
+            new_w = new_w.z * k;
+        else
+            new_w = new_w.z * k + omega + dw - dw.z*k;
+
+        vec vmac = v.normalized() - (v + dv).normalized();
+        if (vmac.mod() > sqrt(2)) //vector changed it's direction when delta added - it's very near to zero
+            new_v = vec(0, 0, 0);
+        else
+            new_v += dv;
+
+        v = new_v; w = new_w;
+
+        goto END_STEP;
+    }
+
+    /* Another cases are considered as flying. */
+    if (r.z < EPS && v.z < 0){ //Hit the ground
+        ret += 8;
+        r.z = 0; //Buried is a bad idea
+        vec k(0, 0, -1);
+		float hi = 2.0 / 5.0;
+		float vn = v * k;
+		vec u = v - k*(v*k) + a * (w ^ k);
+
+		float vn_n = -t.je * vn;
+		float itr_v = t.f * (1 + t.je) * vn;
+
+		vec itr;
+		if (u.mod() > itr_v){
+			itr = u.normalized() * itr_v;
+		}
+		else{
+			itr = u;
 		}
 
-		if (((isnan(alpha)) && (isnan(beta)))){
-			r += (mintime * v);
-			phi += (quat(0, w) * phi) / 2 * mintime;
-			phi = phi.normalized();
-			return ret;
-		}
-		//it means that v=0 TODO L1
+		u -= itr;
+		w -= 1 / hi * (k ^ itr);
 
-		if (!isnan(alpha) && mu > EPS){ //Slippage -> sliding friction
-			ret += 2;
-			if (!isnan(beta) && mw > EPS){ //Rolling -> rolling friction
-				ret += 4;
-				float dbeta = (t.f*g*a / J / mw*cos(beta - alpha))*mintime;
-				beta += dbeta;
+		v = u - a * (w ^ k) + k * vn_n;
+		if (v.z < G*mintime) v.z = 0, ret += 16, r.z = 0; //Final ground hit
 
-				float dalpha = -t.d*g*a / J / mu*cos(beta - alpha)*mintime;
-				alpha += dalpha;
-
-				float dw = (t.f*g*a / J*sin(beta - alpha) - t.d*g / J)*mintime;
-				mw += dw;
-				if (mw < 0) mw = 0; //Solvability check
-
-				float du = (t.d*g*a / J*sin(beta - alpha) - t.f*g*(1 + a*a / J))*mintime;
-				mu += du;
-				if (mu < 0) mu = 0; //Solvability check
-
-				u.x = mu * cos(alpha);
-				u.y = mu * sin(alpha);
-				w.x = mw * cos(beta);
-				w.y = mw * sin(beta);
-			}
-			else{ //No rolling -> start of rolling TODO
-				float du = (-t.f*g*(1 + a*a / J))*mintime;
-				mu += du;
-				if (mu < 0) mu = 0; //Solvability check
-
-				float dw = (t.f*g*a)*mintime;
-				mw += dw;
-				if (mw < 0) mw = 0; //Solvability check
-
-				u.x = mu * cos(alpha);
-				u.y = mu * sin(alpha);
-				w.x = mw * sin(alpha);
-				w.y = mw * (-cos(alpha));
-			}
-		}
-		else{ //No slippage -> no sliding friction, only rolling
-			ret += 4;
-			float dw = -t.d*g / J*mintime;
-			mw += dw;
-			if (mw < 0) mw = 0; //Solvability check
-
-			w.x = mw * cos(beta);
-			w.y = mw * sin(beta);
-		}
-
-		v = u - a * (k ^ w);
-
-	}
-	if (std::abs(r.z) > EPS || std::abs(v.z) > EPS){ //We are in the air
-		ret += 8;
+		goto END_STEP;
+    }else{//Other variants is considered as free flight. Speed update is required
+        ret += 32;
 		v.z -= G*mintime;
+		goto END_STEP;
+    }
 
-		if (r.z < 0 && v.z < 0){//Floor hit (or underground)
-			vec k(0, 0, -1);
-			float hi = 2.0 / 5.0;
-			float vn = v * k;
-			vec u = v - k*(v*k) + a * (w ^ k);
-
-			float vn_n = -t.je * vn;
-			float itr_v = t.f * (1 + t.je) * vn;
-
-			vec itr;
-			if (u.mod() > itr_v){
-				itr = u.normalized() * itr_v;
-			}
-			else{
-				itr = u;
-			}
-
-			u -= itr;
-			w -= 1 / hi * (k ^ itr);
-
-			v = u - a * (w ^ k) + k * vn_n;
-			if (v.z < G*mintime) v.z = 0, ret += 16, r.z = 0;
-		}
-	}
-
-	r += (mintime * v);
-	phi += (quat(0, w) * phi) / 2 * mintime;
-	phi = phi.normalized();
-	return ret;
-};
+END_STEP:
+    r += (mintime * v);
+    phi += (quat(0, w) * phi) / 2 * mintime;
+    phi = phi.normalized();
+    return ret;
+}
 
 float Ball::Distance(Ball b)
 {
