@@ -155,7 +155,7 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 
 void glutRender::DisplayGL ()
 {
-    const int groundLevel = -3;
+    const GLfloat groundLevel = -2.4f;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -182,7 +182,7 @@ void glutRender::DisplayGL ()
 
             glPushMatrix();
                 glTranslatef(ActiveBall.r.y, 0.001f, ActiveBall.r.x);
-                DrawRoundAround(ball_r, 2*M_PI);
+                DrawCoolRoundAround(ball_r, 2*M_PI);
             glPopMatrix();
 
             glPushMatrix();
@@ -193,12 +193,11 @@ void glutRender::DisplayGL ()
         }
     glEnable(GL_LIGHTING);
 
-
     init_l();
 
 	glPushMatrix();
 		glRotatef(90, 0, 1, 0);
-		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, abs(groundLevel)*2);
+		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 1.2*abs(groundLevel));
 	glPopMatrix();
 
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)

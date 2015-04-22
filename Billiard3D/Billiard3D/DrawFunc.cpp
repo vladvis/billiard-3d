@@ -19,7 +19,7 @@ void init_l()
 
 void DrawGroundGrid (const GLfloat groundLevel)
 {
-    GLfloat stepSize    = 2.0f;
+    GLfloat stepSize    = 2;
     int numSteps = 20;
 
     glLineWidth(1.1f);
@@ -29,7 +29,7 @@ void DrawGroundGrid (const GLfloat groundLevel)
     for (GLint x = -numSteps; x <= numSteps; x++)
         for (GLint y = -numSteps; y <= numSteps; y++)
         {
-            GLfloat xx = x * stepSize;
+            GLfloat xx = (float)x * stepSize;
             GLfloat yy = y * stepSize;
 
             glVertex3f(xx, groundLevel, yy);
@@ -57,7 +57,7 @@ void DrawVerticalPLine()
     glEnd();
 }
 
-void DrawRoundAround(GLfloat ball_r, GLfloat angle_rad)
+void DrawCoolRoundAround(GLfloat ball_r, GLfloat angle_rad)
 {
     int amountSegments = 20;
     ball_r *= 1.5f;
@@ -76,23 +76,72 @@ void DrawRoundAround(GLfloat ball_r, GLfloat angle_rad)
     glEnd();
 }
 
+void DrawRoundAround(GLfloat ball_r, GLfloat angle_rad)
+{
+    int amountSegments = 20;
+    ball_r *= 1.5f;
+
+
+    glBegin(GL_LINE_STRIP);
+    for(int i = 0; i <= amountSegments; i++)
+    {
+        float angle = angle_rad * float(i) / float(amountSegments);
+        float dx = ball_r * cosf(angle);
+        float dy = ball_r * sinf(angle);
+        glVertex3f(dx, 0, dy);
+    }
+    glEnd();
+}
+
 void DrawGrid(GLfloat ball_r,  GLfloat border_down_height)
 {
+    glLineWidth(0.6f);
+    glColor3f (0.95f, 0.95f, 0.95f);
+
+    int amountSegments = 20;
+
     GLfloat curre_ball_r = 2*ball_r;
     GLfloat height = 0;
+    const GLfloat height_step = 0.05f;
+    const GLfloat ball_r_step = 0.005f;
+    GLfloat angle_rad;
 
     while (curre_ball_r > ball_r)
     {
+        if (height < border_down_height) angle_rad = 2*M_PI; else angle_rad = M_PI;
+
         glPushMatrix();
             glTranslatef(0, height, 0);
-            if (height  > border_down_height)
-                DrawRoundAround(curre_ball_r, M_PI);
-            else
-                DrawRoundAround(curre_ball_r, 2*M_PI);
+
+            glBegin(GL_LINE_STRIP);
+            for(int i = 0; i <= amountSegments; i++)
+            {
+                float angle = angle_rad * float(i) / float(amountSegments);
+                float dx = curre_ball_r * cosf(angle);
+                float dy = curre_ball_r * sinf(angle);
+                glVertex3f(dx, 0, dy);
+            }
+            glEnd();
+
+            glBegin(GL_LINES);
+            for(int i = 0; i <= amountSegments; i++)
+            {
+                float angle = angle_rad * float(i) / float(amountSegments);
+                float dx = (ball_r) * cosf(angle);
+                float dy = (ball_r) * sinf(angle);
+                glVertex3f(dx, 0, dy);
+
+                dx = (ball_r-ball_r_step) * cosf(angle);
+                dy = (ball_r-ball_r_step) * sinf(angle);
+                glVertex3f(dx, -height_step, dy);
+            }
+            glEnd();
+
         glPopMatrix();
 
-        curre_ball_r -= 0.005;
-        height -= 0.04;
+        height -= height_step;
+        curre_ball_r -= ball_r_step;
+
     }
 }
 
@@ -143,29 +192,31 @@ void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
 {
 	assert (height > 0); assert (edge_size > 0);
 
-	const GLfloat  	hwidth = edge_size / 2,
-					hheight = height / 2;
+	const GLfloat  	hwidth = edge_size / 2;
+//					hheight = height / 2;
     const GLfloat   hhwidth = hwidth / 2;
+
+
 
 	glPushMatrix();
         glTranslatef(hhwidth, 0, 0);
         glRotatef(-90, 0, 0, 1);
-        DrawNiceRectangle(0, hheight, 0, hwidth);
+        DrawNiceRectangle(0, height, 0, hwidth);
     glPopMatrix();
     glPushMatrix();
         glTranslatef(-hhwidth, 0, 0);
         glRotatef(90, 0, 0, 1);
-        DrawNiceRectangle(-hheight, 0, 0, hwidth);
+        DrawNiceRectangle(-height, 0, 0, hwidth);
     glPopMatrix();
     glPushMatrix();
         glTranslatef(-hhwidth, 0, hwidth);
         glRotatef(90, 1, 0, 0);
-        DrawNiceRectangle(0, hwidth, 0, hheight);
+        DrawNiceRectangle(0, hwidth, 0, height);
     glPopMatrix();
     glPushMatrix();
-        glTranslatef(-hhwidth, -hheight, 0);
+        glTranslatef(-hhwidth, -height, 0);
         glRotatef(-90, 1, 0, 0);
-        DrawNiceRectangle(0, hwidth, 0, hheight);
+        DrawNiceRectangle(0, hwidth, 0, height);
     glPopMatrix();
 }
 
