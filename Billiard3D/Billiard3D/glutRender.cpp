@@ -155,11 +155,13 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
 
 void glutRender::DisplayGL ()
 {
+    const int groundLevel = -3;
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // sensative
     glLoadIdentity();
-    if (curre_ball < GameTable.balls.size())
+    if (curre_ball < (int)GameTable.balls.size())
         gluLookAt (GameTable.balls[curre_ball].r.y + multipluer*sin(alpha), GameTable.balls[curre_ball].a + cam_height_h*log(multipluer),GameTable.balls[curre_ball].r.x + multipluer*cos(alpha),
                    GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.x,
                    0.0f, 1.0f, 0.0f);
@@ -168,17 +170,36 @@ void glutRender::DisplayGL ()
                    0.0f, 0.0f, 0.0f,
                    0.0f, 1.0f, 0.0f);
 
-    glDisable(GL_LIGHTING);
-    DrawGroundGrid (-3);
-    glEnable(GL_LIGHTING);
-
-    init_l();
-	glPushMatrix();
-		glRotatef(90, 0, 1, 0);
-		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 6, GameTable.grass_texture, GameTable.tree_texture);
-	glPopMatrix();
     const GLfloat ball_r = GameTable.balls[0].a;
 
+    glDisable(GL_LIGHTING);
+
+        DrawGroundGrid (groundLevel);
+
+        if (curre_ball < (int)GameTable.balls.size())
+        {
+            Ball &ActiveBall = GameTable.balls[curre_ball];
+
+            glPushMatrix();
+                glTranslatef(ActiveBall.r.y, 0.001f, ActiveBall.r.x);
+                DrawRoundAround(ball_r, 2*M_PI);
+            glPopMatrix();
+
+            glPushMatrix();
+                glTranslatef(ActiveBall.r.y, ball_r + ActiveBall.r.z, ActiveBall.r.x);
+                glRotatef(360*acos(ActiveBall.phi.l)/M_PI, ActiveBall.phi.v.y, ActiveBall.phi.v.z, ActiveBall.phi.v.x);
+                DrawVerticalPLine();
+            glPopMatrix();
+        }
+    glEnable(GL_LIGHTING);
+
+
+    init_l();
+
+	glPushMatrix();
+		glRotatef(90, 0, 1, 0);
+		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, abs(groundLevel)*2);
+	glPopMatrix();
 
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
     {
@@ -187,41 +208,23 @@ void glutRender::DisplayGL ()
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
             glBindTexture(GL_TEXTURE_2D, it->texture);
 
-            if (curre_ball != it - GameTable.balls.begin())
-                glColor3f (1.0f, 1.0f, 1.0f);
-			else
-			{
-				glColor3f(1.0f, 1.0f, 1.0f);
-				/*char s1[255], s2[255], s3[255];
-				sprintf(s1, "w(%.2f, %.2f, %.2f)", GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
-				sprintf(s2, "v(%.2f, %.2f, %.2f)", GameTable.balls[curre_ball].v.x, GameTable.balls[curre_ball].v.y, GameTable.balls[curre_ball].v.z);
-				sprintf(s3, "phi(%.2f, %.2f, %.2f, %.2f)", GameTable.balls[curre_ball].phi.l, GameTable.balls[curre_ball].phi.v.x, GameTable.balls[curre_ball].phi.v.y, GameTable.balls[curre_ball].phi.v.z);
-
-				glPushMatrix();
-					glTranslatef(GameTable.balls[curre_ball].r.y, 0.5f, GameTable.balls[curre_ball].r.x);
-					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.0f, 0.0f, (void *)font, s1);
-					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.3f, 0.0f, (void *)font, s2);
-					renderStrokeFontString(0.0f, GameTable.balls[curre_ball].r.z + 0.6f, 0.0f, (void *)font, s3);
-				glPopMatrix();
-
-                glColor3f(1.0f, 1.0f, 1.0f);*/
-
-			}
-
-			glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
+            glColor3f (1.0f, 1.0f, 1.0f);
+            glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
             glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
-            gluSphere(sphere, ball_r, 25, 25);
+            gluSphere(sphere, ball_r, 15, 15);
 
             glDisable(GL_TEXTURE_2D);
         glPopMatrix ();
     }
 
-	char s[250] = { 0 };
-	sprintf(s, "Informatika - FPS:");
+	glPushMatrix();
+        glColor3f(1.0f, 1.0f, 1.0f);
+        renderStrokeFontString(0.1f, -0.1f, GameTable.lenx + 0.1f, (void *)font, (char *)"Billiard 3D PROJECT 2015");
+	glPopMatrix();
 
 	glPushMatrix();
-	glColor3f(1.0f, 1.0f, 1.0f);
-	renderStrokeFontString(0.1f, -0.1f, GameTable.lenx + 0.1f, (void *)font, (char *)"Billiard 3D PROJECT 2015");
+        glTranslatef(0, 1.0f, 0);
+        DrawGrid(ball_r, -0.08f);
 	glPopMatrix();
 
     glFlush();

@@ -87,7 +87,7 @@ void fpsMeasurer::fpsMeasure(){
             int i;
             double time;
 
-            for (i = 0; i < m && (time = ((std::chrono::duration<double>)(CURTIME-start)).count()) < 1.05; i++){
+            for (i = 0; i < m && (time = ((std::chrono::duration<double>)(CURTIME-start)).count()) < 1.15; i++){
                 NextStep(balls, mt);
             }
 

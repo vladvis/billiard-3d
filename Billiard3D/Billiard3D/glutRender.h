@@ -77,7 +77,7 @@ class glutRender
 			float alpha;
             float multipluer;
             float cam_height_h;
-            unsigned curre_ball;
+            int curre_ball;
 
             bool calculations_started;
 

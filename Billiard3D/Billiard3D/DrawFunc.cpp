@@ -41,11 +41,66 @@ void DrawGroundGrid (const GLfloat groundLevel)
     glEnd();
 }
 
+void DrawVerticalPLine()
+{
+    GLfloat stepSize    = 0.04f;
+    glLineWidth(0.8f);
+
+    glColor3f (0.9f, 0.9f, 0.9f);
+
+    glBegin(GL_LINES);
+    for (GLfloat y = -0.38; y < 0.38; y += 2*stepSize)
+    {
+        glVertex3f (0, y, 0);
+        glVertex3f (0, y + stepSize, 0);
+    }
+    glEnd();
+}
+
+void DrawRoundAround(GLfloat ball_r, GLfloat angle_rad)
+{
+    int amountSegments = 20;
+    ball_r *= 1.5f;
+
+    glLineWidth(0.4f);
+    glColor3f (0.95f, 0.95f, 0.95f);
+
+    glBegin(GL_LINES);
+    for(int i = 0; i < amountSegments; i++)
+    {
+        float angle = angle_rad * float(i) / float(amountSegments);
+        float dx = ball_r * cosf(angle);
+        float dy = ball_r * sinf(angle);
+        glVertex3f(dx, 0, dy);
+    }
+    glEnd();
+}
+
+void DrawGrid(GLfloat ball_r,  GLfloat border_down_height)
+{
+    GLfloat curre_ball_r = 2*ball_r;
+    GLfloat height = 0;
+
+    while (curre_ball_r > ball_r)
+    {
+        glPushMatrix();
+            glTranslatef(0, height, 0);
+            if (height  > border_down_height)
+                DrawRoundAround(curre_ball_r, M_PI);
+            else
+                DrawRoundAround(curre_ball_r, 2*M_PI);
+        glPopMatrix();
+
+        curre_ball_r -= 0.005;
+        height -= 0.04;
+    }
+}
+
 void DrawNiceRectangle(const GLfloat xleft, const GLfloat xright, const GLfloat yleft, const GLfloat yright)
 {
     assert (xright > xleft); assert (yright > yleft);
 
-    const float grid_period = 50;
+    const float grid_period = 12;
 
     GLfloat step = max(xright - xleft, yright - yleft)/grid_period;
 
@@ -114,32 +169,17 @@ void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
     glPopMatrix();
 }
 
-void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloat border_h, const GLfloat leg_height, GLuint g_texture, GLuint tree_texture)
+void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloat border_h, const GLfloat leg_height)
 {
 	assert (hwidth > 0); assert (hheight > 0); assert (border_h > 0); assert (leg_height > 0);
 
 	GLfloat fhborder_ = border_h / 1.2;
 
-    glPushMatrix();
-        if (g_texture > 0)
-        {
-            glEnable (GL_TEXTURE_2D);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-            glBindTexture (GL_TEXTURE_2D, g_texture);
-			glColor3f(1.0f, 1.0f, 1.0f);
-        } else glColor3f(0.0f, 0.5f, 0.0f);
+    glColor3f(0.0f, 0.45f, 0.0f);
 
-        DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
-        glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
 
-	if (tree_texture > 0)
-	{
-		glEnable (GL_TEXTURE_2D);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-         glBindTexture (GL_TEXTURE_2D, tree_texture);
-		 glColor3f(1.0f, 1.0f, 1.0f);
-	} else glColor3f(0.44f, 0.14f, 0.03f);
+	glColor3f(0.44f, 0.14f, 0.03f);
 
     glBegin(GL_QUADS);
         glVertex3f(hwidth - fhborder_, -fhborder_, hheight+fhborder_);

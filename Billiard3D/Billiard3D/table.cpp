@@ -27,10 +27,7 @@ Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(
 
 	if (file.is_open())
 	{
-		grass_texture = 0;
-		tree_texture = 0;
-		char grass_texture_filename[255], tree_texture_filename[255];
-		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> grass_texture_filename >> tree_texture_filename;
+		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny;
 		//grass_texture = raw_texture_load(grass_texture_filename, 128, 128);
 		//tree_texture = raw_texture_load(tree_texture_filename, 256, 256);
 	}

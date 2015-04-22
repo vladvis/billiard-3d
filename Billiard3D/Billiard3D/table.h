@@ -38,8 +38,6 @@ public:
     double FPS;
     double SLOWFACTOR;//IGT/RTA
 
-    GLuint grass_texture, tree_texture;
-
     std::vector <Ball> balls;
 
 	Table(const std::string cfgfileName);
