@@ -12,7 +12,7 @@ void init_l()
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-	float ambient[] = {0.4f, 0.4f, 0.4f, 1.0f };
+	float ambient[] = {0.6f, 0.6f, 0.6f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
@@ -24,8 +24,8 @@ void DrawGroundGrid (const GLfloat groundLevel)
     GLfloat stepSize    = 2.0f;
     int numSteps = 16;
 
-    glLineWidth(0.4f);
-    glColor3ub(6, 6, 6);
+    glLineWidth(0.6f);
+    glColor3ub(66, 66, 66);
 
     glBegin(GL_LINES);
     for (GLint x = -numSteps; x <= numSteps; x++)
@@ -242,7 +242,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
 {
 	GLfloat fhborder_ = border_h / 1.2;
 
-    glColor3f(0.0f, 0.38f, 0.0f);
+    glColor3f(0.0f, 0.32f, 0.0f);
 
     DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
 

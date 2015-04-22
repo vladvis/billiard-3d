@@ -192,6 +192,7 @@ void glutRender::DisplayGL ()
 		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 1.2*abs(groundLevel), ball_r);
 	glPopMatrix();
 
+    glColor3f (0.75f, 0.75f, 0.75f);
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
     {
         glPushMatrix();
@@ -199,10 +200,9 @@ void glutRender::DisplayGL ()
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
             glBindTexture(GL_TEXTURE_2D, it->texture);
 
-            glColor3f (1.0f, 1.0f, 1.0f);
             glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
             glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
-            gluSphere(sphere, ball_r, 12, 12);
+            gluSphere(sphere, ball_r, 14, 14);
 
             glDisable(GL_TEXTURE_2D);
         glPopMatrix ();
