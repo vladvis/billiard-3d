@@ -3,7 +3,7 @@
 0 -0.1 0
 0 0 0
 0 0 0
-textures/01.data
+textures/04.data
 
 -0.1 -0.1 0
 0 0 0
@@ -18,12 +18,12 @@ textures/03.data
 0.1 -0.1 0
 0 0 0
 0 0 0
-textures/04.data
+textures/15.data
 
 0.2 -0.1 0
 0 0 0
 0 0 0
-textures/05.data
+textures/12.data
 
 -0.05 0 0
 0 0 0
@@ -38,7 +38,7 @@ textures/07.data
 0.15 0 0
 0 0 0
 0 0 0
-textures/08.data
+textures/05.data
 
 -0.15 0 0
 0 0 0
@@ -58,7 +58,7 @@ textures/11.data
 0 0.1 0
 0 0 0
 0 0 0
-textures/12.data
+textures/08.data
 
 0.05 0.2 0
 0 0 0
@@ -73,7 +73,7 @@ textures/14.data
 0 0.3 0
 0 0 0
 0 0 0
-textures/15.data
+textures/01.data
 
 0 1 0
 0 -10 0

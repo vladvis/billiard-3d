@@ -25,7 +25,7 @@ void DrawGroundGrid (const GLfloat groundLevel)
     int numSteps = 16;
 
     glLineWidth(0.1f);
-    glColor3ub(66, 66, 66);
+    glColor3ub(76, 76, 76);
 
     glBegin(GL_LINES);
     for (GLint x = -numSteps; x <= numSteps; x++)

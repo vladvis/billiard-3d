@@ -35,7 +35,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glutWindowHandle = glutCreateWindow ("Billiard 3D Project - [q]uit");
     assert (glutWindowHandle != 0);
 
-#ifdef FULLSCREEN
+#ifndef FULLSCREEN
     glutGameModeString ("1920x1080:32@60");
     glutEnterGameMode();
 #endif
@@ -202,7 +202,7 @@ void glutRender::DisplayGL ()
 
             glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
             glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
-            gluSphere(sphere, ball_r, 14, 14);
+            gluSphere(sphere, ball_r, 20, 20);
 
             glDisable(GL_TEXTURE_2D);
         glPopMatrix ();
