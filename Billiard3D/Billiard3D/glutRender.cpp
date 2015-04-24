@@ -259,7 +259,11 @@ void glutRender::IdleGL ()
     {
 		for (int i = 0; i < GameTable.CLOCK; i++)
 		{
-			GameTable.NextStep();
+			if (!GameTable.NextStep()) calculations_started = false;
+			if (!calculations_started){
+                std::cout << "End!" << std::endl;
+                break;
+			}
 		}
     }
     //float fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC; // TODO: fps here

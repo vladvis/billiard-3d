@@ -17,7 +17,7 @@ int Table::NextStep(){
 
 	for (Ball& b: balls){
 		int retb = b.NextStep(*this, MINTIME);
-		if (retb != 1) ret |= (retb);
+		ret |= (retb);
 	}
 
 	return ret;
@@ -165,32 +165,36 @@ int Ball::NextStep(Table t, float mintime)
 
         if (w.mod() < EPS && v.mod() < EPS) return 0;
 
-        if (std::abs(w.z) > EPS)
-            dw -= t.s*G/hi/a/a * sign(w.z) * k;
+        if (std::abs(w.z) > EPS){
+            double ddw = -t.s*G/hi/a/a * sign(w.z) * mintime;
+            if (sign(w.z) == sign(w.z+ddw)) //ddw can't change direction
+                dw += ddw*k, ret += 1;
+        }
 
         vec omega = w - k*w.z;
-        if (omega.mod() > EPS)
-            dw -= t.d*G/hi/a/a * omega.normalized();
+        if (omega.mod() > EPS){
+            vec ddo = -t.d*G/hi/a/a * omega.normalized()*mintime;
+            vec omac = omega.normalized() - (omega + ddo).normalized();
+            if (omac.mod() < 1) //vector changed it's direction when delta added - it's very near to zero
+                dw += ddo, ret += 2;
+        }
 
         vec u = v + a * (k ^ w);
         if (u.mod() > EPS){
-            dw += t.f*G/hi/a * (k ^ u.normalized());
-            dv -= t.f*G*u.normalized();
+            vec ddw = t.f*G/hi/a * (k ^ u.normalized())*mintime;
+            vec ddv = -t.f*G*u.normalized()*mintime;
+
+            vec ddu = ddv + a * (k ^ ddw);
+
+            vec umac = u.normalized() - (u + ddu).normalized();
+            if (umac.mod() < 1) //like previous + w can be zero
+                dw += ddw, dv += ddv, ret += 4;
         }
+        w += dw, v += dv;
 
-        dv = dv * mintime; dw = dw * mintime;
-
-        vec wmac = w.normalized() - (w + dw).normalized();
-        if (wmac.mod() > 1) //vector changed it's direction when delta added - it's very near to zero
-            w = vec(0, 0, 0);
-        else
-            w += dw, ret += 2;
-
-        vec vmac = v.normalized() - (v + dv).normalized();
-        if (vmac.mod() > 1) //vector changed it's direction when delta added - it's very near to zero
-            v = vec(0, 0, 0);
-        else
-            v += dv, ret += 1;
+        if (!(ret & 1)) w -= w.z * k;
+        if (!(ret & 2)) w -= omega;
+        if (!(ret & 4)) v = - a * (k ^ w);
 
         goto END_STEP;
     }
