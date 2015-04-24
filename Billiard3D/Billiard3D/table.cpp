@@ -1,7 +1,7 @@
 #include "table.h"
 
 #define isnan(f) (f != f)
-#define sign(f) (f>0 ? 1 : -1)
+#define sign(f) (std::abs(f)<EPS ? 0 : (f>0 ? 1 : -1))
 
 int Table::NextStep(){
 	int ret = 0;
@@ -166,41 +166,31 @@ int Ball::NextStep(Table t, float mintime)
         if (w.mod() < EPS && v.mod() < EPS) return 0;
 
         if (std::abs(w.z) > EPS)
-            dw -= t.s*G/hi/a/a * sign(w.z) * k, ret += 1;
+            dw -= t.s*G/hi/a/a * sign(w.z) * k;
 
         vec omega = w - k*w.z;
         if (omega.mod() > EPS)
-            dw -= t.d*G/hi/a/a * omega.normalized(), ret += 2;
+            dw -= t.d*G/hi/a/a * omega.normalized();
 
         vec u = v + a * (k ^ w);
         if (u.mod() > EPS){
             dw += t.f*G/hi/a * (k ^ u.normalized());
             dv -= t.f*G*u.normalized();
-            ret += 4;
         }
 
         dv = dv * mintime; dw = dw * mintime;
-        vec new_w = w; vec new_v = v;
 
-        int sign = sign(w.z);
-        if (sign(w.z+dw.z) != sign)
-            new_w.z = 0;
+        vec wmac = w.normalized() - (w + dw).normalized();
+        if (wmac.mod() > 1) //vector changed it's direction when delta added - it's very near to zero
+            w = vec(0, 0, 0);
         else
-            new_w.z += dw.z;
-
-        vec rmac = omega.normalized() - (omega + dw - dw.z*k).normalized();
-        if (rmac.mod() > sqrt(2)) //vector changed it's direction when delta added - it's very near to zero
-            new_w = new_w.z * k;
-        else
-            new_w = new_w.z * k + omega + dw - dw.z*k;
+            w += dw, ret += 2;
 
         vec vmac = v.normalized() - (v + dv).normalized();
-        if (vmac.mod() > sqrt(2)) //vector changed it's direction when delta added - it's very near to zero
-            new_v = vec(0, 0, 0);
+        if (vmac.mod() > 1) //vector changed it's direction when delta added - it's very near to zero
+            v = vec(0, 0, 0);
         else
-            new_v += dv;
-
-        v = new_v; w = new_w;
+            v += dv, ret += 1;
 
         goto END_STEP;
     }
@@ -229,11 +219,11 @@ int Ball::NextStep(Table t, float mintime)
 		w -= 1 / hi * (k ^ itr);
 
 		v = u - a * (w ^ k) + k * vn_n;
-		if (v.z < G*mintime) v.z = 0, ret += 16, r.z = 0; //Final ground hit
+		if (v.z < G*mintime) v.z = 0, ret += 4, r.z = 0; //Final ground hit
 
 		goto END_STEP;
     }else{//Other variants is considered as free flight. Speed update is required
-        ret += 32;
+        ret += 8;
 		v.z -= G*mintime;
 		goto END_STEP;
     }

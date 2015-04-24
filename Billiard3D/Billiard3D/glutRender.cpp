@@ -16,7 +16,7 @@ void glutRender::addBall() {
         exit(EXIT_FAILURE);
     }
     char cmd[256];
-    sprintf(cmd, "python dialog.py %d", fd[1]);
+    sprintf(cmd, "python2 dialog.py %d", fd[1]);
     int pid = fork();
     if (pid == 0) {
         system(cmd);
@@ -66,7 +66,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glutWindowHandle = glutCreateWindow ("Billiard 3D Project - [q]uit");
     assert (glutWindowHandle != 0);
 
-#ifndef FULLSCREEN
+#ifdef FULLSCREEN
     glutGameModeString ("1920x1080:32@60");
     glutEnterGameMode();
 #endif
