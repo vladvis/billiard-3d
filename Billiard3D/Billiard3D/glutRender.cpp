@@ -7,6 +7,37 @@ void *font = GLUT_STROKE_ROMAN;
 /* there is only one copy of glutRender, so we are have to use this lifehack to deal with C GLUT library on C++, it is ok */
 glutRender glutRender::Instance;
 
+void glutRender::addBall() {
+    int fd[2];
+
+    if (pipe (fd))
+    {
+        fprintf(stderr,"Pipe failed.\n");
+        exit(EXIT_FAILURE);
+    }
+    char cmd[256];
+    sprintf(cmd, "python dialog.py %d", fd[1]);
+    int pid = fork();
+    if (pid == 0) {
+        system(cmd);
+        exit(0);
+    }
+    FILE *stream;
+    stream = fdopen(fd[0], "r");
+    int status;
+    fscanf(stream, "%d", &status);
+    if (status == 1) {
+        float x,y,z,vx,vy,vz,vax,vay,vaz;
+        fscanf(stream, "%f%f%f%f%f%f%f%f%f", &x, &y, &z, &vx, &vy, &vz, &vax, &vay, &vaz);
+        float phi = (rand() % 100) / 50.0 * M_PI;
+        GameTable.balls.push_back(Ball("ball.cfg", vec(x, y, z), quat(cos(phi), sin(phi) * vec(rand(), rand(), rand()).normalized()), vec(vx, vy, vz), vec(vax, vay, vaz), "textures/02.data"));
+
+    } else {
+        printf("Cancel");
+    }
+    fclose (stream);
+}
+
 void glutRender::Init (int* argc, char* argv[], const char *table_config, const char *balls_config)
 {
     srand(time(0));
@@ -242,6 +273,7 @@ void glutRender::MouseGL (int button, int state, int x, int y)
     {
     case GLUT_LEFT_BUTTON:
     {
+
         if (state == GLUT_UP)
         {
 //				MouseManipulator.LeftKeyPressed = false;
@@ -377,6 +409,15 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
     case 'r':
     {
         LoadConfig (table_config_filename, balls_config_filename, start_state_config_filename);
+    }
+    break;
+
+    case 'z':
+    case 'Z':
+    {
+        if (!calculations_started) {
+            addBall();
+        }
     }
     break;
 

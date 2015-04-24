@@ -8,6 +8,12 @@
 #include <iostream>
 #include <ctime>
 #include <assert.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
 
 #include "table.h"
 #include "DrawFunc.h"
@@ -54,6 +60,7 @@ class glutRender
 			void MotionGL (int x, int y);
 			void ReshapeGL (int w, int h);
 			void KeyboardGL (unsigned char c, int x, int y);
+			void addBall();
 
 		private:
 			glutRender (int _WindowWidth = 900, int _WindowHeight = 700) :
@@ -67,7 +74,6 @@ class glutRender
 			static void ReshapeGL_ (int w, int h);
 			void setOrthographicProjection();
 			void restorePerspectiveProjection();
-
             void LoadConfig(const std::string table_config, const std::string balls_config, const std::string start_state_config);
 			int glutWindowHandle;
 

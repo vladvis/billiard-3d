@@ -13,7 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-lGL -lGLUT -lGLU -std=c++11 -DDEBUG -DKIR_TEST" />
+					<Add option="-lGL -lGLUT -lGLU -DDEBUG -DKIR_TEST --std=c++11" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
