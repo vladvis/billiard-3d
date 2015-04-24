@@ -21,7 +21,7 @@ int fpsMeasurer::fpsBinSearch(int numballs){
 
     //CLOCK binary search
     int l = 1;
-    int r = 999999;
+    int r = 1999999;
 
     while (std::abs(l - r) > 10){
         int m = (l+r)/2;

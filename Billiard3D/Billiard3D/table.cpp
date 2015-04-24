@@ -7,17 +7,28 @@ int Table::NextStep(){
 	int ret = 0;
 
 	//for (std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
-    for (Ball& b: balls)
-		b.BoardCollide(*this);
+    for (auto it = balls.begin(); it != balls.end();){
+		if (it -> isvalid){
+            if (it -> BoardCollide(*this) & 4)
+                it = balls.erase(it);
+            else
+                it++;
+		}else{
+            it++;
+		}
+    }
 
     //std::random_shuffle(balls.begin(), balls.end()); //Not sure if good idea..
 	for (auto it = balls.begin(); it != balls.end(); ++it)
 		for (auto jt = it + 1; jt != balls.end(); ++jt)
-			it->Collide(*this, *jt);
+            if (it -> isvalid && jt -> isvalid)
+                it->Collide(*this, *jt);
 
 	for (Ball& b: balls){
-		int retb = b.NextStep(*this, MINTIME);
-		ret |= (retb);
+        if (b.isvalid){
+            int retb = b.NextStep(*this, MINTIME);
+            ret |= (retb);
+        }
 	}
 
 	return ret;
@@ -44,7 +55,8 @@ Ball::Ball(const  std::string name, vec r, quat phi, vec v, vec w, const char *t
 r(r),
 phi(phi),
 v(v),
-w(w)
+w(w),
+isvalid(true)
 {
 	std::ifstream file(name.c_str());
 
@@ -111,23 +123,35 @@ int Ball::Collide(Table t, Ball &b)
 
 int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 	int ret = 0;
+	int state = 0;
+	vec k;
 
-	vec k(0, 0, 0);
+    if (t.lenx - r.x < a && v.x > 0)
+        k = vec(1, 0, 0), ret |= 1, state=1;
 
-	if (std::abs(r.x) > t.lenx - a && sign(v.x) == sign(r.x))
-	{
-		k = vec(sign(r.x), 0, 0);
-		ret = 1;
-	}
+    if (t.lenx + r.x < a && v.x < 0)
+        k = vec(-1, 0, 0), ret |= 1, state=2;
 
-	if (std::abs(r.y) > t.leny - a && sign(v.y) == sign(r.y))
-	{
-		k = vec(0, sign(r.y), 0);
-		ret = 1;
-	}
+    if (t.leny - r.y < a && v.y > 0)
+        k = vec(0, 1, 0), ret |= 1, state=3;
 
-	if (ret){
-		float hi = 2.0 / 5.0;
+    if (t.leny + r.y < a && v.y < 0)
+        k = vec(0, -1, 0), ret |= 1, state=4;
+
+    if (t.lenx - r.x < 2*a && v.x > 0 && state != 1)
+        ret |= 2;
+
+    if (t.lenx + r.x < 2*a && v.x < 0 && state != 2)
+        ret |= 2;
+
+    if (t.leny - r.y < 2*a && v.y > 0 && state != 3)
+        ret |= 2;
+
+    if (t.leny + r.y < 2*a && v.y < 0 && state != 4)
+        ret |= 2;
+
+	if (ret & 1){
+        float hi = 2.0 / 5.0;
 		float vn = v * k;
 		vec vt = v - k * (v * k);
 
@@ -148,7 +172,9 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 
 		v = vt + vn * k;
 		w -= 1 / hi * (itr ^ k);
-		ret = 1;
+
+        std::cout << ret << " " << state << std::endl;
+        if (ret & 2) ret |= 4;
 	}
 	return ret;
 }

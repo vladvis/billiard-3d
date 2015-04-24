@@ -56,6 +56,7 @@ public:
 	quat phi;
 	vec v;
 	vec w;
+	bool isvalid;
 
     GLuint texture;
 

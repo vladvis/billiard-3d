@@ -405,7 +405,8 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
     case '\t': //TAB
     {
-        curre_ball = (curre_ball + 1) % GameTable.balls.size();
+        if (!GameTable.balls.empty())
+            curre_ball = (curre_ball + 1) % GameTable.balls.size();
     }
     break;
 
