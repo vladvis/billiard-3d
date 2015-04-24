@@ -21,7 +21,7 @@
 #include "fpsMeasurer.h"
 
 #ifdef LINUX_PLATFORM
-	#include <GL/glut.h>
+	#include <GL/freeglut.h>
 #else
 	#include <glut.h>
 #endif
