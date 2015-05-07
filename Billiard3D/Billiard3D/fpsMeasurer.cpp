@@ -21,7 +21,7 @@ int fpsMeasurer::fpsBinSearch(int numballs){
 
     //CLOCK binary search
     int l = 1;
-    int r = 1999999;
+    int r = 19999;
 
     while (std::abs(l - r) > 10){
         int m = (l+r)/2;
@@ -100,15 +100,7 @@ void fpsMeasurer::fpsMeasure(){
                     std::cout << "Hmm, your measurements are too inaccurate!" << std::endl;
                     std::cout << "Shall I remeasure it for you? [Y/n] ";
 
-                    char c;
-                    std::cin >> c;
-                    if (c == 'n' || c == 'N'){
-                        std::cout << "As you wish..." << std::endl;
-                        t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
-                    }else{
-                        std::cout << "Good choice!" << std::endl;
-                        fpsCount();
-                    }
+                    fpsCount();
                 }
             }else{
                 std::cout << "You lied me! I hate you, have to remeasure it!" << std::endl;

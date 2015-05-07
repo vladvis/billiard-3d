@@ -150,7 +150,11 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
     if (t.leny + r.y < 2*a && v.y < 0 && state != 4)
         ret |= 2;
 
+    if (std::abs(r.y) < a && state <= 2)
+        ret |= 2;
+
 	if (ret & 1){
+        //std::cout << state << std::endl;
         float hi = 2.0 / 5.0;
 		float vn = v * k;
 		vec vt = v - k * (v * k);
@@ -173,7 +177,6 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 		v = vt + vn * k;
 		w -= 1 / hi * (itr ^ k);
 
-        std::cout << ret << " " << state << std::endl;
         if (ret & 2) ret |= 4;
 	}
 	return ret;
