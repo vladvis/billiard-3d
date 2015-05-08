@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1431088749 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
+1431092241 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
 	"DrawFunc.h"
 
 1431083492 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/DrawFunc.h
@@ -18,7 +18,7 @@
 	<vector>
 	<iostream>
 
-1431083492 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/table.h
+1431091824 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/table.h
 	"vec.h"
 	"quat.h"
 	"GlutHFunc.h"
@@ -48,7 +48,7 @@
 1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/quat.cpp
 	"quat.h"
 
-1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/table.cpp
+1431091824 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/table.cpp
 	"table.h"
 
 1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/test.cpp
@@ -83,6 +83,6 @@
 1431090442 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
 	"GlutHFunc.h"
 
-1431091400 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
+1431091824 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
 	"glutRender.h"
 
