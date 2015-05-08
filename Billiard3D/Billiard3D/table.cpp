@@ -109,7 +109,7 @@ int Table::NextStep(){
 	return ret;
 }
 
-Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1), sc_b_num(0){
+Table::Table(const std::string &name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1), sc_b_num(0){
 	std::ifstream file(name.c_str());
 
 	if (file.is_open())
@@ -126,7 +126,7 @@ Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(
 
 Table::Table(): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1), sc_b_num(0){};
 
-Ball::Ball(const  std::string name, vec r, quat phi, vec v, vec w, const char *texture_filename) :
+Ball::Ball(const  std::string &name, vec r, quat phi, vec v, vec w, const char *texture_filename) :
 r(r),
 phi(phi),
 v(v),

@@ -70,7 +70,7 @@ class glutRender
 			static void ReshapeGL_ (int w, int h);
 			void setOrthographicProjection();
 			void restorePerspectiveProjection();
-            void LoadConfig(const std::string table_config, const std::string balls_config, const std::string start_state_config);
+            void LoadConfig(const std::string &table_config, const std::string &balls_config, const std::string &start_state_config);
 			int glutWindowHandle;
 
 			int WindowWidth;

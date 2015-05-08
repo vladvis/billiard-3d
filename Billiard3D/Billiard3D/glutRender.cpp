@@ -134,7 +134,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 }
 
 
-void glutRender::LoadConfig(const std::string table_config, const std::string balls_config, const std::string start_state_config)
+void glutRender::LoadConfig(const std::string &table_config, const std::string &balls_config, const std::string &start_state_config)
 {
     calculations_started = false;
 
