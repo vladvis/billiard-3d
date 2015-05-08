@@ -55,11 +55,12 @@ void DrawVerticalPLine()
     glColor3f (0.9f, 0.9f, 0.9f);
 
     glBegin(GL_LINES);
-    for (GLfloat y = -0.26; y < 0.26; y += 2*stepSize)
-    {
-        glVertex3f (0, y, 0);
-        glVertex3f (0, y + stepSize, 0);
-    }
+        for (GLfloat y = -0.26; y < 0.26; y += 2*stepSize)
+        {
+            glVertex3f (0, y, 0);
+            glVertex3f (0, y + stepSize, 0);
+        }
+
         glVertex3f (0, 0.3, 0);
         glVertex3f (stepSize/4, 0.3-stepSize, 0);
 

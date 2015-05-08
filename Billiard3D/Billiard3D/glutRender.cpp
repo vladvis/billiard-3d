@@ -278,9 +278,7 @@ void glutRender::DisplayGL ()
 
         glPushMatrix();
             glTranslatef(ActiveBall.r.y, ball_r + ActiveBall.r.z, ActiveBall.r.x);
-            double theta = 360*acos(ActiveBall.phi.l)/M_PI;
-            double mult = sin(theta);
-            glRotatef(theta, ActiveBall.phi.v.y / mult, ActiveBall.phi.v.z / mult, ActiveBall.phi.v.x / mult);
+            glRotatef(360*acos(ActiveBall.phi.l)/M_PI, ActiveBall.phi.v.y, ActiveBall.phi.v.z, ActiveBall.phi.v.x);
             DrawVerticalPLine();
         glPopMatrix();
     }
