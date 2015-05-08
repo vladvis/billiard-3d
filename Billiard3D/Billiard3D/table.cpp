@@ -3,6 +3,47 @@
 #define isnan(f) (f != f)
 #define sign(f) (std::abs(f)<EPS ? 0 : (f>0 ? 1 : -1))
 
+std::vector<std::vector<Ball *>> Table::CollideDFS(){
+    int length = balls.size();
+
+    int * dfsed = new int[length];
+    for (int i=0; i<length; i++)
+        dfsed[i] = 0;
+    int color = 1;
+
+    for (auto it = balls.begin(); it != balls.end(); ++it){
+        if (!dfsed[it-balls.begin()]){
+            dfsed[it-balls.begin()] = color;
+            it->CollideDFS(*this, dfsed, color);
+            color++;
+        }
+    }
+
+    std::vector<std::vector<Ball*>> ret;
+
+    for (int i = 1; i < color; i++){
+        std::vector<Ball*> newcol;
+        for (int j = 0; j < length; j++){
+            if (dfsed[j] == i){
+                newcol.push_back(&(balls.at(j)));
+            }
+        }
+        if (newcol.size() > 1)
+            ret.push_back(newcol);
+    }
+
+    return ret;
+}
+
+void Ball::CollideDFS(Table t, int * dfsed, int color){
+    for (auto it = t.balls.begin(); it != t.balls.end(); ++it){
+        if (!dfsed[it-t.balls.begin()] && !noCollide(*it)){
+            dfsed[it-t.balls.begin()] = color;
+            it->CollideDFS(t, dfsed, color);
+        }
+    }
+}
+
 int Table::NextStep(){
 	int ret = 0;
 
@@ -19,10 +60,14 @@ int Table::NextStep(){
     }
 
     //std::random_shuffle(balls.begin(), balls.end()); //Not sure if good idea..
-	for (auto it = balls.begin(); it != balls.end(); ++it)
-		for (auto jt = it + 1; jt != balls.end(); ++jt)
-            if (it -> isvalid && jt -> isvalid)
-                it->Collide(*this, *jt);
+
+    for (auto colarr: CollideDFS()){
+        for (auto it = colarr.begin(); it != colarr.end(); ++it){
+            for (auto jt = it + 1; jt != colarr.end(); ++jt){
+                (*it)->Collide(*this, **jt);
+            }
+        }
+    }
 
 	for (Ball& b: balls){
         if (b.isvalid){
@@ -75,22 +120,17 @@ isvalid(true)
 
 int Ball::Collide(Table t, Ball &b)
 {
-	if (Distance(b) > b.a + a) return 0;//No collide for you
-
 	vec k = (b.r - r).normalized();
-
 	float v1n = v * k;
 	float v2n = b.v * k;
-
-	if (v2n >= v1n) return 0;//They don't move to each other :(
 
 	float hi = 5.0 / 2.0;
 	vec v1t = v - v1n * k;
 	vec v2t = b.v - v2n * k;
 
 	//Normal components is not affected by friction - only restitution. Adding rand value make mpore real
-	float v1n_n = (t.e*(v2n - v1n) + (v1n + v2n)) / 2 * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
-	float v2n_n = (t.e*(v1n - v2n) + (v1n + v2n)) / 2 * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
+	float v1n_n = (t.e*(v2n - v1n) + (v1n + v2n)) / 2;// * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
+	float v2n_n = (t.e*(v1n - v2n) + (v1n + v2n)) / 2;// * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
 
 	vec u = b.v - v + a * ((b.w + w) ^ k) - k * ((b.v - v) * k);
 	float mu = u.mod();
@@ -115,11 +155,21 @@ int Ball::Collide(Table t, Ball &b)
 	v = v1t + k * v1n_n;
 	b.v = v2t + k * v2n_n;
 
-	//v.z = 0;
-	//b.v.z = 0;
-
 	return 1;
 };
+
+int Ball::noCollide(Ball b){
+    if (Distance(b) > b.a + a) return 1;//No collide for you
+
+	vec k = (b.r - r).normalized();
+    if (isnan(k.mod())) return 2; //Some siht is happening! Let a few step ahead
+
+	float v1n = v * k;
+	float v2n = b.v * k;
+
+	if (v2n >= v1n) return 3;//They don't move to each other :(
+    return 0;
+}
 
 int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 	int ret = 0;

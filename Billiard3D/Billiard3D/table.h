@@ -45,6 +45,7 @@ public:
 	Table(const std::string cfgfileName);
 	Table();
 	int NextStep();
+	std::vector<std::vector<Ball *>> CollideDFS();
 };
 
 class Ball{
@@ -61,10 +62,13 @@ public:
     GLuint texture;
 
 	Ball(const std::string cfgfileName, vec r, quat phi, vec v, vec w, const char *texture_filename);
+	int CollideDFS(Table t);
 	int Collide(Table t, Ball &);
 	int BoardCollide(Table t);
 	float Distance(Ball);
 	int NextStep(Table t, float mintime);//Return 0 is stops
+	void CollideDFS(Table t, int * dfsed, int color);
+	int noCollide(Ball b);
 };
 
 
