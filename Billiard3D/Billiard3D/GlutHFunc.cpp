@@ -1,6 +1,6 @@
 #include "GlutHFunc.h"
 
-    void checkGLError (const char *errorLocation)
+void checkGLError (const char *errorLocation)
 {
     assert (errorLocation);
 
@@ -91,24 +91,34 @@
      return texture;
  }
 
+void restorePerspectiveProjection()
+{
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+}
 
-void renderBitmapString(float x, float y, float z, void *font, char *string)
+void setOrthographicProjection (float w, float h)
+{
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, w, 0, h);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void renderString (void *font, char *string)
 {
 	char *c;
-	glRasterPos3f(x, y, z);
+	glScalef(0.17f, 0.15f, 0.0f);
 	for (c = string; *c != '\0'; c++) {
-		glutBitmapCharacter(font, *c);
+		glutStrokeCharacter(font, *c);
 	}
 }
 
 
-void renderStrokeFontString(
-	float x,
-	float y,
-	float z,
-	void *font,
-	char *string) {
-
+void renderStrokeFontString (float x, float y, float z, void *font, char *string)
+{
 	char *c;
 	glPushMatrix();
 	glTranslatef(x, y, z);
@@ -118,3 +128,4 @@ void renderStrokeFontString(
 	}
 	glPopMatrix();
 }
+

@@ -63,7 +63,7 @@ class glutRender
 			void addBall();
 
 		private:
-			glutRender (int _WindowWidth = 900, int _WindowHeight = 700) :
+			glutRender (int _WindowWidth = 1280, int _WindowHeight = 768) :
 				WindowWidth(_WindowWidth), WindowHeight(_WindowHeight) {};
 
 			static void DisplayGL_ ();
@@ -86,6 +86,7 @@ class glutRender
             int curre_ball;
 
             bool calculations_started;
+            bool help_menu_showed;
 
             std::string table_config_filename;
             std::string balls_config_filename;

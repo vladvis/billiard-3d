@@ -21,14 +21,11 @@ struct BitMapFile
 };
 
 void checkGLError (const char * errorLocation);
-void renderBitmapString(float x, float y, float z, void *font, char *string);
 GLuint raw_texture_load(const char *filename, int width, int height);
-void setOrthographicProjection();
-void renderStrokeFontString(
-	float x,
-	float y,
-	float z,
-	void *font,
-	char *string);
+void renderStrokeFontString(float x, float y, float z, void *font, char *string);
+void renderString (void *font, char *string);
+void restorePerspectiveProjection();
+void setOrthographicProjection(float w, float h);
+
 
 #endif //GLUT_H_FUNC

@@ -1,0 +1,88 @@
+# depslib dependency file v1.0
+1431088749 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/DrawFunc.cpp
+	"DrawFunc.h"
+
+1431083492 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/DrawFunc.h
+	<assert.h>
+	<iostream>
+	<math.h>
+	<GL/glut.h>
+	<glut.h>
+
+1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.cpp
+	"fpsMeasurer.h"
+
+1431083492 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/fpsMeasurer.h
+	"table.h"
+	<chrono>
+	<vector>
+	<iostream>
+
+1431083492 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/table.h
+	"vec.h"
+	"quat.h"
+	"GlutHFunc.h"
+	<string>
+	<cmath>
+	<fstream>
+	<iostream>
+	<vector>
+	<thread>
+	<algorithm>
+
+1431083492 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/vec.h
+	<cmath>
+
+1431083492 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/quat.h
+	"vec.h"
+	<cmath>
+
+1431089952 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.h
+	<cstdlib>
+	<iostream>
+	<fstream>
+	<assert.h>
+	<GL/glut.h>
+	<glut.h>
+
+1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/quat.cpp
+	"quat.h"
+
+1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/table.cpp
+	"table.h"
+
+1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/test.cpp
+	"vec.h"
+	"table.h"
+	<iostream>
+	<fstream>
+	<vector>
+	<iomanip>
+	"glutRender.h"
+
+1431088503 /home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/glutRender.h
+	<cmath>
+	<iostream>
+	<ctime>
+	<assert.h>
+	<stdio.h>
+	<sys/types.h>
+	<unistd.h>
+	<stdio.h>
+	<stdlib.h>
+	<string>
+	"table.h"
+	"DrawFunc.h"
+	"GlutHFunc.h"
+	"fpsMeasurer.h"
+	<GL/freeglut.h>
+	<glut.h>
+
+1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/vec.cpp
+
+1431090442 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/GlutHFunc.cpp
+	"GlutHFunc.h"
+
+1431091400 source:/home/kir/Документы/billiard-3d/Billiard3D/Billiard3D/glutRender.cpp
+	"glutRender.h"
+
