@@ -32,6 +32,7 @@ std::vector<std::vector<Ball *>> Table::CollideDFS(){
             ret.push_back(newcol);
     }
 
+    delete dfsed;
     return ret;
 }
 
@@ -59,14 +60,43 @@ int Table::NextStep(){
 		}
     }
 
-    //std::random_shuffle(balls.begin(), balls.end()); //Not sure if good idea..
-
     for (auto colarr: CollideDFS()){
+        std::vector<std::pair<int, int>> collision;
         for (auto it = colarr.begin(); it != colarr.end(); ++it){
             for (auto jt = it + 1; jt != colarr.end(); ++jt){
-                (*it)->Collide(*this, **jt);
+                if (!(*it)->noCollide(**jt))
+                    collision.push_back(std::pair<int, int>(it-colarr.begin(), jt-colarr.begin()));
             }
         }
+
+        std::sort(collision.begin(), collision.end());
+
+        double ctr = 0;
+        int length = colarr.size();
+
+        Ball * calculus = new Ball[length];
+        do{
+            Ball * b = new Ball[length];//Here balls would be copied
+            for (auto it = colarr.begin(); it != colarr.end(); ++it)
+                b[it-colarr.begin()] = **it;
+
+            for (auto act: collision)
+                b[act.first].Collide(*this, b[act.second]);
+
+            ctr++;
+
+            for (int i = 0; i < length; i++){
+                calculus[i].v += b[i].v;
+                calculus[i].w += b[i].w;
+            }
+            delete b;
+        }while(std::next_permutation(collision.begin(), collision.end()));
+
+        for (auto it = colarr.begin(); it != colarr.end(); ++it){
+            (**it).v = calculus[it-colarr.begin()].v / ctr;
+            (**it).w = calculus[it-colarr.begin()].w / ctr;
+        }
+        delete calculus;
     }
 
 	for (Ball& b: balls){
@@ -117,6 +147,13 @@ isvalid(true)
 
 	file.close();
 };
+
+Ball::Ball() :
+r(vec(0,0,0)),
+phi(quat(1,vec(0,0,0))),
+v(vec(0,0,0)),
+w(vec(0,0,0))
+{};
 
 int Ball::Collide(Table t, Ball &b)
 {
@@ -204,7 +241,6 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
         ret |= 2;
 
 	if (ret & 1){
-        //std::cout << state << std::endl;
         float hi = 2.0 / 5.0;
 		float vn = v * k;
 		vec vt = v - k * (v * k);
@@ -221,7 +257,7 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 			itr = u.normalized() * itr_v;
 		}
 
-		vn = -t.re * vn * (1 + ((double)(rand() - RAND_MAX/2) / RAND_MAX) * randmod);
+		vn = -t.re * vn;
 		vt -= itr;
 
 		v = vt + vn * k;

@@ -1,11 +1,81 @@
-60
+100
 
--1 0.049 0
-5 0 0
+0 1 0
+0 -300 0
+0 0 0
+textures/00.data
+
+0 0.3 0
+0 0 0
+0 0 0
+textures/01.data
+
+-0.1 -0.1 0
+0 0 0
 0 0 0
 textures/02.data
 
-1 0 0
--5 0 0
+-0.2 -0.1 0
 0 0 0
-textures/01.data
+0 0 0
+textures/03.data
+
+0 -0.1 0
+0 0 0
+0 0 0
+textures/04.data
+
+0.15 0 0
+0 0 0
+0 0 0
+textures/05.data
+
+-0.05 0 0
+0 0 0
+0 0 0
+textures/06.data
+
+0.05 0 0
+0 0 0
+0 0 0
+textures/07.data
+
+0 0.1 0
+0 0 0
+0 0 0
+textures/08.data
+
+-0.15 0 0
+0 0 0
+0 0 0
+textures/09.data
+
+-0.1 0.1 0
+0 0 0
+0 0 0
+textures/10.data
+
+0.1 0.1 0
+0 0 0
+0 0 0
+textures/11.data
+
+0.2 -0.1 0
+0 0 0
+0 0 0
+textures/12.data
+
+0.05 0.2 0
+0 0 0
+0 0 0
+textures/13.data
+
+-0.05 0.2 0
+0 0 0
+0 0 0
+textures/14.data
+
+0.1 -0.1 0
+0 0 0
+0 0 0
+textures/15.data

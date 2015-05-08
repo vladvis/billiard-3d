@@ -62,6 +62,7 @@ public:
     GLuint texture;
 
 	Ball(const std::string cfgfileName, vec r, quat phi, vec v, vec w, const char *texture_filename);
+	Ball();
 	int CollideDFS(Table t);
 	int Collide(Table t, Ball &);
 	int BoardCollide(Table t);
