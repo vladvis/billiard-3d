@@ -92,8 +92,6 @@ int Table::NextStep(){
             delete b;
         }while(std::next_permutation(collision.begin(), collision.end()));
 
-        std::cout << "Hit with " << ctr << std::endl;
-
         for (auto it = colarr.begin(); it != colarr.end(); ++it){
             (**it).v = calculus[it-colarr.begin()].v / ctr;
             (**it).w = calculus[it-colarr.begin()].w / ctr;
@@ -243,7 +241,6 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
         ret |= 2;
 
 	if (ret & 1){
-        //std::cout << state << std::endl;
         float hi = 2.0 / 5.0;
 		float vn = v * k;
 		vec vt = v - k * (v * k);
