@@ -12,7 +12,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="-lGL -lGLUT -lGLU -DDEBUG -DKIR_TEST --std=c++11" />
 				</Compiler>
 			</Target>
@@ -32,11 +31,15 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-fexpensive-optimizations" />
+			<Add option="-O3" />
+			<Add option="-Wfatal-errors" />
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-g" />
-			<Add option="-DLINUX_PLATFORM -DDEBUG -lGLU -lGL -lglut -Wall -Werror" />
+			<Add option="-lGL -lGLUT -lGLU -DDEBUG -DKIR_TEST --std=c++11" />
 		</Compiler>
 		<Linker>
+			<Add option="-s" />
 			<Add option="-lGL -lGLU -lglut -Wall -Werror -DDEBUG -DLINUX_TARGET" />
 		</Linker>
 		<Unit filename="DrawFunc.cpp" />

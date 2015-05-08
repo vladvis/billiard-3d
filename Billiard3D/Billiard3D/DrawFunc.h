@@ -5,11 +5,7 @@
 #include <iostream>
 #include <math.h>
 
-#ifdef LINUX_PLATFORM
-	#include <GL/glut.h>
-#else
-	#include <glut.h>
-#endif
+#include <GL/glut.h>
 
 
 

@@ -3,7 +3,6 @@
 GLUquadricObj *sphere = NULL;
 
 const int hel_info_lines_number = 9;
-
 char help_info[hel_info_lines_number][70] =
                         {"[q/Q/Esc] - exit",
                         "[Tab] - switch between objects",
@@ -184,6 +183,9 @@ void glutRender::LoadConfig(const std::string table_config, const std::string ba
         GameTable.CLOCK = oldCLOCK;
         GameTable.MINTIME = oldMINTIME;
     }
+
+    GameTable.sc_b_num = 0;
+
     std::cout << GameTable.MINTIME << " "<< GameTable.CLOCK << std::endl;
 }
 
@@ -193,54 +195,63 @@ void glutRender::DisplayGL ()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    setOrthographicProjection();
-    glPushMatrix();
-        glLoadIdentity();
-        glScalef(1.0f, -1.0f, 1.0f);
+    /* text out */
+    {
+        setOrthographicProjection();
+        glPushMatrix();
+            glLoadIdentity();
+            glScalef(1.0f, -1.0f, 1.0f);
 
-        char info[250];
+            char info[250];
 
-        if (curre_ball < (int)GameTable.balls.size())
-        {
-            sprintf(info, "BALL #%d state: r(%+0.2f, %+0.2f, %+0.2f), v(%+0.2f, %+0.2f, %+0.2f), w(%+0.2f, %+0.2f, %+0.2f)", curre_ball+1,
-                    GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z,
-                    GameTable.balls[curre_ball].v.x,GameTable.balls[curre_ball].v.y, GameTable.balls[curre_ball].v.z,
-                    GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
+            if (curre_ball < (int)GameTable.balls.size())
+            {
+                sprintf(info, "BALL[%d] state: r(%+0.2f, %+0.2f, %+0.2f); v(%+0.2f, %+0.2f, %+0.2f); w(%+0.2f, %+0.2f, %+0.2f)", curre_ball+1,
+                        GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z,
+                        GameTable.balls[curre_ball].v.x,GameTable.balls[curre_ball].v.y, GameTable.balls[curre_ball].v.z,
+                        GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
+
+                glPushMatrix();
+                    glColor3f(1.0f, 1.0f, 1.0f);
+                    glTranslatef(15.0f, -WindowHeight + 15, 0.0f);
+                    renderString(GLUT_STROKE_ROMAN, info);
+                glPopMatrix();
+            }
 
             glPushMatrix();
-                glColor3f(1.0f, 1.0f, 1.0f);
-                glTranslatef(15.0f, -WindowHeight + 15, 0.0f);
+                glColor3f(0.7f, 0.7f, 0.7f);
+                glTranslatef(15.0f, -20.0f, 0.0f);
+                renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
+            glPopMatrix();
+
+            glPushMatrix();
+                glColor3f(0.0f, 1.0f, 0.0f);
+                glTranslatef(WindowWidth - 120.0f, -20.0f, 0.0f);
+                sprintf(info, "Scores %d", GameTable.sc_b_num);
                 renderString(GLUT_STROKE_ROMAN, info);
             glPopMatrix();
-        }
 
+            if (help_menu_showed)
+            {
+                glColor3f(0.7f, 0.7f, 0.7f);
 
-        glPushMatrix();
-            glColor3f(0.7f, 0.7f, 0.7f);
-            glTranslatef(15.0f, -20.0f, 0.0f);
-            renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
+                glPushMatrix();
+                    glTranslatef(35.0f, -55.0f, 0.0f);
+                    float height = 0;
+                    for (int i = 0; i<hel_info_lines_number; i++)
+                    {
+                        glPushMatrix();
+                            glTranslatef(0.0f, -height, 0.0f);
+                            renderString(GLUT_STROKE_ROMAN, help_info[i]);
+                        glPopMatrix();
+                        height += 35;
+                    }
+                glPopMatrix();
+            }
+
         glPopMatrix();
-
-        if (help_menu_showed)
-        {
-            glColor3f(0.7f, 0.7f, 0.7f);
-
-            glPushMatrix();
-                glTranslatef(35.0f, -55.0f, 0.0f);
-                float height = 0;
-                for (int i = 0; i<hel_info_lines_number; i++)
-                {
-                    glPushMatrix();
-                        glTranslatef(0.0f, -height, 0.0f);
-                        renderString(GLUT_STROKE_ROMAN, help_info[i]);
-                    glPopMatrix();
-                    height += 35;
-                }
-            glPopMatrix();
-        }
-
-	glPopMatrix();
-	restorePerspectiveProjection();
+        restorePerspectiveProjection();
+    }
 
     glLoadIdentity();
     if (curre_ball < (int)GameTable.balls.size())
@@ -278,7 +289,7 @@ void glutRender::DisplayGL ()
 
 	glPushMatrix();
 		glRotatef(90, 0, 1, 0);
-		DrawBilliardTable (GameTable.lenx, GameTable.leny,  0.1f, 1.2*abs(groundLevel), ball_r);
+		DrawBilliardTable (GameTable.lenx, GameTable.leny,  GameTable.border_height, 1.2*abs(groundLevel), ball_r);
 	glPopMatrix();
 
     glColor3f (0.75f, 0.75f, 0.75f);
@@ -310,10 +321,6 @@ void glutRender::DisplayGL ()
 
 void glutRender::IdleGL ()
 {
-    std::clock_t CurrentTicks = std::clock ();
-    //float deltaTicks = (CurrentTicks - PreviousTicks);
-    PreviousTicks = CurrentTicks;
-
     if (calculations_started)
     {
 		for (int i = 0; i < GameTable.CLOCK; i++)
@@ -325,8 +332,6 @@ void glutRender::IdleGL ()
 			}
 		}
     }
-    //float fDeltaTime = deltaTicks / (float)CLOCKS_PER_SEC; // TODO: fps here
-
 	glutPostRedisplay();
 }
 

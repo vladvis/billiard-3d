@@ -36,7 +36,7 @@ std::vector<std::vector<Ball *>> Table::CollideDFS(){
     return ret;
 }
 
-void Ball::CollideDFS(Table t, int * dfsed, int color){
+void Ball::CollideDFS(Table &t, int * dfsed, int color){
     for (auto it = t.balls.begin(); it != t.balls.end(); ++it){
         if (!dfsed[it-t.balls.begin()] && !noCollide(*it)){
             dfsed[it-t.balls.begin()] = color;
@@ -109,12 +109,12 @@ int Table::NextStep(){
 	return ret;
 }
 
-Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1){
+Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1), sc_b_num(0){
 	std::ifstream file(name.c_str());
 
 	if (file.is_open())
 	{
-		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny;
+		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> border_height;
 	}
 	else
 	{
@@ -124,7 +124,7 @@ Table::Table(const std::string name): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(
 	file.close();
 };
 
-Table::Table(): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1){};
+Table::Table(): MINTIME(0), CLOCK(0), FPS(60), SLOWFACTOR(1), sc_b_num(0){};
 
 Ball::Ball(const  std::string name, vec r, quat phi, vec v, vec w, const char *texture_filename) :
 r(r),
@@ -155,7 +155,7 @@ v(vec(0,0,0)),
 w(vec(0,0,0))
 {};
 
-int Ball::Collide(Table t, Ball &b)
+int Ball::Collide(Table &t, Ball &b)
 {
 	vec k = (b.r - r).normalized();
 	float v1n = v * k;
@@ -195,7 +195,7 @@ int Ball::Collide(Table t, Ball &b)
 	return 1;
 };
 
-int Ball::noCollide(Ball b){
+int Ball::noCollide(Ball &b){
     if (Distance(b) > b.a + a) return 1;//No collide for you
 
 	vec k = (b.r - r).normalized();
@@ -208,7 +208,7 @@ int Ball::noCollide(Ball b){
     return 0;
 }
 
-int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
+int Ball::BoardCollide(Table &t){ //TODO Collision of Rezal
 	int ret = 0;
 	int state = 0;
 	vec k;
@@ -263,12 +263,16 @@ int Ball::BoardCollide(Table t){ //TODO Collision of Rezal
 		v = vt + vn * k;
 		w -= 1 / hi * (itr ^ k);
 
-        if (ret & 2) ret |= 4;
+        if (ret & 2)
+        {
+            ret |= 4;
+            t.sc_b_num += 1;
+        }
 	}
 	return ret;
 }
 
-int Ball::NextStep(Table t, float mintime)
+int Ball::NextStep(Table &t, float mintime)
 {
     int ret = 0;
     if (std::abs(r.z) < EPS && std::abs(v.z) < EPS){ //On the cloth
@@ -354,7 +358,7 @@ END_STEP:
     return ret;
 }
 
-float Ball::Distance(Ball b)
+float Ball::Distance(Ball &b)
 {
 	return sqrt((r.x - b.r.x)*(r.x - b.r.x) + (r.y - b.r.y)*(r.y - b.r.y) + (r.z - b.r.z)*(r.z - b.r.z));
 }

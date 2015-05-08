@@ -34,17 +34,21 @@ public:
 
     float lenx;//half size
     float leny;
+    float border_height;
 
     float MINTIME;//mintime used in physics
     float CLOCK;//how much time will be NextStep will be executed during frame
     float FPS;
     float SLOWFACTOR;//IGT/RTA
 
+    int sc_b_num;
+
     std::vector <Ball> balls;
 
 	Table(const std::string cfgfileName);
 	Table();
 	int NextStep();
+
 	std::vector<std::vector<Ball *>> CollideDFS();
 };
 
@@ -57,19 +61,20 @@ public:
 	quat phi;
 	vec v;
 	vec w;
-	bool isvalid;
 
-    GLuint texture;
+    bool isvalid;
+
+    GLuint texture = 0;
 
 	Ball(const std::string cfgfileName, vec r, quat phi, vec v, vec w, const char *texture_filename);
 	Ball();
-	int CollideDFS(Table t);
-	int Collide(Table t, Ball &);
-	int BoardCollide(Table t);
-	float Distance(Ball);
-	int NextStep(Table t, float mintime);//Return 0 is stops
-	void CollideDFS(Table t, int * dfsed, int color);
-	int noCollide(Ball b);
+	int CollideDFS(Table &t);
+	int Collide(Table &t, Ball &);
+	int BoardCollide(Table &t);
+	float Distance(Ball &);
+	int NextStep(Table &t, float mintime);//Return 0 is stops
+	void CollideDFS(Table &t, int * dfsed, int color);
+	int noCollide(Ball &b);
 };
 
 

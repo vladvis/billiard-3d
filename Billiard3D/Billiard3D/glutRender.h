@@ -20,11 +20,7 @@
 #include "GlutHFunc.h"
 #include "fpsMeasurer.h"
 
-#ifdef LINUX_PLATFORM
-	#include <GL/freeglut.h>
-#else
-	#include <glut.h>
-#endif
+#include <GL/glut.h>
 
 #ifndef GL_MULTISAMPLE
 	#define GL_MULTISAMPLE  0x809D
