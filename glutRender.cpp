@@ -226,6 +226,7 @@ void glutRender::DisplayGL ()
         glPushMatrix();
             glLoadIdentity();
             glScalef(1.0f, -1.0f, 1.0f);
+            glColor3f(0.8f, 0.8f, 0.7f);
 
             char info[250];
 
@@ -237,31 +238,28 @@ void glutRender::DisplayGL ()
                         GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
 
                 glPushMatrix();
-                    glColor3f(1.0f, 1.0f, 1.0f);
+                    //glColor3f(1.0f, 1.0f, 1.0f);
                     glTranslatef(15.0f, -WindowHeight + 15, 0.0f);
                     renderString(GLUT_STROKE_ROMAN, info);
                 glPopMatrix();
             }
 
             glPushMatrix();
-                glPushMatrix();
-                    glColor3f(0.0f, 1.0f, 0.0f);
-                    glTranslatef(WindowWidth - 180.0f, -30.0f, 0.0f);
-                    sprintf(info, "Scores    %d", GameTable.sc_b_num);
-                    renderString(GLUT_STROKE_ROMAN, info);
-                glPopMatrix();
-
-                glPushMatrix();
-                    glColor3f(1.0f, 1.0f, 0.0f);
-                    glTranslatef(WindowWidth - 180.0f, -65.0f, 0.0f);
-                    sprintf(info, "Time rate %.1f", GameTable.MULT);
-                    renderString(GLUT_STROKE_ROMAN, info);
-                glPopMatrix();
+                //glColor3f(0.0f, 1.0f, 0.0f);
+                glTranslatef(WindowWidth - 260.0f, -65.0f, 0.0f);
+                sprintf(info, "Scores    %d", GameTable.sc_b_num);
+                renderString(GLUT_STROKE_ROMAN, info);
             glPopMatrix();
 
+            glPushMatrix();
+               //glColor3f(1.0f, 1.0f, 0.0f);
+               glTranslatef(WindowWidth - 260.0f, -30.0f, 0.0f);
+               sprintf(info, "Time rate  %.3f", GameTable.MULT * 100);
+               renderString(GLUT_STROKE_ROMAN, info);
+            glPopMatrix();
 
             glPushMatrix();
-                glColor3f(0.9f, 0.9f, 0.8f);
+                //glColor3f(0.8f, 0.8f, 0.7f);
                 glTranslatef(15.0f, -30.0f, 0.0f);
                 renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
             glPopMatrix();
@@ -269,7 +267,7 @@ void glutRender::DisplayGL ()
 
             if (help_menu_showed)
             {
-                glColor3f(0.9f, 0.9f, 0.8f);
+                //glColor3f(0.8f, 0.8f, 0.7f);
 
                 glPushMatrix();
                     glTranslatef(35.0f, -65.0f, 0.0f);
@@ -420,7 +418,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case  'D':
         case  'd':
         {
-            alpha += 0.05f;
+            alpha += 0.1f;
             if (alpha >= 2*M_PI) alpha -= 2*M_PI;
         }
         break;
@@ -442,7 +440,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case  'A':
         case  'a':
         {
-            alpha -= 0.05f;
+            alpha -= 0.1f;
             if (alpha <= 0) alpha += 2*M_PI;
         }
         break;
@@ -535,15 +533,20 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case ']':
         {
             if (GameTable.MULT < 4)
-                GameTable.MULT += 0.1f;
+                if (GameTable.MULT < 1)
+                    GameTable.MULT *= 2;
+                else
+                    GameTable.MULT += 0.05f;
         }
         break;
 
         case '{':
         case '[':
         {
-            if (GameTable.MULT > 0.1f)
-                GameTable.MULT -= 0.1f;
+            if (GameTable.MULT <= 1)
+                GameTable.MULT /= 2;
+            else
+                GameTable.MULT -= 0.05;
         }
         break;
     }
