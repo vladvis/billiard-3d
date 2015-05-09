@@ -13,7 +13,7 @@ char help_info[hel_info_lines_number][70] =
                         "[a/A]/[d/D] - rotate the camera left/right on the active object",
                         "[-]/[+] - raise/lower the camera relative to the table",
                         "[p/P]/[l/L] - disable/enable the surfaces drawing",
-                        "[m/M] - turn off/on music",
+                        "[m/M] - turn off music",
                         "",
                         "Designed by Kopyrin Denis, Shcherbatov Kirill, Vladas Bulavas"
                         };
