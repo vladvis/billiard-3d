@@ -63,7 +63,7 @@ public:
 	vec v;
 	vec w;
 
-    bool isvalid;
+    char isvalid;
 
     GLuint texture = 0;
 

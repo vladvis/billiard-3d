@@ -48,9 +48,8 @@ void Ball::CollideDFS(Table &t, int * dfsed, int color){
 int Table::NextStep(){
 	int ret = 0;
 
-	//for (std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
     for (auto it = balls.begin(); it != balls.end();){
-		if (it -> isvalid){
+		if (it -> isvalid == 1){
 		    int bc = it -> BoardCollide(*this);
             if (bc & 4){
                 ret |= 512;
@@ -109,7 +108,7 @@ int Table::NextStep(){
 	for (Ball& b: balls){
         if (b.isvalid){
             int retb = b.NextStep(*this, MINTIME);
-            ret |= (retb);
+            if (b.isvalid == 1) ret |= (retb);
         }
 	}
 
@@ -248,6 +247,11 @@ int Ball::BoardCollide(Table &t){ //TODO Collision of Rezal
         ret |= 2;
 
 	if (ret & 1){
+        if (r.z > t.border_height) {
+            isvalid = 2;
+            return 0;
+        }
+
         float hi = 2.0 / 5.0;
 		float vn = v * k;
 		vec vt = v - k * (v * k);
@@ -282,6 +286,9 @@ int Ball::BoardCollide(Table &t){ //TODO Collision of Rezal
 int Ball::NextStep(Table &t, float mintime)
 {
     int ret = 0;
+    if (isvalid == 2){
+        goto FLY;
+    }
     if (std::abs(r.z) < EPS && std::abs(v.z) < EPS){ //On the cloth
         vec k(0, 0, 1);
         double hi = 2.0 / 5.0;
@@ -354,6 +361,7 @@ int Ball::NextStep(Table &t, float mintime)
 
 		goto END_STEP;
     }else{//Other variants is considered as free flight. Speed update is required
+    FLY:
         ret |= 64;
 		v.z -= G*mintime;
 		goto END_STEP;

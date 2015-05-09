@@ -17,5 +17,5 @@ add_executable(main test.cpp)
 target_link_libraries(main libs)
 
 include_directories(${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${ALUT_INCLUDE_DIRS} ${THREADS_INCLUDE_DIRS})
-target_link_libraries(libs ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${ALUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(main ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${ALUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(libs ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(main ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
