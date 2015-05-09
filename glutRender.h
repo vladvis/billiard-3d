@@ -77,6 +77,7 @@ class glutRender
 			int WindowWidth;
 			int WindowHeight;
 
+
 			float alpha;
             float multipluer;
             float cam_height_h;

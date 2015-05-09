@@ -2,7 +2,7 @@
 
 GLUquadricObj *sphere = NULL;
 
-const int hel_info_lines_number = 12;
+const int hel_info_lines_number = 13;
 char help_info[hel_info_lines_number][70] =
                         {"[q/Q/Esc] - exit",
                         "[Tab] - switch between objects",
@@ -13,6 +13,7 @@ char help_info[hel_info_lines_number][70] =
                         "[a/A]/[d/D] - rotate the camera left/right on the active object",
                         "[-]/[+] - raise/lower the camera relative to the table",
                         "[p/P]/[l/L] - disable/enable the surfaces drawing",
+                         "[{]/[}] - increase/decrease time rate"
                         "[m/M] - turn off music",
                         "",
                         "Designed by Kopyrin Denis, Shcherbatov Kirill, Vladas Bulavas"
@@ -93,7 +94,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	{
 	    if (MainTheme.mSourceID == 0)
         {
-            MainTheme.Open(sound_path, false, false);
+            MainTheme.Open(sound_path, true, false);
             continue;
         }
 
@@ -243,16 +244,25 @@ void glutRender::DisplayGL ()
             }
 
             glPushMatrix();
-                glColor3f(0.0f, 1.0f, 0.0f);
-                glTranslatef(WindowWidth - 120.0f, -20.0f, 0.0f);
-                sprintf(info, "Scores %d", GameTable.sc_b_num);
-                renderString(GLUT_STROKE_ROMAN, info);
+                glPushMatrix();
+                    glColor3f(0.0f, 1.0f, 0.0f);
+                    glTranslatef(WindowWidth - 180.0f, -30.0f, 0.0f);
+                    sprintf(info, "Scores    %d", GameTable.sc_b_num);
+                    renderString(GLUT_STROKE_ROMAN, info);
+                glPopMatrix();
+
+                glPushMatrix();
+                    glColor3f(1.0f, 1.0f, 0.0f);
+                    glTranslatef(WindowWidth - 180.0f, -65.0f, 0.0f);
+                    sprintf(info, "Time rate %.1f", GameTable.MULT);
+                    renderString(GLUT_STROKE_ROMAN, info);
+                glPopMatrix();
             glPopMatrix();
 
 
             glPushMatrix();
                 glColor3f(0.9f, 0.9f, 0.8f);
-                glTranslatef(15.0f, -20.0f, 0.0f);
+                glTranslatef(15.0f, -30.0f, 0.0f);
                 renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
             glPopMatrix();
 
@@ -262,7 +272,7 @@ void glutRender::DisplayGL ()
                 glColor3f(0.9f, 0.9f, 0.8f);
 
                 glPushMatrix();
-                    glTranslatef(35.0f, -55.0f, 0.0f);
+                    glTranslatef(35.0f, -65.0f, 0.0f);
                     float height = 0;
                     for (int i = 0; i<hel_info_lines_number; i++)
                     {
@@ -523,13 +533,15 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
         case '[':
         {
-            GameTable.MULT *= 2;
+            if (GameTable.MULT < 4)
+                GameTable.MULT += 0.1f;
         }
         break;
 
         case ']':
         {
-            GameTable.MULT /= 2;
+            if (GameTable.MULT > 0.1f)
+                GameTable.MULT -= 0.1f;
         }
         break;
     }
