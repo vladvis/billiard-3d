@@ -52,11 +52,11 @@ int fpsMeasurer::fpsBinSearch(int numballs){
 void fpsMeasurer::fpsCount(){
     int numballs = t.balls.size();
 
-    t.CLOCK = fpsBinSearch(numballs)/t.FPS;
-    t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
+    t.DEFCLOCK = fpsBinSearch(numballs)/t.FPS;
+    t.MINTIME = 1/t.SLOWFACTOR/t.DEFCLOCK;
 
     std::ofstream file_out("fps.cfg");
-    file_out << t.CLOCK;
+    file_out << t.DEFCLOCK;
 }
 
 void fpsMeasurer::fpsMeasure(){
@@ -66,14 +66,14 @@ void fpsMeasurer::fpsMeasure(){
         std::cout << "No fps file found, measuring..." << std::endl;
         fpsCount();
     }else{
-        if(!(file >> t.CLOCK)){
+        if(!(file >> t.DEFCLOCK)){
             std::cout << "Your fps file is bad, I have to retest" << std::endl;
             fpsCount();
         }else{
             int numballs = t.balls.size();
             std::cout << "OK, I found your cfg. Let me check it" << std::endl;
 
-            int m = t.CLOCK * t.FPS;
+            int m = t.DEFCLOCK * t.FPS;
             std::cout << "Trying " << m << " ticks" << std::endl;
             double mt = 1/t.SLOWFACTOR/m;
 
@@ -95,7 +95,7 @@ void fpsMeasurer::fpsMeasure(){
                 std::cout << "Correctness percentage: " << 100 - std::abs(time-1) * 100 << std::endl;
                 if (time > 0.95){
                     std::cout << "OK, I believe you..." << std::endl;
-                    t.MINTIME = 1/t.SLOWFACTOR/t.CLOCK;
+                    t.MINTIME = 1/t.SLOWFACTOR/t.DEFCLOCK;
                 }else{
                     std::cout << "Hmm, your measurements are too inaccurate!" << std::endl;
                     std::cout << "Shall I remeasure it for you? [Y/n] ";

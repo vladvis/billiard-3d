@@ -164,7 +164,7 @@ void glutRender::LoadConfig(const std::string &table_config, const std::string &
     calculations_started = false;
 
     float oldMINTIME = GameTable.MINTIME;
-    float oldCLOCK = GameTable.CLOCK;
+    float oldCLOCK = GameTable.DEFCLOCK;
 
     GameTable = Table(table_config);
 
@@ -204,13 +204,13 @@ void glutRender::LoadConfig(const std::string &table_config, const std::string &
         fpsMeasurer f(GameTable);
         f.fpsMeasure();
     }else{
-        GameTable.CLOCK = oldCLOCK;
+        GameTable.DEFCLOCK = oldCLOCK;
         GameTable.MINTIME = oldMINTIME;
     }
 
     GameTable.sc_b_num = 0;
 
-    std::cout << GameTable.MINTIME << " "<< GameTable.CLOCK << std::endl;
+    std::cout << GameTable.MINTIME << " "<< GameTable.DEFCLOCK << std::endl;
 }
 
 void glutRender::DisplayGL ()
@@ -348,7 +348,7 @@ void glutRender::IdleGL ()
     if (calculations_started)
     {
         int ret = 0;
-		for (int i = 0; i < GameTable.CLOCK; i++)
+		for (int i = 0; i < GameTable.DEFCLOCK * GameTable.MULT; i++)
 		{
 			if (!(ret |= GameTable.NextStep())) calculations_started = false;
 		}
@@ -390,138 +390,148 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
     switch (c)
     {
-    case 'h':
-    case 'H':
-    {
-        SoundController.Play(MediaLibrary["wrong"]);
-       help_menu_showed = !help_menu_showed;
-    }
-    break;
+        case 'h':
+        case 'H':
+        {
+            SoundController.Play(MediaLibrary["wrong"]);
+            help_menu_showed = !help_menu_showed;
+        }
+        break;
 
 
-    case '\033': // escape quits
-    case 'Q':
-    case 'q':
-    {
-        Cleanup();
-    }
-    break;
+        case '\033': // escape quits
+        case 'Q':
+        case 'q':
+        {
+            Cleanup();
+        }
+        break;
 
-    case  'D':
-    case  'd':
-    {
-        alpha += 0.05f;
-        if (alpha >= 2*M_PI) alpha -= 2*M_PI;
-    }
-    break;
+        case  'D':
+        case  'd':
+        {
+            alpha += 0.05f;
+            if (alpha >= 2*M_PI) alpha -= 2*M_PI;
+        }
+        break;
 
-    case 'L':
-    case 'l':
-    {
-        glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-    }
-    break;
+        case 'L':
+        case 'l':
+        {
+            glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+        }
+        break;
 
-    case 'P':
-    case 'p':
-    {
-        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL) ;
-    }
-    break;
+        case 'P':
+        case 'p':
+        {
+            glPolygonMode (GL_FRONT_AND_BACK, GL_FILL) ;
+        }
+        break;
 
-    case  'A':
-    case  'a':
-    {
-        alpha -= 0.05f;
-        if (alpha <= 0) alpha += 2*M_PI;
-    }
-    break;
+        case  'A':
+        case  'a':
+        {
+            alpha -= 0.05f;
+            if (alpha <= 0) alpha += 2*M_PI;
+        }
+        break;
 
+        case 'S':
+        case 's':
+        {
+            if (multipluer < 3.0) multipluer += 0.2f;
+        }
+        break;
 
-    case 'S':
-    case 's':
-    {
-        if (multipluer < 3.0) multipluer += 0.2f;
-    }
-    break;
+        case 'W':
+        case 'w':
+        {
+            if (multipluer > 1.2) multipluer -= 0.2f;
+        }
 
-    case 'W':
-    case 'w':
-    {
-        if (multipluer > 1.2) multipluer -= 0.2f;
-    }
+        break;
 
-    break;
+        case '\t': //TAB
+        {
+            if (!GameTable.balls.empty())
+            {
+                SoundController.Play(MediaLibrary["choose"]);
+                curre_ball = (curre_ball + 1) % GameTable.balls.size();
+            }
+            else
+                SoundController.Play(MediaLibrary["wrong"]);
+        }
+        break;
 
-    case '\t': //TAB
-    {
-        if (!GameTable.balls.empty())
+        case 'R':
+        case 'r':
+        {
+            SoundController.Play(MediaLibrary["wrong"]);
+            LoadConfig (table_config_filename, balls_config_filename, start_state_config_filename);
+        }
+        break;
+
+        case 'z':
+        case 'Z':
+        {
+            if (!calculations_started)
+            {
+                SoundController.Play(MediaLibrary["menu"]);
+                addBall();
+            }
+        }
+        break;
+
+        case ' ':
+        {
+            if (!calculations_started)
+                SoundController.Play(MediaLibrary["hit"]);
+            else
+                SoundController.Play(MediaLibrary["wrong"]);
+
+            calculations_started = !calculations_started;
+        }
+        break;
+
+        case '+':
+        {
+            if (cam_height_h < 5) cam_height_h += 0.2f;
+        }
+        break;
+
+        case '-':
+        {
+            if (cam_height_h > 1) cam_height_h -= 0.2f;
+        }
+        break;
+        case 'c':
+        case 'C':
         {
             SoundController.Play(MediaLibrary["choose"]);
-            curre_ball = (curre_ball + 1) % GameTable.balls.size();
+            curre_ball = GameTable.balls.size();
         }
-        else
-            SoundController.Play(MediaLibrary["wrong"]);
-    }
-    break;
+        break;
 
-    case 'R':
-    case 'r':
-    {
-        SoundController.Play(MediaLibrary["wrong"]);
-        LoadConfig (table_config_filename, balls_config_filename, start_state_config_filename);
-    }
-    break;
-
-    case 'z':
-    case 'Z':
-    {
-        if (!calculations_started)
+        case 'm':
+        case 'M':
         {
-            SoundController.Play(MediaLibrary["menu"]);
-            addBall();
+            if (main_theme_state) MainTheme.Stop();
+            main_theme_state != main_theme_state;
         }
-    }
-    break;
+        break;
 
-    case ' ':
-    {
-        if (!calculations_started)
-            SoundController.Play(MediaLibrary["hit"]);
-        else
-            SoundController.Play(MediaLibrary["wrong"]);
+        case '[':
+        {
+            GameTable.MULT *= 2;
+        }
+        break;
 
-        calculations_started = !calculations_started;
-    }
-    break;
-
-    case '+':
-    {
-        if (cam_height_h < 5) cam_height_h += 0.2f;
-    }
-    break;
-
-    case '-':
-    {
-        if (cam_height_h > 1) cam_height_h -= 0.2f;
-    }
-    break;
-    case 'c':
-    case 'C':
-    {
-        SoundController.Play(MediaLibrary["choose"]);
-        curre_ball = GameTable.balls.size();
-    }
-    break;
-
-    case 'm':
-    case 'M':
-    {
-          if (main_theme_state) MainTheme.Stop();
-          main_theme_state != main_theme_state;
-    }
-    break;
-
+        case ']':
+        {
+            GameTable.MULT /= 2;
+        }
+        break;
     }
 
     glutPostRedisplay ();

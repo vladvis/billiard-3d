@@ -37,7 +37,8 @@ public:
     float border_height;
 
     float MINTIME;//mintime used in physics
-    float CLOCK;//how much time will be NextStep will be executed during frame
+    float DEFCLOCK;//default num of time for each NextStep()
+	float MULT;//mult for default clock (TimeLapse)
     float FPS;
     float SLOWFACTOR;//IGT/RTA
 
