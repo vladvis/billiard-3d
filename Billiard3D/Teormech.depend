@@ -134,7 +134,7 @@
 1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/quat.cpp
 	"quat.h"
 
-1431101976 source:/home/kir/Документы/billiard-3d/Billiard3D/table.cpp
+1431189106 source:/home/kir/Документы/billiard-3d/Billiard3D/table.cpp
 	"table.h"
 
 1431162425 source:/home/kir/Документы/billiard-3d/Billiard3D/test.cpp
@@ -147,7 +147,7 @@
 	<pthread.h>
 	"glutRender.h"
 
-1431161569 /home/kir/Документы/billiard-3d/Billiard3D/glutRender.h
+1431190409 /home/kir/Документы/billiard-3d/Billiard3D/glutRender.h
 	<cmath>
 	<iostream>
 	<ctime>
@@ -167,10 +167,10 @@
 
 1431083492 source:/home/kir/Документы/billiard-3d/Billiard3D/vec.cpp
 
-1431163003 source:/home/kir/Документы/billiard-3d/Billiard3D/glutRender.cpp
+1431191411 source:/home/kir/Документы/billiard-3d/Billiard3D/glutRender.cpp
 	"glutRender.h"
 
-1431159837 /home/kir/Документы/billiard-3d/Billiard3D/sound.h
+1431190228 /home/kir/Документы/billiard-3d/Billiard3D/sound.h
 	<AL/al.h>
 	<AL/alc.h>
 	<AL/alut.h>

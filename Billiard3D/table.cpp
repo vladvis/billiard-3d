@@ -51,10 +51,15 @@ int Table::NextStep(){
 	//for (std::vector<Ball>::iterator it = balls.begin(); it != balls.end(); ++it)
     for (auto it = balls.begin(); it != balls.end();){
 		if (it -> isvalid){
-            if (it -> BoardCollide(*this) & 4)
+		    int bc = it -> BoardCollide(*this);
+            if (bc & 4){
+                ret |= 512;
                 it = balls.erase(it);
-            else
+            }else{
+                if (bc & 1)
+                    ret |= 1024;
                 it++;
+            }
 		}else{
             it++;
 		}
@@ -97,6 +102,8 @@ int Table::NextStep(){
             (**it).w = calculus[it-colarr.begin()].w / ctr;
         }
         delete calculus;
+
+        ret |= 256;
     }
 
 	for (Ball& b: balls){
@@ -287,7 +294,7 @@ int Ball::NextStep(Table &t, float mintime)
         if (std::abs(w.z) > EPS){
             double ddw = -t.s*G/hi/a/a * sign(w.z) * mintime;
             if (sign(w.z) == sign(w.z+ddw)) //ddw can't change direction
-                dw += ddw*k, ret += 1;
+                dw += ddw*k, ret |= 1;
         }
 
         vec omega = w - k*w.z;
@@ -295,7 +302,7 @@ int Ball::NextStep(Table &t, float mintime)
             vec ddo = -t.d*G/hi/a/a * omega.normalized()*mintime;
             vec omac = omega.normalized() - (omega + ddo).normalized();
             if (omac.mod() < 1) //vector changed it's direction when delta added - it's very near to zero
-                dw += ddo, ret += 2;
+                dw += ddo, ret |= 2;
         }
 
         vec u = v + a * (k ^ w);
@@ -307,7 +314,7 @@ int Ball::NextStep(Table &t, float mintime)
 
             vec umac = u.normalized() - (u + ddu).normalized();
             if (umac.mod() < 1) //like previous + w can be zero
-                dw += ddw, dv += ddv, ret += 4;
+                dw += ddw, dv += ddv, ret |= 4;
         }
         w += dw, v += dv;
 
@@ -320,7 +327,8 @@ int Ball::NextStep(Table &t, float mintime)
 
     /* Another cases are considered as flying. */
     if (r.z < EPS && v.z < 0){ //Hit the ground
-        ret += 8;
+        ret |= 8;
+        if (v.z < -0.25) ret |= 16;
         r.z = 0; //Buried is a bad idea
         vec k(0, 0, -1);
 		float hi = 2.0 / 5.0;
@@ -342,11 +350,11 @@ int Ball::NextStep(Table &t, float mintime)
 		w -= 1 / hi * (k ^ itr);
 
 		v = u - a * (w ^ k) + k * vn_n;
-		if (v.z < G*mintime) v.z = 0, ret += 4, r.z = 0; //Final ground hit
+		if (v.z < G*mintime) v.z = 0, ret |= 32, r.z = 0; //Final ground hit
 
 		goto END_STEP;
     }else{//Other variants is considered as free flight. Speed update is required
-        ret += 8;
+        ret |= 64;
 		v.z -= G*mintime;
 		goto END_STEP;
     }

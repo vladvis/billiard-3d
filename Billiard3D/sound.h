@@ -28,6 +28,7 @@ class remSnd
 	  ALfloat mVel[3];
 	  ALfloat mPos[3];
 	  bool  mLooped;
+	  ALuint    mSourceID = 0;
 
 	  unsigned Open(const std::string &Filename, bool Looped, bool Streamed);
 	  bool IsStreamed();
@@ -39,7 +40,7 @@ class remSnd
 	  void Stop();
 
 	private:
-		ALuint    mSourceID;
+
 		bool      mStreamed;
 
 		bool LoadWavFile (const std::string &Filename);

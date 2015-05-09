@@ -38,7 +38,7 @@
 			<Add option="-lalut -lopenal -lpthread -lGL -lGLUT -lGLU -DDEBUG -DKIR_TEST -std=c++11" />
 		</Compiler>
 		<Linker>
-			<Add option="-lGL -lGLU -lglut -Wall -Werror -DDEBUG -DLINUX_TARGET" />
+			<Add option="-lalut -lopenal -lpthread -lGL -lglut -lGLU -DDEBUG -DKIR_TEST -std=c++11" />
 		</Linker>
 		<Unit filename="DrawFunc.cpp" />
 		<Unit filename="DrawFunc.h" />

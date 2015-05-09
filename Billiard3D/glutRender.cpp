@@ -2,7 +2,7 @@
 
 GLUquadricObj *sphere = NULL;
 
-const int hel_info_lines_number = 9;
+const int hel_info_lines_number = 12;
 char help_info[hel_info_lines_number][70] =
                         {"[q/Q/Esc] - exit",
                         "[Tab] - switch between objects",
@@ -12,7 +12,10 @@ char help_info[hel_info_lines_number][70] =
                         "[w/W]/[s/S] - zoom in/out camera from the active object",
                         "[a/A]/[d/D] - rotate the camera left/right on the active object",
                         "[-]/[+] - raise/lower the camera relative to the table",
-                        "[p/P]/[l/L] - disable/enable the surfaces drawing"
+                        "[p/P]/[l/L] - disable/enable the surfaces drawing",
+                        "[m/M] - turn off/on music",
+                        "",
+                        "Designed by Kopyrin Denis, Shcherbatov Kirill, Vladas Bulavas"
                         };
 
 /* there is only one copy of glutRender, so we are have to use this lifehack to deal with C GLUT library on C++, it is ok */
@@ -78,7 +81,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 
     glutInitWindowSize (WindowWidth, WindowHeight);
 
-    glutWindowHandle = glutCreateWindow ("Billiard 3D Project - [q]uit");
+    glutWindowHandle = glutCreateWindow ("Billiard 3D Project 2015");
     assert (glutWindowHandle != 0);
 
 
@@ -88,6 +91,12 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	char sound_title[255], sound_path[255];
 	while (fscanf(sounds_file, "%s %s", sound_title, sound_path) != EOF)
 	{
+	    if (MainTheme.mSourceID == 0)
+        {
+            MainTheme.Open(sound_path, false, false);
+            continue;
+        }
+
 		unsigned sound_id = SoundController.Open(sound_path, false, false);
 		assert (sound_id > 0);
 
@@ -103,7 +112,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 
     glEnable (GL_DEPTH_TEST);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set out clear colour to black, full alpha
+    glClearColor(0.03f, 0.03f, 0.03f, 1.0f); // Set out clear colour to black, full alpha
     glClearDepth(1.0f);  // Clear the entire depth of the depth buffer
 
     glShadeModel (GL_SMOOTH); // Enable (gouraud) shading
@@ -122,7 +131,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glEnable(GL_AUTO_NORMAL);
     /* fog */
     glEnable(GL_FOG);
-    GLfloat fogColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+    GLfloat fogColor[4] = {0.03f, 0.03f, 0.03f, 1.0f};
     glFogi(GL_FOG_MODE, GL_LINEAR);
     glFogf(GL_FOG_START, 15);
     glFogf(GL_FOG_END, 35);
@@ -140,6 +149,9 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     gluQuadricDrawStyle(sphere, GLU_FILL);
     gluQuadricTexture(sphere, GL_TRUE);
     gluQuadricNormals(sphere, GLU_SMOOTH);
+
+    MainTheme.Play();
+    main_theme_state = true;
 
     glutMainLoop ();
 
@@ -188,7 +200,6 @@ void glutRender::LoadConfig(const std::string &table_config, const std::string &
         return;
     }
 
-    std::cout << "Loaded configurations " << table_config << "; " << balls_config << std::endl;
     if (oldCLOCK == 0) {
         fpsMeasurer f(GameTable);
         f.fpsMeasure();
@@ -232,21 +243,23 @@ void glutRender::DisplayGL ()
             }
 
             glPushMatrix();
-                glColor3f(0.7f, 0.7f, 0.7f);
-                glTranslatef(15.0f, -20.0f, 0.0f);
-                renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
-            glPopMatrix();
-
-            glPushMatrix();
                 glColor3f(0.0f, 1.0f, 0.0f);
                 glTranslatef(WindowWidth - 120.0f, -20.0f, 0.0f);
                 sprintf(info, "Scores %d", GameTable.sc_b_num);
                 renderString(GLUT_STROKE_ROMAN, info);
             glPopMatrix();
 
+
+            glPushMatrix();
+                glColor3f(0.9f, 0.9f, 0.8f);
+                glTranslatef(15.0f, -20.0f, 0.0f);
+                renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
+            glPopMatrix();
+
+
             if (help_menu_showed)
             {
-                glColor3f(0.7f, 0.7f, 0.7f);
+                glColor3f(0.9f, 0.9f, 0.8f);
 
                 glPushMatrix();
                     glTranslatef(35.0f, -55.0f, 0.0f);
@@ -334,14 +347,20 @@ void glutRender::IdleGL ()
 {
     if (calculations_started)
     {
+        int ret = 0;
 		for (int i = 0; i < GameTable.CLOCK; i++)
 		{
-			if (!GameTable.NextStep()) calculations_started = false;
-			if (!calculations_started){
-                std::cout << "End!" << std::endl;
-                break;
-			}
+			if (!(ret |= GameTable.NextStep())) calculations_started = false;
 		}
+
+        if (ret & 256)
+            SoundController.Play(MediaLibrary["collide"]);
+        if (ret & 512)
+            SoundController.Play(MediaLibrary["pocket"]);
+        if (ret & 1024)
+            SoundController.Play(MediaLibrary["border_hit"]);
+        if (ret & 16)
+            SoundController.Play(MediaLibrary["border_hit"]);
     }
 	glutPostRedisplay();
 }
@@ -374,6 +393,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
     case 'h':
     case 'H':
     {
+        SoundController.Play(MediaLibrary["wrong"]);
        help_menu_showed = !help_menu_showed;
     }
     break;
@@ -421,7 +441,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
     case 'S':
     case 's':
     {
-        if (multipluer < 4.4) multipluer += 0.2f;
+        if (multipluer < 3.0) multipluer += 0.2f;
     }
     break;
 
@@ -466,7 +486,11 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
     case ' ':
     {
-        SoundController.Play(MediaLibrary["hit"]);
+        if (!calculations_started)
+            SoundController.Play(MediaLibrary["hit"]);
+        else
+            SoundController.Play(MediaLibrary["wrong"]);
+
         calculations_started = !calculations_started;
     }
     break;
@@ -479,7 +503,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
     case '-':
     {
-        if (cam_height_h > 0.4) cam_height_h -= 0.2f;
+        if (cam_height_h > 1) cam_height_h -= 0.2f;
     }
     break;
     case 'c':
@@ -489,6 +513,15 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         curre_ball = GameTable.balls.size();
     }
     break;
+
+    case 'm':
+    case 'M':
+    {
+          if (main_theme_state) MainTheme.Stop();
+          main_theme_state != main_theme_state;
+    }
+    break;
+
     }
 
     glutPostRedisplay ();

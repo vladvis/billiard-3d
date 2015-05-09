@@ -84,6 +84,7 @@ class glutRender
 
             bool calculations_started;
             bool help_menu_showed;
+            bool main_theme_state;
 
             std::string table_config_filename;
             std::string balls_config_filename;
@@ -92,6 +93,8 @@ class glutRender
 			std::clock_t PreviousTicks;
 
 			remSnd SoundController;
+			remSnd MainTheme;
+
 			std::map<std::string, ALuint> MediaLibrary;
 };
 
