@@ -4,17 +4,17 @@ GLUquadricObj *sphere = NULL;
 
 const int hel_info_lines_number = 13;
 char help_info[hel_info_lines_number][70] =
-                        {"[q/Q/Esc] - exit",
-                        "[Tab] - switch between objects",
-                        "[c/C] - set view on table center",
-                        "[Spacebar] - begin/pause computational experiment",
-                        "[r/R] - reset scene",
-                        "[w/W]/[s/S] - zoom in/out camera from the active object",
-                        "[a/A]/[d/D] - rotate the camera left/right on the active object",
-                        "[-]/[+] - raise/lower the camera relative to the table",
-                        "[p/P]/[l/L] - disable/enable the surfaces drawing",
-                         "[{]/[}] - increase/decrease time rate"
-                        "[m/M] - turn off music",
+                        {"[ q/Q/Esc ] - exit",
+                        "[ Tab ] - switch between objects",
+                        "[ c/C ] - set view on table center",
+                        "[ Spacebar ] - begin/pause computational experiment",
+                        "[ r/R ] - reset scene",
+                        "[ w/W ] / [ s/S ] - zoom in/out camera from the active object",
+                        "[ a/A ] / [ d/D ] - rotate the camera left/right on the active object",
+                        "[ - ] / [ + ] - raise/lower the camera relative to the table",
+                        "[ p/P ] / [ l/L ] - disable/enable the surfaces drawing",
+                         "[ ] ] / [ ] ] - decrease/increase time rate"
+                        "[ m/M ] - turn off music",
                         "",
                         "Designed by Kopyrin Denis, Shcherbatov Kirill, Vladas Bulavas"
                         };
@@ -531,14 +531,16 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         }
         break;
 
-        case '[':
+        case '}':
+        case ']':
         {
             if (GameTable.MULT < 4)
                 GameTable.MULT += 0.1f;
         }
         break;
 
-        case ']':
+        case '{':
+        case '[':
         {
             if (GameTable.MULT > 0.1f)
                 GameTable.MULT -= 0.1f;
