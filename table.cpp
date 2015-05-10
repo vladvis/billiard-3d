@@ -105,10 +105,14 @@ int Table::NextStep(){
         ret |= 256;
     }
 
-	for (Ball& b: balls){
-        if (b.isvalid){
-            int retb = b.NextStep(*this, MINTIME);
-            if (b.isvalid == 1) ret |= (retb);
+	for (auto it = balls.begin(); it != balls.end();){
+        if (it -> isvalid){
+            int retb = it -> NextStep(*this, MINTIME);
+            if (retb & 128)
+                it = balls.erase(it);
+            else
+                it++;
+            if (it -> isvalid) ret |= (retb);
         }
 	}
 
@@ -360,8 +364,9 @@ int Ball::NextStep(Table &t, float mintime)
 		if (v.z < G*mintime) v.z = 0, ret |= 32, r.z = 0; //Final ground hit
 
 		goto END_STEP;
-    }else{//Other variants is considered as free flight. Speed update is required
+    }else{//Other variants is considered as free flight. Velocity update is required
     FLY:
+        if (r.z < -4.8) isvalid = 0, ret |= 128;
         ret |= 64;
 		v.z -= G*mintime;
 		goto END_STEP;
