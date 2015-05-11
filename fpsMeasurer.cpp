@@ -17,6 +17,7 @@ void fpsMeasurer::NextStep(std::vector<Ball> &balls, double mt){
 }
 
 int fpsMeasurer::fpsBinSearch(int numballs){
+    //return 10000;
     std::cout << "Start fps measurements!" << std::endl;
 
     //CLOCK binary search
@@ -60,6 +61,7 @@ void fpsMeasurer::fpsCount(){
 }
 
 void fpsMeasurer::fpsMeasure(){
+    //fpsCount(); return;
     std::ifstream file("fps.cfg");
     if (!file.is_open())
     {

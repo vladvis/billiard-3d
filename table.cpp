@@ -206,7 +206,7 @@ int Ball::Collide(Table &t, Ball &b)
 };
 
 int Ball::noCollide(Ball &b){
-    if (Distance(b) > b.a + a) return 1;//No collide for you
+    if (Distance(b) > (b.a + a)*(b.a + a)) return 1;//No collide for you
 
 	vec k = (b.r - r).normalized();
     if (isnan(k.mod())) return 2; //Some siht is happening! Let a few step ahead
@@ -310,7 +310,13 @@ int Ball::NextStep(Table &t, float mintime)
 
         vec omega = w - k*w.z;
         if (omega.mod() > EPS){
-            vec ddo = -t.d*G/hi/a/a * omega.normalized()*mintime;
+            auto f = [&t, &hi, this](vec omega){return -t.d*G/hi/a/a * omega.normalized();};
+            vec k1 = f(omega);
+            vec k2 = f(omega + k1*mintime/2);
+            vec k3 = f(omega + k2*mintime/2);
+            vec k4 = f(omega + k3*mintime);
+
+            vec ddo = (k1+2*k2+2*k3+k4)/6*mintime;
             vec omac = omega.normalized() - (omega + ddo).normalized();
             if (omac.mod() < 1) //vector changed it's direction when delta added - it's very near to zero
                 dw += ddo, ret |= 2;
@@ -318,8 +324,20 @@ int Ball::NextStep(Table &t, float mintime)
 
         vec u = v + a * (k ^ w);
         if (u.mod() > EPS){
-            vec ddw = t.f*G/hi/a * (k ^ u.normalized())*mintime;
-            vec ddv = -t.f*G*u.normalized()*mintime;
+            auto wf = [&t, &hi, &k, this](vec v, vec w){vec u = v + a * (k ^ w); return t.f*G/hi/a * (k ^ u.normalized());};
+            auto vf = [&t, &hi, &k, this](vec v, vec w){vec u = v + a * (k ^ w); return -t.f*G*u.normalized();};
+
+            vec wk1 = wf(v, w);
+            vec vk1 = vf(v, w);
+            vec wk2 = wf(v + vk1*mintime/2, w + wk1*mintime/2);
+            vec vk2 = vf(v + vk1*mintime/2, w + wk1*mintime/2);
+            vec wk3 = wf(v + vk2*mintime/2, w + wk2*mintime/2);
+            vec vk3 = vf(v + vk2*mintime/2, w + wk2*mintime/2);
+            vec wk4 = wf(v + vk3*mintime, w + wk3*mintime);
+            vec vk4 = vf(v + vk3*mintime, w + wk3*mintime);
+
+            vec ddv = (vk1+2*vk2+2*vk3+vk4)/6*mintime;
+            vec ddw = (wk1+2*wk2+2*wk3+wk4)/6*mintime;
 
             vec ddu = ddv + a * (k ^ ddw);
 
@@ -381,6 +399,6 @@ END_STEP:
 
 float Ball::Distance(Ball &b)
 {
-	return sqrt((r.x - b.r.x)*(r.x - b.r.x) + (r.y - b.r.y)*(r.y - b.r.y) + (r.z - b.r.z)*(r.z - b.r.z));
+	return (r.x - b.r.x)*(r.x - b.r.x) + (r.y - b.r.y)*(r.y - b.r.y) + (r.z - b.r.z)*(r.z - b.r.z);
 }
 
