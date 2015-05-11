@@ -74,14 +74,6 @@ ALboolean CheckALError()
   return AL_TRUE;
 }
 
-static void *play_thread(void *media_id) //void * == longint
-{
-	unsigned mSourceID = *((unsigned *)media_id);
-    free(media_id);
-
-	alSourcePlay(mSourceID);
-}
-
 unsigned remSnd::Open(const std::string &Filename, bool Looped, bool Streamed)
 {
   std::ifstream a(Filename.c_str());
@@ -104,20 +96,31 @@ unsigned remSnd::Open(const std::string &Filename, bool Looped, bool Streamed)
 
 void remSnd::Play()
 {
-    unsigned *info = (unsigned *)calloc(1, sizeof(unsigned));
-    *info = mSourceID;
+    alSourcePlay(mSourceID);
+    alSourcef (mSourceID, AL_GAIN, 1.0);
+}
 
-	pthread_t thread_id;
-	pthread_create(&thread_id, &attr, &play_thread, info);
+
+void remSnd::Play(float sound_volume)
+{
+    assert (sound_volume > 0 && sound_volume < 1);
+
+    alSourcePlay(mSourceID);
+    alSourcef (mSourceID, AL_GAIN, sound_volume);
 }
 
 void remSnd::Play(unsigned sound_id)
 {
-    unsigned *info = (unsigned *)calloc(1, sizeof(unsigned));
-    *info = sound_id;
+    alSourcePlay(sound_id);
+    alSourcef (sound_id, AL_GAIN, 1.0);
+}
 
-	pthread_t thread_id;
-	pthread_create(&thread_id, &attr, &play_thread, (void *)info);
+void remSnd::Play(unsigned sound_id, float sound_volume)
+{
+    assert (sound_volume > 0 && sound_volume < 1);
+
+    alSourcePlay(sound_id);
+    alSourcef (sound_id, AL_GAIN, sound_volume);
 }
 
 void remSnd::Close()

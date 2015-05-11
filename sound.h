@@ -33,7 +33,9 @@ class remSnd
 	  unsigned Open(const std::string &Filename, bool Looped, bool Streamed);
 	  bool IsStreamed();
 	  void Play();
+	  void Play(float sound_volume);
 	  void Play(unsigned sound_id);
+	  void Play(unsigned sound_id, float sound_volume);
 	  void Close();
 	  void Update();
 	  void Move(float X, float Y, float Z);

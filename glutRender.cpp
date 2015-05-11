@@ -151,7 +151,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     gluQuadricTexture(sphere, GL_TRUE);
     gluQuadricNormals(sphere, GLU_SMOOTH);
 
-    MainTheme.Play();
+    MainTheme.Play(0.4f);
     main_theme_state = true;
 
     glutMainLoop ();
@@ -418,7 +418,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case  'D':
         case  'd':
         {
-            alpha += 0.1f;
+            alpha += 0.2f;
             if (alpha >= 2*M_PI) alpha -= 2*M_PI;
         }
         break;
@@ -440,7 +440,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case  'A':
         case  'a':
         {
-            alpha -= 0.1f;
+            alpha -= 0.2f;
             if (alpha <= 0) alpha += 2*M_PI;
         }
         break;
@@ -457,7 +457,6 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         {
             if (multipluer > 1.2) multipluer -= 0.2f;
         }
-
         break;
 
         case '\t': //TAB
