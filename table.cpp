@@ -329,7 +329,7 @@ int Ball::BoardCollide(Table &t){
                 v6 ret;
                 ret.a = -t.rf*hi*c.a/sqrt(c.a*c.a+c.b*c.b);//+t.rf*t.f*hi*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
                 ret.b = -t.rf*(1+hi)*c.b/sqrt(c.a*c.a+c.b*c.b);//-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.b-c.p*a-c.r*a);
-                ret.c = 1-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b);//*(c.c+c.q*a);
+                ret.c = 1;//-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
 
                 ret.p = -hi*t.rf/a*c.b/sqrt(c.a*c.a+c.b*c.b);
                 ret.q = -hi*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b);//-hi*t.f*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
