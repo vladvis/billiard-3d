@@ -2,6 +2,7 @@
 
 #define isnan(f) (f != f)
 #define sign(f) (std::abs(f)<EPS ? 0 : (f>0 ? 1 : -1))
+#define max(a,b) (a>b ? a : b)
 
 std::vector<std::vector<Ball *>> Table::CollideDFS(){
     int length = balls.size();
@@ -45,12 +46,12 @@ void Ball::CollideDFS(Table &t, int * dfsed, int color){
     }
 }
 
-int Table::NextStep(){
+int Table::NextStep(sndvolume &snd){
 	int ret = 0;
 
     for (auto it = balls.begin(); it != balls.end();){
 		if (it -> isvalid == 1){
-		    int bc = it -> BoardCollide(*this);
+		    int bc = it -> BoardCollide(*this, snd);
             if (bc & 4){
                 ret |= 512;
                 it = balls.erase(it);
@@ -85,7 +86,7 @@ int Table::NextStep(){
                 b[it-colarr.begin()] = **it;
 
             for (auto act: collision)
-                b[act.first].Collide(*this, b[act.second]);
+                b[act.first].Collide(*this, b[act.second], snd);
 
             ctr++;
 
@@ -107,7 +108,7 @@ int Table::NextStep(){
 
 	for (auto it = balls.begin(); it != balls.end();){
         if (it -> isvalid){
-            int retb = it -> NextStep(*this, MINTIME);
+            int retb = it -> NextStep(*this, MINTIME, snd);
             if (retb & 128)
                 it = balls.erase(it);
             else
@@ -165,11 +166,14 @@ v(vec(0,0,0)),
 w(vec(0,0,0))
 {};
 
-int Ball::Collide(Table &t, Ball &b)
+int Ball::Collide(Table &t, Ball &b, sndvolume &snd)
 {
+
 	vec k = (b.r - r).normalized();
 	float v1n = v * k;
 	float v2n = b.v * k;
+
+    snd.collide = max(snd.collide, std::abs(v2n-v1n));
 
 	float hi = 5.0 / 2.0;
 	vec v1t = v - v1n * k;
@@ -237,7 +241,7 @@ public:
     };
 };
 
-int Ball::BoardCollide(Table &t){
+int Ball::BoardCollide(Table &t, sndvolume &snd){
 	int ret = 0;
 	int state = 0;
 	vec k;
@@ -302,6 +306,8 @@ int Ball::BoardCollide(Table &t){
             if (ret & 2) {
                 ret |= 4;
                 t.sc_b_num += 1;
+            }else{
+                snd.board = max(snd.board, std::abs(vn/t.re));
             }
         }else{//Rezal - Beware! Dragons ahead!
             k = vec(0,0,0)-k;//TODO Remove culprit
@@ -354,7 +360,7 @@ int Ball::BoardCollide(Table &t){
 	return ret;
 }
 
-int Ball::NextStep(Table &t, float mintime)
+int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
 {
     int ret = 0;
     if (isvalid == 2){
@@ -423,6 +429,7 @@ int Ball::NextStep(Table &t, float mintime)
 
     /* Another cases are considered as flying. */
     if (r.z < EPS && v.z < 0){ //Hit the ground
+        snd.table = max(snd.table, std::abs(v.z));
         ret |= 8;
         if (v.z < -0.25) ret |= 16;
         r.z = 0; //Buried is a bad idea

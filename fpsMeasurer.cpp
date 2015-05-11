@@ -5,15 +5,16 @@
 fpsMeasurer::fpsMeasurer(Table& t): t(t) {};
 
 void fpsMeasurer::NextStep(std::vector<Ball> &balls, double mt){
+    sndvolume s;
     for (Ball& b: balls)
-        b.BoardCollide(t);
+        b.BoardCollide(t, s);
 
     for (auto it = balls.begin(); it != balls.end(); ++it)
         for (auto jt = it + 1; jt != balls.end(); ++jt)
-            it->Collide(t, *jt);
+            it->Collide(t, *jt, s);
 
     for (Ball& b: balls)
-        b.NextStep(t, mt);
+        b.NextStep(t, mt, s);
 }
 
 int fpsMeasurer::fpsBinSearch(int numballs){

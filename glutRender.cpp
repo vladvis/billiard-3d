@@ -1,4 +1,5 @@
 #include "glutRender.h"
+#define min(a,b) (a<b ? a : b)
 
 GLUquadricObj *sphere = NULL;
 
@@ -356,19 +357,20 @@ void glutRender::IdleGL ()
     if (calculations_started)
     {
         int ret = 0;
+        sndvolume snd;
 		for (int i = 0; i < GameTable.DEFCLOCK * GameTable.MULT; i++)
 		{
-			if (!(ret |= GameTable.NextStep())) calculations_started = false;
+			if (!(ret |= GameTable.NextStep(snd))) calculations_started = false;
 		}
 
         if (ret & 256)
-            SoundController.Play(MediaLibrary["collide"]);
+            SoundController.Play(MediaLibrary["collide"], min(snd.collide/10, 1));
         if (ret & 512)
             SoundController.Play(MediaLibrary["pocket"]);
         if (ret & 1024)
-            SoundController.Play(MediaLibrary["border_hit"]);
+            SoundController.Play(MediaLibrary["border_hit"], min(snd.board/5, 1));
         if (ret & 16)
-            SoundController.Play(MediaLibrary["border_hit"]);
+            SoundController.Play(MediaLibrary["border_hit"], min(snd.table/5, 1));
     }
 	glutPostRedisplay();
 }
