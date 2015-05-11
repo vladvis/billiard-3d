@@ -304,7 +304,6 @@ int Ball::BoardCollide(Table &t){
                 t.sc_b_num += 1;
             }
         }else{//Rezal - Beware! Dragons ahead!
-            std::cout << "OMG REZAL IS HERE!" << std::endl;
             k = vec(0,0,0)-k;//TODO Remove culprit
 
             vec i(0,0,1);
@@ -322,8 +321,6 @@ int Ball::BoardCollide(Table &t){
 
             double magic = 1000; //TODO Magical const
             double mintime = (1 + t.re) * vn / magic;
-            std::cout << c.a << ' ' << c.b << ' ' << c.c << ' ' << c.p << ' ' << c.q << ' ' << c.r << std::endl;
-            std::cout << (1 + t.re) * vn << std::endl;
 
             auto f = [&t, &hi, this](v6 c){
                 v6 ret;
@@ -346,12 +343,8 @@ int Ball::BoardCollide(Table &t){
                 v6 k3 = f(c+k2*mintime/2);
                 v6 k4 = f(c+k3*mintime);
 
-                //v6 add = (k1+k2*2+k3*2+k4)/6;
-                //std::cout << add.a << ' ' << add.b << ' ' << add.c << ' ' << add.p << ' ' << add.q << ' ' << add.r << std::endl;
-
                 c = c+(k1+k2*2+k3*2+k4)/6*mintime;
             }
-            std::cout << c.a << ' ' << c.b << ' ' << c.c << ' ' << c.p << ' ' << c.q << ' ' << c.r << std::endl;
 
             u = c.a*i+c.b*j+c.c*k;
             w = c.p*i+c.q*j+c.r*k;
