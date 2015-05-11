@@ -14,10 +14,8 @@
 #include <thread>
 #include <algorithm>
 
-const float randmod = 0.05;
 const float EPS = 0.0000001;
-const float G = 9.801;
-const float g = 9.8036;
+const float G = 9.8036;
 
 class Ball;
 

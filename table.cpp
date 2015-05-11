@@ -218,7 +218,26 @@ int Ball::noCollide(Ball &b){
     return 0;
 }
 
-int Ball::BoardCollide(Table &t){ //TODO Collision of Rezal
+class v6{
+public:
+    v6(){};
+    v6(double a, double b, double c, double p, double q, double r): a(a), b(b), c(c), p(p), q(q), r(r){};
+    double a, b, c, p, q, r;
+
+    v6 operator+(v6 op){
+        return v6(a+op.a, b+op.b, c+op.c, p+op.p, q+op.q, r+op.r);
+    };
+
+    v6 operator*(double op){
+        return v6(a*op, b*op, c*op, p*op, q*op, r*op);
+    };
+
+    v6 operator/(double op){
+        return v6(a/op, b/op, c/op, p/op, q/op, r/op);
+    };
+};
+
+int Ball::BoardCollide(Table &t){
 	int ret = 0;
 	int state = 0;
 	vec k;
@@ -256,32 +275,84 @@ int Ball::BoardCollide(Table &t){ //TODO Collision of Rezal
             return 0;
         }
 
-        float hi = 2.0 / 5.0;
+        float hi = 5.0 / 2.0;
 		float vn = v * k;
 		vec vt = v - k * (v * k);
 
 		vec u = v - k * (v * k) + a * (w ^ k);
-		float itr_v = t.rf * (1 + t.re) * vn;
 
-		vec itr;
+        float itr_v = t.rf * (1 + t.re) * vn;
 
-		if (u.mod() < itr_v){
-			itr = u;
-		}
-		else{
-			itr = u.normalized() * itr_v;
-		}
+        if (u.z <= 0 || r.z > 0) { //Coriolis
+            vec itr;
 
-		vn = -t.re * vn;
-		vt -= itr;
+            if (u.mod() < itr_v) {
+                itr = u;
+            }
+            else {
+                itr = u.normalized() * itr_v;
+            }
 
-		v = vt + vn * k;
-		w -= 1 / hi * (itr ^ k);
+            vn = -t.re * vn;
+            vt -= itr;
 
-        if (ret & 2)
-        {
-            ret |= 4;
-            t.sc_b_num += 1;
+            v = vt + vn * k;
+            w -= hi * (itr ^ k);
+
+            if (ret & 2) {
+                ret |= 4;
+                t.sc_b_num += 1;
+            }
+        }else{//Rezal - Beware! Dragons ahead!
+            std::cout << "OMG REZAL IS HERE!" << std::endl;
+            k = vec(0,0,0)-k;//TODO Remove culprit
+
+            vec i(0,0,1);
+            vec j = k ^ i;
+
+            u = v + a*(w^k);
+
+            v6 c;
+            c.a = u*i;
+            c.b = u*j;
+            c.c = u*k;
+            c.p = w*i;
+            c.q = w*j;
+            c.r = w*k;
+
+            double magic = 1000; //TODO Magical const
+            double mintime = (1 + t.re) * vn / magic;
+            std::cout << c.a << ' ' << c.b << ' ' << c.c << ' ' << c.p << ' ' << c.q << ' ' << c.r << std::endl;
+            std::cout << (1 + t.re) * vn << std::endl;
+
+            auto f = [&t, &hi, this](v6 c){
+                v6 ret;
+                ret.a = -t.rf*hi*c.a/sqrt(c.a*c.a+c.b*c.b);//+t.rf*t.f*hi*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
+                ret.b = -t.rf*(1+hi)*c.b/sqrt(c.a*c.a+c.b*c.b);//-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.b-c.p*a-c.r*a);
+                ret.c = 1-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b);//*(c.c+c.q*a);
+
+                ret.p = -hi*t.rf/a*c.b/sqrt(c.a*c.a+c.b*c.b);
+                ret.q = -hi*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b);//-hi*t.f*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
+                ret.r = 0;//-hi*t.rf*t.f/a*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.b-c.p*a-c.r*a);
+                return ret;
+            };
+
+            for (int i = 0; i < magic; i++){
+                v6 k1 = f(c);
+                v6 k2 = f(c+k1*mintime/2);
+                v6 k3 = f(c+k2*mintime/2);
+                v6 k4 = f(c+k3*mintime);
+
+                //v6 add = (k1+k2*2+k3*2+k4)/6;
+                //std::cout << add.a << ' ' << add.b << ' ' << add.c << ' ' << add.p << ' ' << add.q << ' ' << add.r << std::endl;
+
+                c = c+(k1+k2*2+k3*2+k4)/6*mintime;
+            }
+            std::cout << c.a << ' ' << c.b << ' ' << c.c << ' ' << c.p << ' ' << c.q << ' ' << c.r << std::endl;
+
+            u = c.a*i+c.b*j+c.c*k;
+            w = c.p*i+c.q*j+c.r*k;
+            v = u - a*(w^k);
         }
 	}
 	return ret;
