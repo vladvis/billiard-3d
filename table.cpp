@@ -327,13 +327,16 @@ int Ball::BoardCollide(Table &t){
 
             auto f = [&t, &hi, this](v6 c){
                 v6 ret;
-                ret.a = -t.rf*hi*c.a/sqrt(c.a*c.a+c.b*c.b);//+t.rf*t.f*hi*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
-                ret.b = -t.rf*(1+hi)*c.b/sqrt(c.a*c.a+c.b*c.b);//-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.b-c.p*a-c.r*a);
-                ret.c = 1;//-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
+
+                vec et = vec(0, c.b-c.p*a-c.r*a, c.c+c.q*a).normalized();
+
+                ret.a = -t.rf*hi*c.a/sqrt(c.a*c.a+c.b*c.b)+t.rf*t.f*hi*c.a/sqrt(c.a*c.a+c.b*c.b)*et.z;
+                ret.b = -t.rf*(1+hi)*c.b/sqrt(c.a*c.a+c.b*c.b)-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b)*et.y;
+                ret.c = 1-t.f*t.rf*c.a/sqrt(c.a*c.a+c.b*c.b)*et.z;
 
                 ret.p = -hi*t.rf/a*c.b/sqrt(c.a*c.a+c.b*c.b);
-                ret.q = -hi*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b);//-hi*t.f*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.c+c.q*a);
-                ret.r = 0;//-hi*t.rf*t.f/a*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.b-c.p*a-c.r*a);
+                ret.q = -hi*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b)-hi*t.f*t.rf/a*c.a/sqrt(c.a*c.a+c.b*c.b)*et.z;
+                ret.r = 0-hi*t.rf*t.f/a*c.a/sqrt(c.a*c.a+c.b*c.b)*(c.b-c.p*a-c.r*a);
                 return ret;
             };
 
