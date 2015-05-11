@@ -111,16 +111,16 @@ void remSnd::Play(float sound_volume)
 
 void remSnd::Play(unsigned sound_id)
 {
-    alSourcePlay(sound_id);
     alSourcef (sound_id, AL_GAIN, 1.0);
+    alSourcePlay(sound_id);
 }
 
 void remSnd::Play(unsigned sound_id, float sound_volume)
 {
     assert (sound_volume >= 0 && sound_volume <= 1);
 
-    alSourcePlay(sound_id);
     alSourcef (sound_id, AL_GAIN, sound_volume);
+    alSourcePlay(sound_id);
 }
 
 void remSnd::Close()
