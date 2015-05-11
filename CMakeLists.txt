@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
 project(billiard)
-find_package(Threads)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 include(modules/FindALUT.cmake)
@@ -16,6 +15,6 @@ add_library(libs STATIC ${LIBRARY})
 add_executable(main test.cpp)
 target_link_libraries(main libs)
 
-include_directories(${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${ALUT_INCLUDE_DIRS} ${THREADS_INCLUDE_DIRS})
-target_link_libraries(libs ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(main ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+include_directories(${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${ALUT_INCLUDE_DIRS})
+target_link_libraries(libs ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES})
+target_link_libraries(main ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES})
