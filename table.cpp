@@ -49,19 +49,15 @@ void Ball::CollideDFS(Table &t, int * dfsed, int color){
 int Table::NextStep(sndvolume &snd){
 	int ret = 0;
 
-    for (auto it = balls.begin(); it != balls.end();){
+    for (auto it = balls.begin(); it != balls.end(); it++){
 		if (it -> isvalid == 1){
 		    int bc = it -> BoardCollide(*this, snd);
             if (bc & 4){
                 ret |= 512;
-                it = balls.erase(it);
             }else{
                 if (bc & 1)
                     ret |= 1024;
-                it++;
             }
-		}else{
-            it++;
 		}
     }
 
@@ -105,13 +101,9 @@ int Table::NextStep(sndvolume &snd){
         ret |= 256;
     }
 
-	for (auto it = balls.begin(); it != balls.end();){
+	for (auto it = balls.begin(); it != balls.end(); it++){
         if (it -> isvalid){
             int retb = it -> NextStep(*this, MINTIME, snd);
-            if (retb & 128)
-                it = balls.erase(it);
-            else
-                it++;
             if (it -> isvalid) ret |= (retb);
         }
 	}
