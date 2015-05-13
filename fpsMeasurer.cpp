@@ -1,6 +1,8 @@
 #include "fpsMeasurer.h"
 
 #define CURTIME std::chrono::system_clock::now()
+#define BS_MAX 25000
+#define BS_MIN 1
 
 fpsMeasurer::fpsMeasurer(Table& t): t(t) {};
 
@@ -22,10 +24,10 @@ int fpsMeasurer::fpsBinSearch(int numballs){
     std::cout << "Start fps measurements!" << std::endl;
 
     //CLOCK binary search
-    int l = 1;
-    int r = 25000;
+    int l = BS_MIN;
+    int r = BS_MAX;
 
-    while (std::abs(l - r) > 10){
+    while (std::abs(l - r) > 0){
         int m = (l+r)/2;
         std::cout << "Trying " << m << " ticks" << std::endl;
         double mt = 1/t.SLOWFACTOR/m;
@@ -43,7 +45,7 @@ int fpsMeasurer::fpsBinSearch(int numballs){
             NextStep(balls, mt);
         }
         if (i == m){
-            l = m;
+            l = m+1;
         }else{
             r = m;
         }
@@ -96,13 +98,11 @@ void fpsMeasurer::fpsMeasure(){
 
             if (i == m){
                 std::cout << "Correctness percentage: " << 100 - std::abs(time-1) * 100 << std::endl;
-                if (time > 0.95){
+                if (time > 0.95 || m == BS_MAX){//Check for maxed floor
                     std::cout << "OK, I believe you..." << std::endl;
                     t.MINTIME = 1/t.SLOWFACTOR/t.DEFCLOCK;
                 }else{
                     std::cout << "Hmm, your measurements are too inaccurate!" << std::endl;
-                    std::cout << "Shall I remeasure it for you? [Y/n] ";
-
                     fpsCount();
                 }
             }else{
