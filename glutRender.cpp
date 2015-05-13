@@ -3,7 +3,7 @@
 
 GLUquadricObj *sphere = NULL;
 
-const int hel_info_lines_number = 13;
+const int hel_info_lines_number = 14;
 char help_info[hel_info_lines_number][70] =
                         {"[ q/Q/Esc ] - exit",
                         "[ Tab ] - switch between objects",
@@ -14,10 +14,11 @@ char help_info[hel_info_lines_number][70] =
                         "[ a/A ] / [ d/D ] - rotate the camera left/right on the active object",
                         "[ - ] / [ + ] - raise/lower the camera relative to the table",
                         "[ p/P ] / [ l/L ] - disable/enable the surfaces drawing",
-                         "[ ] ] / [ ] ] - decrease/increase time rate",
-                        "[ m/M ] - turn off music",
+                         "[ ]/] ] - decrease/increase time rate",
+                         "[ t/T ] - show/hide ALL tracks",
+                        "[ m/M ] - turn off the music",
                         "",
-                        "Designed by Kopyrin Denis, Shcherbatov Kirill, Vladas Bulavas"
+                        "> Designed by Kopyrin Denis, Shcherbatov Kirill, Vladas Bulavas"
                         };
 
 /* there is only one copy of glutRender, so we are have to use this lifehack to deal with C GLUT library on C++, it is ok */
@@ -62,9 +63,6 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     alpha = 1.8*3.14/3;
     curre_ball = 0;
     cam_height_h = 1.4;
-
-    help_menu_showed = false;
-    calculations_started = false;
 
     if (*argc > 1)
         start_state_config_filename = std::string(argv[1]);
@@ -153,7 +151,6 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     gluQuadricNormals(sphere, GLU_SMOOTH);
 
     MainTheme.Play(0.4f);
-    main_theme_state = true;
 
     glutMainLoop ();
 
@@ -220,7 +217,7 @@ void glutRender::DisplayGL ()
     const GLfloat groundLevel = -2.4f;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    glLineWidth(1);
     /* text out */
     {
         setOrthographicProjection();
@@ -306,6 +303,23 @@ void glutRender::DisplayGL ()
     {
         Ball &ActiveBall = GameTable.balls[curre_ball];
 
+        if (!draw_all_tracks)
+        {
+            glPushMatrix();
+                glColor3f(0.9f, 0.9f, 0.9f);
+                glLineWidth(2.5f);
+                glDisable(GL_LIGHTING);
+
+                glBegin(GL_LINES);
+                    for (vec &r: ActiveBall.track) {
+                        glVertex3f(r.y, r.z, r.x);
+                    }
+                glEnd();
+
+                glEnable(GL_LIGHTING);
+                glPopMatrix();
+        }
+
         glPushMatrix();
             glTranslatef(ActiveBall.r.y, 0.001f, ActiveBall.r.x);
             DrawCoolRoundAround(ball_r, 2*M_PI);
@@ -328,6 +342,23 @@ void glutRender::DisplayGL ()
     glColor3f (0.75f, 0.75f, 0.75f);
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
     {
+        if (draw_all_tracks)
+        {
+            glPushMatrix();
+                glColor3f(0.9f, 0.9f, 0.9f);
+                glLineWidth(2.5f);
+                glDisable(GL_LIGHTING);
+
+                glBegin(GL_LINES);
+                for (vec &r: it->track) {
+                    glVertex3f(r.y, r.z, r.x);
+                }
+                glEnd();
+
+                glEnable(GL_LIGHTING);
+            glPopMatrix();
+        }
+
         glPushMatrix();
             glEnable(GL_TEXTURE_2D);
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -341,6 +372,7 @@ void glutRender::DisplayGL ()
         glPopMatrix ();
     }
 
+    glLineWidth(2);
     glDisable(GL_LIGHTING);
 	glPushMatrix();
         glColor3f(0.7f, 0.7f, 0.7f);
@@ -363,9 +395,9 @@ void glutRender::IdleGL ()
 			if (!(ret |= GameTable.NextStep(snd))) calculations_started = false;
 		}
 
-        //for (Ball b: GameTable.balls){
-        //    b.track.push_back(b.r);
-        //}
+        for (Ball &b: GameTable.balls){
+            b.track.push_back(b.r);
+        }
 
         if (ret & 256)
             SoundController.Play(MediaLibrary["collide"], min(snd.collide/10, 1));
@@ -533,6 +565,13 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
             main_theme_state != main_theme_state;
         }
         break;
+
+        case 't':
+        case 'T':
+        {
+            draw_all_tracks = !draw_all_tracks;
+            SoundController.Play(MediaLibrary["choose"]);
+        }
 
         case '}':
         case ']':

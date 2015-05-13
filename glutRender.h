@@ -83,9 +83,10 @@ class glutRender
             float cam_height_h;
             int curre_ball;
 
-            bool calculations_started;
-            bool help_menu_showed;
-            bool main_theme_state;
+            bool calculations_started = false;
+            bool help_menu_showed = false;
+            bool main_theme_state = true;
+			bool draw_all_tracks = false;
 
             std::string table_config_filename;
             std::string balls_config_filename;
