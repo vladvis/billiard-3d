@@ -230,7 +230,9 @@ void glutRender::DisplayGL ()
             glColor3f(0.8f, 0.8f, 0.7f);
 
             char info[250];
-
+            for (std::vector<Widget *>::iterator it = widgets.begin(); it != widgets.end(); ++it ) {
+                (*it)->render();
+            }
             if (curre_ball < (int)GameTable.balls.size())
             {
                 sprintf(info, "BALL[%d] state: r(%+0.2f, %+0.2f, %+0.2f); v(%+0.2f, %+0.2f, %+0.2f); w(%+0.2f, %+0.2f, %+0.2f)", curre_ball+1,
@@ -262,23 +264,18 @@ void glutRender::DisplayGL ()
             glPopMatrix();
 
 
-            if (help_menu_showed)
-            {
+            if (help_menu_showed) {
                 glPushMatrix();
-                    glTranslatef(35.0f, -65.0f, 0.0f);
-                    float height = 0;
-                    for (int i = 0; i < hel_info_lines_number; i++)
-                    {
-                        glPushMatrix();
-                            glTranslatef(0.0f, -height, 0.0f);
-                            renderString(GLUT_STROKE_ROMAN, help_info[i]);
-                        glPopMatrix();
-                        height += 35;
-                    }
+                glTranslatef(35.0f, -65.0f, 0.0f);
+                float height = 0;
+                for (int i = 0; i < hel_info_lines_number; i++) {
+                    glPushMatrix();
+                    glTranslatef(0.0f, -height, 0.0f);
+                    renderString(GLUT_STROKE_ROMAN, help_info[i]);
+                    glPopMatrix();
+                    height += 35;
+                }
                 glPopMatrix();
-            }
-            for (std::vector<Widget *>::iterator it = widgets.begin(); it != widgets.end(); ++it ) {
-                (*it)->render();
             }
         glPopMatrix();
         restorePerspectiveProjection();
@@ -628,7 +625,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case 'x':
         case 'X':
         {
-            Edit *edit = new Edit (10.0f, -100.0f);
+            EditFloat *edit = new EditFloat (10.0f, -100.0f);
             this->setFocus(edit);
             widgets.push_back (edit);
         }
