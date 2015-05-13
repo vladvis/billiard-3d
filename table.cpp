@@ -425,7 +425,7 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
         ret |= 16;
         r.z = 0; //Buried is a bad idea
         vec k(0, 0, -1);
-		float hi = 2.0 / 5.0;
+		float hi = 5.0 / 2.0;
 		float vn = v * k;
 		vec u = v - k*(v*k) + a * (w ^ k);
 
@@ -441,7 +441,7 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
 		}
 
 		u -= itr;
-		w -= 1 / hi * (k ^ itr);
+		w -= hi * (k ^ itr);
 
 		v = u - a * (w ^ k) + k * vn_n;
 		if (v.z < G*mintime) v.z = 0, ret |= 32, r.z = 0; //Final ground hit
