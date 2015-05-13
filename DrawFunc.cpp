@@ -6,13 +6,13 @@ void init_l()
 {
     glEnable(GL_LIGHTING);
 
-	GLfloat light0_diffuse[] = {0.7f, 0.7f, 0.7f};
-    GLfloat light0_direction[] = {2.0f, 3.0f, 0.0f, 0.0f};
+	GLfloat light0_diffuse[] = {0.65f, 0.65f, 0.4f};
+    GLfloat light0_direction[] = {-2.0f, 3.2f, 1.0f, 0.0f};
 
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-	float ambient[] = {0.61f, 0.6f, 0.6f, 1.0f };
+	float ambient[] = {0.45f, 0.45f, 0.45f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
@@ -125,7 +125,7 @@ void DrawGrid(GLfloat ball_r,  GLfloat border_down_height)
 {
     glDisable(GL_LIGHTING);
 
-    glLineWidth(1.6f);
+    glLineWidth(2);
     glColor3f (0.510f, 0.450f, 0.390f);
 
     int amountSegments = 9;
@@ -176,7 +176,7 @@ void DrawGrid(GLfloat ball_r,  GLfloat border_down_height)
     glEnable(GL_LIGHTING);
 }
 
-void DrawNiceRectangle(const GLfloat xleft, const GLfloat xright, const GLfloat yleft, const GLfloat yright)
+void DrawNiceRectangle(const GLfloat xleft, const GLfloat xright, const GLfloat yleft, const GLfloat yright, bool is_textured)
 {
     assert (xright > xleft); assert (yright > yleft);
 
@@ -200,19 +200,43 @@ void DrawNiceRectangle(const GLfloat xleft, const GLfloat xright, const GLfloat 
             else
                 jr = j + step;
 
+            float ti  = (i  - xleft) / (xright - xleft) * 16;
+            float tj  = (j  - yleft) / (yright - yleft) * 16;
+            float tir = (ir - xleft) / (xright - xleft) * 16;
+            float tjr = (jr - yleft) / (yright - yleft) * 16;
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
             glBegin(GL_TRIANGLES);
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
+            if (is_textured)
+                glTexCoord2f(ti, tjr);
                 glVertex3f(i, 0, jr);
+
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
+            if (is_textured)
+                glTexCoord2f(tir, tj);
                 glVertex3f(ir, 0, j);
+
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
+            if (is_textured)
+                glTexCoord2f(ti, tj);
                 glVertex3f(i, 0, j);
 
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
+            if (is_textured)
+                glTexCoord2f(tir, tjr);
                 glVertex3f(ir, 0.0f, jr);
+
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
-                glVertex3f(ir, 0.0f, j);
+            if (is_textured)
+                glTexCoord2f(tir, tj);
+            glVertex3f(ir, 0.0f, j);
+
                 glNormal3f(0.0f, 		1.0f, 		0.0f);
+            if (is_textured)
+                glTexCoord2f(ti, tjr);
                 glVertex3f(i, 0.0f, jr);
             glEnd();
         }
@@ -223,7 +247,7 @@ void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
 {
 	assert (height > 0); assert (edge_size > 0);
 
-    glColor3f(0.27f, 0.11f, 0.03f);
+    //glColor3f(0.27f, 0.11f, 0.03f);
 
 	const GLfloat  	hwidth = edge_size / 2;
     const GLfloat   hhwidth = hwidth / 2;
@@ -250,15 +274,24 @@ void DrawTableLeg (const GLfloat edge_size, const GLfloat height)
     glPopMatrix();
 }
 
-void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloat border_h, const GLfloat leg_height, const GLfloat ball_r)
+void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloat border_h, const GLfloat leg_height, const GLfloat ball_r, unsigned texture)
 {
+    glEnable(GL_LIGHTING);
+
 	GLfloat fhborder_ = border_h / 1.2;
 
-    glColor3f(0.0f, 0.30f, 0.0f);
+    glColor3f(1, 1, 1);
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
-    DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
+    DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight, true);
+
+    glDisable(GL_TEXTURE_2D);
 
 	glColor3f(0.27f, 0.11f, 0.03f);
+
+   //glColor3f(1, 0.95, 0.8f);
 
     glBegin(GL_QUADS);
         glVertex3f(hwidth - fhborder_, -fhborder_, hheight+fhborder_);
@@ -398,69 +431,73 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
 	GLfloat table_leg_edge = hwidth * hheight / 8.0f;
 	GLfloat htable_leg_edge = table_leg_edge/2;
 
-    /* leg 1 + basket 1 */
-	glPushMatrix();
+    glPushMatrix();
         glTranslatef(hwidth - htable_leg_edge, 0, hheight - htable_leg_edge);
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
-	glPushMatrix();
-        glTranslatef(hwidth - 0.005f, border_h - 0.005f, hheight - 0.005f);
-        glRotatef(45, 0, 1, 0);
-        DrawGrid(ball_r, -border_h);
-	glPopMatrix();
 
-    /* leg 2 + basket 2 */
 	glPushMatrix();
         glTranslatef(hwidth - htable_leg_edge, 0, -hheight);
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
-	glPushMatrix();
-        glTranslatef(hwidth - 0.005f, border_h - 0.005f, -hheight + 0.005f);
-        glRotatef(135, 0, 1, 0);
-        DrawGrid(ball_r, -border_h);
-	glPopMatrix();
 
-    /* leg 3 + basket 3 */
 	glPushMatrix();
         glTranslatef(-hwidth + htable_leg_edge, 0, hheight - htable_leg_edge);
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
-	glPushMatrix();
-        glTranslatef(-hwidth + 0.005f, border_h - 0.005f, hheight - 0.005f);
-        glRotatef(-45, 0, 1, 0);
-        DrawGrid(ball_r, -border_h);
-	glPopMatrix();
 
-    /* leg 4 + basket 4 */
 	glPushMatrix();
         glTranslatef(-hwidth + htable_leg_edge, 0, -hheight);
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
-	glPushMatrix();
-        glTranslatef(-hwidth + 0.005f, border_h - 0.005f, -hheight + 0.005f);
-        glRotatef(-135, 0, 1, 0);
-        DrawGrid(ball_r, -border_h);
-	glPopMatrix();
 
-    /* leg 5 + basket 5 */
 	glPushMatrix();
         glTranslatef(-hwidth + htable_leg_edge, 0, -htable_leg_edge/2);
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
-	glPushMatrix();
-        glTranslatef(-hwidth - 0.015f, border_h - 0.01f, 0);
-        glRotatef(-90, 0, 1, 0);
-        DrawGrid(ball_r, -border_h);
-	glPopMatrix();
 
-    /* leg 6 + basket 6 */
     glPushMatrix();
         glTranslatef(hwidth - htable_leg_edge, 0, -htable_leg_edge/2);
         DrawTableLeg(table_leg_edge, leg_height);
 	glPopMatrix();
-	glPushMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+
+    glDisable (GL_LIGHTING);
+
+    glPushMatrix();
+        glTranslatef(hwidth - 0.005f, border_h - 0.005f, hheight - 0.005f);
+        glRotatef(45, 0, 1, 0);
+        DrawGrid(ball_r, -border_h);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(hwidth - 0.005f, border_h - 0.005f, -hheight + 0.005f);
+        glRotatef(135, 0, 1, 0);
+        DrawGrid(ball_r, -border_h);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(-hwidth + 0.005f, border_h - 0.005f, hheight - 0.005f);
+        glRotatef(-45, 0, 1, 0);
+        DrawGrid(ball_r, -border_h);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(-hwidth + 0.005f, border_h - 0.005f, -hheight + 0.005f);
+        glRotatef(-135, 0, 1, 0);
+        DrawGrid(ball_r, -border_h);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(-hwidth - 0.015f, border_h - 0.01f, 0);
+        glRotatef(-90, 0, 1, 0);
+        DrawGrid(ball_r, -border_h);
+    glPopMatrix();
+
+    glPushMatrix();
         glTranslatef(hwidth + 0.015f, border_h  - 0.01f, 0);
         glRotatef(90, 0, 1, 0);
         DrawGrid(ball_r, -border_h);
-	glPopMatrix();
+    glPopMatrix();
 }

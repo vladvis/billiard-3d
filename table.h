@@ -38,6 +38,9 @@ public:
     float leny;
     float border_height;
 
+	unsigned texture = 0;
+	unsigned tree_texture = 0;
+
     float MINTIME;//mintime used in physics
     float DEFCLOCK;//default num of time for each NextStep()
 	float MULT;//mult for default clock (TimeLapse)
