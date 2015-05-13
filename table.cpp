@@ -422,7 +422,7 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
     if (r.z < EPS && v.z < 0){ //Hit the ground
         snd.table = max(snd.table, std::abs(v.z));
         ret |= 8;
-        if (v.z < -0.25) ret |= 16;
+        ret |= 16;
         r.z = 0; //Buried is a bad idea
         vec k(0, 0, -1);
 		float hi = 2.0 / 5.0;

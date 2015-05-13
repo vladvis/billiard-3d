@@ -616,28 +616,28 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
         case '4':
         {
-            if (free_camera_pos.x - 0.2f <= GameTable.lenx)
+            if (free_camera_pos.x + 0.2f <= GameTable.lenx)
                 free_camera_pos.x += 0.1f;
         }
         break;
 
-        case '6':
+        case '60':
         {
-            if (free_camera_pos.x + 0.2f >= -GameTable.lenx)
+            if (free_camera_pos.x - 0.2f >= -GameTable.lenx)
                 free_camera_pos.x -= 0.1f;
         }
         break;
 
         case '8':
         {
-            if (free_camera_pos.y + 0.2f >= -GameTable.leny)
+            if (free_camera_pos.y - 0.2f >= -GameTable.leny)
                 free_camera_pos.y -= 0.1f;
         }
         break;
 
         case '2':
         {
-            if (free_camera_pos.y - 0.2f <= GameTable.leny)
+            if (free_camera_pos.y + 0.2f <= GameTable.leny)
                 free_camera_pos.y += 0.1f;
         }
         break;
