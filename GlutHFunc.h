@@ -26,6 +26,7 @@ class Widget {
             virtual void receiveStroke(char c);
             virtual void render();
             bool visible;
+            bool isFocused;
 };
 
 class Edit : public Widget {

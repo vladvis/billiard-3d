@@ -148,6 +148,7 @@ Widget::Widget(float x, float y, float w, float h, bool visible) {
     this->w = w;
     this->h = h;
     this->visible = visible;
+    this->isFocused = false;
 }
 
 void Widget::receiveStroke(char c) {
@@ -167,8 +168,10 @@ void Edit::render() {
         renderString(GLUT_STROKE_MONO_ROMAN, (char *)this->text.c_str());
     glPopMatrix();
     glPushMatrix();
-        float xpos = 0.17f*104.76f*(this->cursor_pos-0.2f);
-        glTranslatef(this->x+5.0f+xpos, this->y-5.0f, 0.0f);
-        renderString(GLUT_STROKE_ROMAN, (char *)"|");
+        if (this->isFocused) {
+            float xpos = 0.17f * 104.76f * (this->cursor_pos - 0.2f);
+            glTranslatef(this->x + 5.0f + xpos, this->y - 5.0f, 0.0f);
+            renderString(GLUT_STROKE_ROMAN, (char *) "|");
+        }
     glPopMatrix();
 }

@@ -450,7 +450,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 {
     if (this->focusedWidget != NULL) {
         if (c == '\033') {
-            this->focusedWidget = NULL;
+            this->unsetFocus();
             return;
         }
         this->focusedWidget->receiveStroke(c);
@@ -629,7 +629,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case 'X':
         {
             Edit *edit = new Edit (10.0f, -100.0f);
-            this->focusedWidget = edit;
+            this->setFocus(edit);
             widgets.push_back (edit);
         }
         break;
@@ -715,4 +715,16 @@ void glutRender::KeyboardGL_ (unsigned char c, int x, int y)
 void glutRender::ReshapeGL_ (int w, int h)
 {
     glutRender::Instance.ReshapeGL (w, h);
+}
+
+void glutRender::setFocus(Widget *widget) {
+    widget->isFocused = true;
+    this->focusedWidget = widget;
+}
+
+void glutRender::unsetFocus() {
+    if (this->focusedWidget != NULL) {
+        this->focusedWidget->isFocused = false;
+        this->focusedWidget = NULL;
+    }
 }
