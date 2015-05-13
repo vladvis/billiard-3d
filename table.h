@@ -20,7 +20,7 @@ const float G = 9.8036;
 class Ball;
 
 struct sndvolume{
-	double collide, board, table;
+	double collide=0, board=0, table=0;
 };
 
 class Table{
@@ -64,8 +64,9 @@ public:
 	quat phi;
 	vec v;
 	vec w;
+	std::vector <vec> track;
 
-    char isvalid;
+    char isvalid = 1;
 
     GLuint texture = 0;
 

@@ -33,7 +33,7 @@ std::vector<std::vector<Ball *>> Table::CollideDFS(){
             ret.push_back(newcol);
     }
 
-    delete dfsed;
+    delete [] dfsed;
     return ret;
 }
 
@@ -79,7 +79,7 @@ int Table::NextStep(sndvolume &snd){
         double ctr = 0;
         int length = colarr.size();
 
-        Ball * calculus = new Ball[length];
+        Ball calculus[length];
         do{
             Ball * b = new Ball[length];//Here balls would be copied
             for (auto it = colarr.begin(); it != colarr.end(); ++it)
@@ -94,14 +94,13 @@ int Table::NextStep(sndvolume &snd){
                 calculus[i].v += b[i].v;
                 calculus[i].w += b[i].w;
             }
-            delete b;
+            delete [] b;
         }while(std::next_permutation(collision.begin(), collision.end()));
 
         for (auto it = colarr.begin(); it != colarr.end(); ++it){
             (**it).v = calculus[it-colarr.begin()].v / ctr;
             (**it).w = calculus[it-colarr.begin()].w / ctr;
         }
-        delete calculus;
 
         ret |= 256;
     }

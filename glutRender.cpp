@@ -363,6 +363,10 @@ void glutRender::IdleGL ()
 			if (!(ret |= GameTable.NextStep(snd))) calculations_started = false;
 		}
 
+        //for (Ball b: GameTable.balls){
+        //    b.track.push_back(b.r);
+        //}
+
         if (ret & 256)
             SoundController.Play(MediaLibrary["collide"], min(snd.collide/10, 1));
         if (ret & 512)
