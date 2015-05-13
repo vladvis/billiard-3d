@@ -43,12 +43,9 @@ void checkGLError (const char * errorLocation);
 GLuint raw_texture_load(const char *filename, int width, int height);
 void renderStrokeFontString(float x, float y, float z, void *font, char *string);
 void renderString (void *font, char *string);
-<<<<<<< HEAD
 bool is_char(char c);
 void restorePerspectiveProjection();
 void setOrthographicProjection(float w, float h);
-=======
->>>>>>> 18f190f173ff6f97cf8053650293d6d11f40a4ca
 
 
 #endif //GLUT_H_FUNC

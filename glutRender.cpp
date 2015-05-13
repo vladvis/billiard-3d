@@ -388,7 +388,7 @@ void glutRender::DisplayGL ()
         glPopMatrix ();
     }
 
-    glLineWidth(2);
+    glLineWidth(3   );
     glDisable(GL_LIGHTING);
 
 	glPushMatrix();
@@ -625,14 +625,15 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         }
         break;
 
-<<<<<<< HEAD
         case 'x':
         case 'X':
         {
-            Edit * edit = new Edit(10.0f, -100.0f);
+            Edit *edit = new Edit (10.0f, -100.0f);
             this->focusedWidget = edit;
-            widgets.push_back(edit);
-=======
+            widgets.push_back (edit);
+        }
+        break;
+
         case '4':
         {
             if (free_camera_pos.x + 0.2f <= GameTable.lenx)
@@ -640,7 +641,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         }
         break;
 
-        case '60':
+        case '6':
         {
             if (free_camera_pos.x - 0.2f >= -GameTable.lenx)
                 free_camera_pos.x -= 0.1f;
@@ -658,7 +659,6 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         {
             if (free_camera_pos.y + 0.2f <= GameTable.leny)
                 free_camera_pos.y += 0.1f;
->>>>>>> 18f190f173ff6f97cf8053650293d6d11f40a4ca
         }
         break;
     }
