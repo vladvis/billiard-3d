@@ -35,13 +35,6 @@ class float3
 				x(_x), y(_y), z(_z) {};
 };
 
-class float2
-{
-		public:
-			GLfloat x, y;
-			float2 (GLfloat _x = 0, GLfloat _y = 0) : x(_x), y(_y) {};
-};
-
 class glutRender
 {
 		public:
@@ -87,6 +80,8 @@ class glutRender
             bool help_menu_showed = false;
             bool main_theme_state = true;
 			bool draw_all_tracks = false;
+
+			float3 free_camera_pos = float3(0, 0, 0);
 
             std::string table_config_filename;
             std::string balls_config_filename;

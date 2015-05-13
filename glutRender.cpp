@@ -3,21 +3,23 @@
 
 GLUquadricObj *sphere = NULL;
 
-const int hel_info_lines_number = 14;
+const int hel_info_lines_number = 16;
 char help_info[hel_info_lines_number][70] =
                         {"[ q/Q/Esc ] - exit",
                         "[ Tab ] - switch between objects",
-                        "[ c/C ] - set view on table center",
+                        "[ c/C ] / [5] - set view on table center",
                         "[ Spacebar ] - begin/pause computational experiment",
                         "[ r/R ] - reset scene",
                         "[ w/W ] / [ s/S ] - zoom in/out camera from the active object",
                         "[ a/A ] / [ d/D ] - rotate the camera left/right on the active object",
-                        "[ - ] / [ + ] - raise/lower the camera relative to the table",
                         "[ p/P ] / [ l/L ] - disable/enable the surfaces drawing",
                          "[ ]/] ] - decrease/increase time rate",
                          "[ t/T ] - show/hide ALL tracks",
                         "[ m/M ] - turn off the music",
-                        "",
+                         "[ - ] / [ + ] - raise/lower the camera relative to the table",
+                         "[ 4 ] / [ 6 ] - move the camera along the X-axis",
+                         "[ 8 ] / [ 2 ] - move the camera along the Y-axis",
+                         "",
                         "> Designed by Kopyrin Denis, Shcherbatov Kirill, Vladas Bulavas"
                         };
 
@@ -218,6 +220,7 @@ void glutRender::DisplayGL ()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLineWidth(1);
+    glDisable (GL_LIGHTING);
     /* text out */
     {
         setOrthographicProjection();
@@ -236,28 +239,24 @@ void glutRender::DisplayGL ()
                         GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
 
                 glPushMatrix();
-                    //glColor3f(1.0f, 1.0f, 1.0f);
                     glTranslatef(15.0f, -WindowHeight + 15, 0.0f);
                     renderString(GLUT_STROKE_ROMAN, info);
                 glPopMatrix();
             }
 
             glPushMatrix();
-                //glColor3f(0.0f, 1.0f, 0.0f);
                 glTranslatef(WindowWidth - 260.0f, -65.0f, 0.0f);
                 sprintf(info, "Scores    %d", GameTable.sc_b_num);
                 renderString(GLUT_STROKE_ROMAN, info);
             glPopMatrix();
 
             glPushMatrix();
-               //glColor3f(1.0f, 1.0f, 0.0f);
                glTranslatef(WindowWidth - 260.0f, -30.0f, 0.0f);
                sprintf(info, "Time rate  %.3f", GameTable.MULT * 100);
                renderString(GLUT_STROKE_ROMAN, info);
             glPopMatrix();
 
             glPushMatrix();
-                //glColor3f(0.8f, 0.8f, 0.7f);
                 glTranslatef(15.0f, -30.0f, 0.0f);
                 renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
             glPopMatrix();
@@ -265,12 +264,10 @@ void glutRender::DisplayGL ()
 
             if (help_menu_showed)
             {
-                //glColor3f(0.8f, 0.8f, 0.7f);
-
                 glPushMatrix();
                     glTranslatef(35.0f, -65.0f, 0.0f);
                     float height = 0;
-                    for (int i = 0; i<hel_info_lines_number; i++)
+                    for (int i = 0; i < hel_info_lines_number; i++)
                     {
                         glPushMatrix();
                             glTranslatef(0.0f, -height, 0.0f);
@@ -291,14 +288,16 @@ void glutRender::DisplayGL ()
                    GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z, GameTable.balls[curre_ball].r.x,
                    0.0f, 1.0f, 0.0f);
     else
-        gluLookAt (multipluer*sin(alpha), cam_height_h*log(multipluer), multipluer*cos(alpha),
-                   0.0f, 0.0f, 0.0f,
+        gluLookAt (free_camera_pos.y + multipluer*sin(alpha), free_camera_pos.z + cam_height_h*log(multipluer), free_camera_pos.x + multipluer*cos(alpha),
+                   free_camera_pos.y, free_camera_pos.z, free_camera_pos.x,
                    0.0f, 1.0f, 0.0f);
 
     const GLfloat ball_r = GameTable.balls[0].a;
 
+    glDisable(GL_LIGHTING);
     DrawGroundGrid (groundLevel);
 
+    glDisable(GL_LIGHTING);
     if (curre_ball < (int)GameTable.balls.size())
     {
         Ball &ActiveBall = GameTable.balls[curre_ball];
@@ -308,57 +307,72 @@ void glutRender::DisplayGL ()
             glPushMatrix();
                 glColor3f(0.9f, 0.9f, 0.9f);
                 glLineWidth(2.5f);
-                glDisable(GL_LIGHTING);
 
                 glBegin(GL_LINES);
                     for (vec &r: ActiveBall.track) {
                         glVertex3f(r.y, r.z, r.x);
                     }
                 glEnd();
-
-                glEnable(GL_LIGHTING);
-                glPopMatrix();
+            glPopMatrix();
         }
-
-        glPushMatrix();
-            glTranslatef(ActiveBall.r.y, 0.001f, ActiveBall.r.x);
-            DrawCoolRoundAround(ball_r, 2*M_PI);
-        glPopMatrix();
 
         glPushMatrix();
             glTranslatef(ActiveBall.r.y, ball_r + ActiveBall.r.z, ActiveBall.r.x);
             glRotatef(360*acos(ActiveBall.phi.l)/M_PI, ActiveBall.phi.v.y, ActiveBall.phi.v.z, ActiveBall.phi.v.x);
             DrawVerticalPLine();
         glPopMatrix();
+
+        glPushMatrix();
+            glColor3f(1, 1, 1);
+            glTranslatef(ActiveBall.r.y, 0.001f, ActiveBall.r.x);
+            DrawCoolRoundAround(ball_r, 2*M_PI);
+        glPopMatrix();
     }
+    else
+    {
+        glPushMatrix();
+            glTranslatef(free_camera_pos.y, 0.001f, free_camera_pos.x);
+            glColor3f(0.7f, 0.7f, 0.7f);
+            glBegin(GL_LINES);
+                glVertex3f (0.05, 0, 0);
+                glVertex3f (-0.05, 0, 0);
+                glVertex3f (0, 0, 0.05);
+                glVertex3f (0, 0, -0.05);
+            glEnd();
+        glPopMatrix();
+    }
+    glDisable(GL_LIGHTING);
 
     init_l();
+    glEnable(GL_LIGHTING);
 
 	glPushMatrix();
 		glRotatef(90, 0, 1, 0);
 		DrawBilliardTable (GameTable.lenx, GameTable.leny,  GameTable.border_height, 1.2*abs(groundLevel), ball_r);
 	glPopMatrix();
 
+
     glColor3f (0.75f, 0.75f, 0.75f);
     for(std::vector<Ball>::iterator it = GameTable.balls.begin(); it != GameTable.balls.end(); ++it)
     {
+        glDisable(GL_LIGHTING);
         if (draw_all_tracks)
         {
             glPushMatrix();
                 glColor3f(0.9f, 0.9f, 0.9f);
                 glLineWidth(2.5f);
-                glDisable(GL_LIGHTING);
 
                 glBegin(GL_LINES);
-                for (vec &r: it->track) {
-                    glVertex3f(r.y, r.z, r.x);
-                }
+                    for (vec &r: it->track)
+                    {
+                        glVertex3f(r.y, r.z, r.x);
+                    }
                 glEnd();
-
-                glEnable(GL_LIGHTING);
             glPopMatrix();
         }
 
+
+        glEnable(GL_LIGHTING);
         glPushMatrix();
             glEnable(GL_TEXTURE_2D);
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -374,6 +388,7 @@ void glutRender::DisplayGL ()
 
     glLineWidth(2);
     glDisable(GL_LIGHTING);
+
 	glPushMatrix();
         glColor3f(0.7f, 0.7f, 0.7f);
         renderStrokeFontString(0.49f, -0.03f, GameTable.lenx + 0.09005f, GLUT_STROKE_ROMAN, (char *)"Billiard 3D PROJECT 2015");
@@ -455,6 +470,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
         case  'D':
         case  'd':
+        case '9':
         {
             alpha += 0.2f;
             if (alpha >= 2*M_PI) alpha -= 2*M_PI;
@@ -477,6 +493,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
 
         case  'A':
         case  'a':
+        case '7':
         {
             alpha -= 0.2f;
             if (alpha <= 0) alpha += 2*M_PI;
@@ -486,7 +503,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case 'S':
         case 's':
         {
-            if (multipluer < 3.0) multipluer += 0.2f;
+            if (multipluer < 6.0) multipluer += 0.2f;
         }
         break;
 
@@ -550,6 +567,8 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
             if (cam_height_h > 1) cam_height_h -= 0.2f;
         }
         break;
+
+        case '5':
         case 'c':
         case 'C':
         {
@@ -572,6 +591,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
             draw_all_tracks = !draw_all_tracks;
             SoundController.Play(MediaLibrary["choose"]);
         }
+        break;
 
         case '}':
         case ']':
@@ -591,6 +611,34 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
                 GameTable.MULT /= 2;
             else
                 GameTable.MULT -= 0.05;
+        }
+        break;
+
+        case '4':
+        {
+            if (free_camera_pos.x - 0.2f <= GameTable.lenx)
+                free_camera_pos.x += 0.1f;
+        }
+        break;
+
+        case '6':
+        {
+            if (free_camera_pos.x + 0.2f >= -GameTable.lenx)
+                free_camera_pos.x -= 0.1f;
+        }
+        break;
+
+        case '8':
+        {
+            if (free_camera_pos.y + 0.2f >= -GameTable.leny)
+                free_camera_pos.y -= 0.1f;
+        }
+        break;
+
+        case '2':
+        {
+            if (free_camera_pos.y - 0.2f <= GameTable.leny)
+                free_camera_pos.y += 0.1f;
         }
         break;
     }
