@@ -152,7 +152,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     gluQuadricTexture(sphere, GL_TRUE);
     gluQuadricNormals(sphere, GLU_SMOOTH);
 
-    MainTheme.Play(0.6f);
+    MainTheme.Play(0.5f);
 
     glutMainLoop ();
 
