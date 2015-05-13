@@ -6,13 +6,13 @@ void init_l()
 {
     glEnable(GL_LIGHTING);
 
-	GLfloat light0_diffuse[] = {0.6f, 0.6f, 0.6f};
-    GLfloat light0_direction[] = {6.0f, 4.0f, 1.0f, 0.0f};
+	GLfloat light0_diffuse[] = {0.7f, 0.7f, 0.7f};
+    GLfloat light0_direction[] = {2.0f, 3.0f, 0.0f, 0.0f};
 
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_direction);
-	float ambient[] = {0.6f, 0.6f, 0.6f, 1.0f };
+	float ambient[] = {0.61f, 0.6f, 0.6f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 }
 
@@ -254,7 +254,7 @@ void DrawBilliardTable(const GLfloat hwidth, const GLfloat hheight, const GLfloa
 {
 	GLfloat fhborder_ = border_h / 1.2;
 
-    glColor3f(0.0f, 0.32f, 0.0f);
+    glColor3f(0.0f, 0.30f, 0.0f);
 
     DrawNiceRectangle(-hwidth, hwidth, -hheight, hheight);
 

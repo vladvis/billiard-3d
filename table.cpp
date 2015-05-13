@@ -49,19 +49,15 @@ void Ball::CollideDFS(Table &t, int * dfsed, int color){
 int Table::NextStep(sndvolume &snd){
 	int ret = 0;
 
-    for (auto it = balls.begin(); it != balls.end();){
+    for (auto it = balls.begin(); it != balls.end(); it++){
 		if (it -> isvalid == 1){
 		    int bc = it -> BoardCollide(*this, snd);
             if (bc & 4){
                 ret |= 512;
-                it = balls.erase(it);
             }else{
                 if (bc & 1)
                     ret |= 1024;
-                it++;
             }
-		}else{
-            it++;
 		}
     }
 
@@ -105,13 +101,9 @@ int Table::NextStep(sndvolume &snd){
         ret |= 256;
     }
 
-	for (auto it = balls.begin(); it != balls.end();){
+	for (auto it = balls.begin(); it != balls.end(); it++){
         if (it -> isvalid){
             int retb = it -> NextStep(*this, MINTIME, snd);
-            if (retb & 128)
-                it = balls.erase(it);
-            else
-                it++;
             if (it -> isvalid) ret |= (retb);
         }
 	}
@@ -430,10 +422,10 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
     if (r.z < EPS && v.z < 0){ //Hit the ground
         snd.table = max(snd.table, std::abs(v.z));
         ret |= 8;
-        if (v.z < -0.25) ret |= 16;
+        ret |= 16;
         r.z = 0; //Buried is a bad idea
         vec k(0, 0, -1);
-		float hi = 2.0 / 5.0;
+		float hi = 5.0 / 2.0;
 		float vn = v * k;
 		vec u = v - k*(v*k) + a * (w ^ k);
 
@@ -449,7 +441,7 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
 		}
 
 		u -= itr;
-		w -= 1 / hi * (k ^ itr);
+		w -= hi * (k ^ itr);
 
 		v = u - a * (w ^ k) + k * vn_n;
 		if (v.z < G*mintime) v.z = 0, ret |= 32, r.z = 0; //Final ground hit

@@ -91,22 +91,6 @@ void checkGLError (const char *errorLocation)
      return texture;
  }
 
-void restorePerspectiveProjection()
-{
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-}
-
-void setOrthographicProjection (float w, float h)
-{
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluOrtho2D(0, w, 0, h);
-	glMatrixMode(GL_MODELVIEW);
-}
-
 void renderString (void *font, char *string)
 {
 	char *c;
