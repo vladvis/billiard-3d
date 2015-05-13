@@ -116,7 +116,11 @@ Table::Table(const std::string &name): MINTIME(0), DEFCLOCK(0), MULT(1), FPS(60)
 
 	if (file.is_open())
 	{
-		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> border_height;
+        char texture_filename[255];
+		file >> bb >> e >> je >> d >> s >> f >> rf >> re >> lenx >> leny >> border_height >> texture_filename;
+
+        if (texture == 0)
+            texture = raw_texture_load (texture_filename, 512, 512);
 	}
 	else
 	{

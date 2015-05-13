@@ -154,7 +154,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     gluQuadricTexture(sphere, GL_TRUE);
     gluQuadricNormals(sphere, GLU_SMOOTH);
 
-    MainTheme.Play(0.4f);
+    MainTheme.Play(0.5f);
 
     glutMainLoop ();
 
@@ -228,7 +228,7 @@ void glutRender::DisplayGL ()
         glPushMatrix();
             glLoadIdentity();
             glScalef(1.0f, -1.0f, 1.0f);
-            glColor3f(0.8f, 0.8f, 0.7f);
+            glColor3f(1, 1, 1);
 
             char info[250];
             for (std::vector<Widget *>::iterator it = widgets.begin(); it != widgets.end(); ++it ) {
@@ -348,7 +348,7 @@ void glutRender::DisplayGL ()
 
 	glPushMatrix();
 		glRotatef(90, 0, 1, 0);
-		DrawBilliardTable (GameTable.lenx, GameTable.leny,  GameTable.border_height, 1.2*abs(groundLevel), ball_r);
+		DrawBilliardTable (GameTable.lenx, GameTable.leny,  GameTable.border_height, 1.2*abs(groundLevel), ball_r, GameTable.texture);
 	glPopMatrix();
 
 
@@ -371,26 +371,29 @@ void glutRender::DisplayGL ()
             glPopMatrix();
         }
 
+        //if (it->isvalid != 0) {
+            glEnable (GL_LIGHTING);
+            glPushMatrix ();
+                glEnable (GL_TEXTURE_2D);
+                glColor3f (1, 1, 1);
+                glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+                glBindTexture (GL_TEXTURE_2D, it->texture);
 
-        glEnable(GL_LIGHTING);
-        glPushMatrix();
-            glEnable(GL_TEXTURE_2D);
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-            glBindTexture(GL_TEXTURE_2D, it->texture);
+                glTranslatef (it->r.y, ball_r + it->r.z, it->r.x);
+                glRotatef (360 * acos (it->phi.l) / M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
+                gluSphere (sphere, ball_r, 20, 20);
 
-            glTranslatef(it->r.y, ball_r + it->r.z, it->r.x);
-            glRotatef(360*acos(it->phi.l)/M_PI, it->phi.v.y, it->phi.v.z, it->phi.v.x);
-            gluSphere(sphere, ball_r, 20, 20);
-
-            glDisable(GL_TEXTURE_2D);
-        glPopMatrix ();
+                glDisable (GL_TEXTURE_2D);
+            glPopMatrix ();
+        //}
     }
 
-    glLineWidth(3   );
-    glDisable(GL_LIGHTING);
+    glLineWidth(2.5f);
+    //glDisable(GL_LIGHTING);
 
 	glPushMatrix();
-        glColor3f(0.7f, 0.7f, 0.7f);
+        //glColor3f(0.7f, 0.7f, 0.7f);
+        glColor3f(0.1f, 0.1f, 0.1f);
         renderStrokeFontString(0.49f, -0.03f, GameTable.lenx + 0.09005f, GLUT_STROKE_ROMAN, (char *)"Billiard 3D PROJECT 2015");
 	glPopMatrix();
 
