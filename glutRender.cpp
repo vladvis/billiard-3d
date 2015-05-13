@@ -57,7 +57,7 @@ void glutRender::addBall() {
 void glutRender::Init (int* argc, char* argv[], const char *table_config, const char *balls_config, const char *sounds_config)
 {
     srand(time(0));
-
+    this->focusedWidget = NULL;
     multipluer = 2.5f;
     alpha = 1.8*3.14/3;
     curre_ball = 0;
@@ -283,7 +283,9 @@ void glutRender::DisplayGL ()
                     }
                 glPopMatrix();
             }
-
+            for (std::vector<Widget *>::iterator it = widgets.begin(); it != widgets.end(); ++it ) {
+                (*it)->render();
+            }
         glPopMatrix();
         restorePerspectiveProjection();
     }
@@ -399,6 +401,15 @@ void glutRender::restorePerspectiveProjection()
 
 void glutRender::KeyboardGL (unsigned char c, int x, int y)
 {
+    if (this->focusedWidget != NULL) {
+        if (c == '\033') {
+            this->focusedWidget = NULL;
+            return;
+        }
+        this->focusedWidget->receiveStroke(c);
+        return;
+    }
+
     assert(&x);
     assert(&y);
 
@@ -552,6 +563,15 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
                 GameTable.MULT /= 2;
             else
                 GameTable.MULT -= 0.05;
+        }
+        break;
+
+        case 'x':
+        case 'X':
+        {
+            Edit * edit = new Edit(10.0f, -100.0f);
+            this->focusedWidget = edit;
+            widgets.push_back(edit);
         }
         break;
     }

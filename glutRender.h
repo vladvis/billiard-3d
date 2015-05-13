@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <vector>
 
 #include "table.h"
 #include "DrawFunc.h"
@@ -60,6 +61,8 @@ class glutRender
 			void addBall();
 
 		private:
+			std::vector<Widget *> widgets;
+			Widget * focusedWidget;
 			glutRender (int _WindowWidth = 1280, int _WindowHeight = 768) :
 				WindowWidth(_WindowWidth), WindowHeight(_WindowHeight) {};
 

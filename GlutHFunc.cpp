@@ -116,7 +116,6 @@ void renderString (void *font, char *string)
 	}
 }
 
-
 void renderStrokeFontString (float x, float y, float z, void *font, char *string)
 {
 	char *c;
@@ -129,3 +128,63 @@ void renderStrokeFontString (float x, float y, float z, void *font, char *string
 	glPopMatrix();
 }
 
+Edit::Edit(float x, float y, float w, float h, std::string text) : Widget(x, y, w, h) {
+    this->text = std::string(text);
+    std::cout << "DEBUG OUTPUT: " << w << "\n";
+    this->cursor_pos = 0;
+}
+
+void Edit::receiveStroke(char c) {
+    if (c == 8) {  // backspace
+        if (this->cursor_pos == 0)
+            return;
+        std::string newtext = this->text.substr(0, this->cursor_pos-1) +
+                              this->text.substr(this->cursor_pos, this->text.size()-this->cursor_pos);
+        this->text = newtext;
+        this->cursor_pos--;
+    }
+    if (this->text.size() >= EDITLENGTH-1)
+        return;
+    if (!is_char(c))
+        return;
+    std::string newtext = this->text.substr(0, this->cursor_pos) + c +
+                          this->text.substr(this->cursor_pos, this->text.size()-this->cursor_pos);
+
+    this->text = newtext;
+    this->cursor_pos++;
+}
+
+bool is_char(char c) {
+    return c >= 32 && c < 127;
+}
+
+Widget::Widget(float x, float y, float w, float h, bool visible) {
+    this->x = x;
+    this->y = y;
+    this->w = w;
+    this->h = h;
+    this->visible = visible;
+}
+
+void Widget::receiveStroke(char c) {
+}
+
+void Widget::render() {
+}
+
+void Edit::render() {
+    glPushMatrix();
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glRectf(this->x, this->y, this->x + this->w, this->y - this->h);
+    glPopMatrix();
+    glPushMatrix();
+        glColor3f(0.8f, 0.8f, 0.7f);
+        glTranslatef(this->x+5.0f, this->y-5.0f, 0.0f);
+        renderString(GLUT_STROKE_MONO_ROMAN, (char *)this->text.c_str());
+    glPopMatrix();
+    glPushMatrix();
+        float xpos = 0.17f*104.76f*(this->cursor_pos-0.2f);
+        glTranslatef(this->x+5.0f+xpos, this->y-5.0f, 0.0f);
+        renderString(GLUT_STROKE_ROMAN, (char *)"|");
+    glPopMatrix();
+}
