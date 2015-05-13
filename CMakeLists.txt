@@ -11,8 +11,8 @@ set(LIBRARY DrawFunc.cpp fpsMeasurer.cpp GlutHFunc.cpp glutRender.cpp quat.cpp s
 set(HEADER DrawFunc.h fpsMeasurer.h GlutHFunc.h glutRender.h quat.h sound.h table.h vec.h)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_library(libs STATIC ${LIBRARY})
-add_executable(main test.cpp)
+add_library(libs STATIC ${LIBRARY} gui/Widget.cpp gui/Widget.h gui/Edit.cpp gui/Edit.h gui/EditFloat.cpp gui/EditFloat.h)
+add_executable(main test.cpp gui/Widget.cpp gui/Widget.h gui/Edit.cpp gui/Edit.h gui/EditFloat.cpp gui/EditFloat.h)
 target_link_libraries(main libs)
 
 include_directories(${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${ALUT_INCLUDE_DIRS})

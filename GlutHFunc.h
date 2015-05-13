@@ -22,37 +22,6 @@ struct BitMapFile
    unsigned char *data;
 };
 
-class Widget {
-        public:
-            float x, y, w, h;
-            Widget(float x, float y, float w, float h, bool visible = true);
-            virtual void receiveStroke(char c);
-            virtual void render();
-            bool visible;
-            bool isFocused;
-};
-
-class Edit : public Widget {
-        public:
-            std::string text;
-            unsigned int cursor_pos;
-            GLfloat bgColor[4];
-            Edit(float x, float y, float w = 300.0f, float h = 45.0f, std::string text = std::string(""));
-            virtual void render();
-            virtual void receiveStroke(char c);
-            void setBackgroundColor(float r, float g, float b, float transparent);
-};
-
-class EditFloat : public Edit {
-        private:
-            float value;
-
-        public:
-            EditFloat(float x, float y, float w = 300.0f, float h = 45.0f,
-                      std::string text = std::string("0.0")) : Edit(x, y, w, h, text) {};
-            virtual void receiveStroke(char c);
-};
-
 void checkGLError (const char * errorLocation);
 GLuint raw_texture_load(const char *filename, int width, int height);
 void renderStrokeFontString(float x, float y, float z, void *font, char *string);

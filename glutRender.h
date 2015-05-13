@@ -21,6 +21,9 @@
 #include "GlutHFunc.h"
 #include "fpsMeasurer.h"
 #include "sound.h"
+#include "gui/Widget.h"
+#include "gui/Edit.h"
+#include "gui/EditFloat.h"
 
 #include <GL/glut.h>
 
