@@ -18,3 +18,9 @@ void Widget::receiveStroke(char c) {
 
 void Widget::render() {
 }
+
+bool Widget::hasPoint(int x, int y) {
+    return (((-round(this->y)-y) < this->h/2) &&
+            ((x - round(this->x)) < this->w) &&
+            ((x - round(this->x)) >= 0));
+}

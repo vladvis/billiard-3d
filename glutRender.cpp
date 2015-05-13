@@ -110,7 +110,9 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     glutDisplayFunc (DisplayGL_);
     glutIdleFunc (IdleGL_);
     glutKeyboardFunc (KeyboardGL_);
+    glutMouseFunc(MouseGL_);
     glutReshapeFunc (ReshapeGL_);
+    glutMotionFunc(MotionGL_);
 
     glEnable (GL_DEPTH_TEST);
 
@@ -217,7 +219,6 @@ void glutRender::LoadConfig(const std::string &table_config, const std::string &
 void glutRender::DisplayGL ()
 {
     const GLfloat groundLevel = -2.4f;
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLineWidth(1);
     glDisable (GL_LIGHTING);
@@ -625,7 +626,7 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case 'x':
         case 'X':
         {
-            EditFloat *edit = new EditFloat (10.0f, -100.0f);
+            EditFloat *edit = new EditFloat(10.0f, -100.0f);
             this->setFocus(edit);
             widgets.push_back (edit);
         }
@@ -715,6 +716,7 @@ void glutRender::ReshapeGL_ (int w, int h)
 }
 
 void glutRender::setFocus(Widget *widget) {
+    this->unsetFocus();
     widget->isFocused = true;
     this->focusedWidget = widget;
 }
@@ -723,5 +725,41 @@ void glutRender::unsetFocus() {
     if (this->focusedWidget != NULL) {
         this->focusedWidget->isFocused = false;
         this->focusedWidget = NULL;
+    }
+}
+
+void glutRender::MouseGL(int button, int state, int x, int y) {
+    if (state == 0) {
+        Widget *widget = NULL;
+        for (std::vector<Widget *>::iterator it = this->widgets.begin(); it != this->widgets.end(); ++it) {
+            if ((*it)->hasPoint(x, y)) {
+                widget = *it;
+            }
+        }
+        if (widget != NULL) {
+            setFocus(widget);
+            this->dragState = true;
+            this->dragX = x - round(widget->x);
+            this->dragY = y + round(widget->y);
+        } else {
+            this->unsetFocus();
+        }
+    } else {
+        this->dragState = false;
+    }
+}
+
+void glutRender::MouseGL_(int button, int state, int x, int y) {
+    glutRender::Instance.MouseGL(button, state, x, y);
+}
+
+void glutRender::MotionGL_(int x, int y) {
+    glutRender::Instance.MotionGL(x, y);
+}
+
+void glutRender::MotionGL(int x, int y) {
+    if (this->dragState && this->focusedWidget != NULL) {
+        this->focusedWidget->x = x - this->dragX;
+        this->focusedWidget->y = -(y - this->dragY);
     }
 }

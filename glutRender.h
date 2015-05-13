@@ -61,7 +61,10 @@ class glutRender
 		private:
 			std::vector<Widget *> widgets;
 			Widget * focusedWidget;
-			glutRender (int _WindowWidth = 1280, int _WindowHeight = 768) :
+            int dragX, dragY;
+            bool dragState = false;
+
+            glutRender (int _WindowWidth = 1280, int _WindowHeight = 768) :
 				WindowWidth(_WindowWidth), WindowHeight(_WindowHeight) {};
 
 			static void DisplayGL_ ();

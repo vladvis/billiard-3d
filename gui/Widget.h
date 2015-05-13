@@ -26,6 +26,7 @@ public:
     Widget(float x, float y, float w, float h, bool visible = true);
     virtual void receiveStroke(char c);
     virtual void render();
+    bool hasPoint(int x, int y);
     bool visible;
     bool isFocused;
 };
