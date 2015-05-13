@@ -52,6 +52,8 @@ class glutRender
 			void ReshapeGL (int w, int h);
 			void KeyboardGL (unsigned char c, int x, int y);
 			void addBall();
+			void setFocus(Widget * widget);
+			void unsetFocus();
 
 		private:
 			std::vector<Widget *> widgets;

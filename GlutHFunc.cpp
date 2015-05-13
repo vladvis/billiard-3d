@@ -113,9 +113,9 @@ void renderStrokeFontString (float x, float y, float z, void *font, char *string
 }
 
 Edit::Edit(float x, float y, float w, float h, std::string text) : Widget(x, y, w, h) {
-    this->text = std::string(text);
-    std::cout << "DEBUG OUTPUT: " << w << "\n";
-    this->cursor_pos = 0;
+    this->text = text;
+    this->cursor_pos = text.size();
+    this->setBackgroundColor(0.1f, 0.1f, 0.1f, 0.5f);
 }
 
 void Edit::receiveStroke(char c) {
@@ -148,6 +148,7 @@ Widget::Widget(float x, float y, float w, float h, bool visible) {
     this->w = w;
     this->h = h;
     this->visible = visible;
+    this->isFocused = false;
 }
 
 void Widget::receiveStroke(char c) {
@@ -157,9 +158,10 @@ void Widget::render() {
 }
 
 void Edit::render() {
+    if (!this->visible)
+        return;
     glPushMatrix();
-        glColor3f(0.0f, 0.0f, 0.0f);
-        glRectf(this->x, this->y, this->x + this->w, this->y - this->h);
+        DrawRoundRect(this->x, this->y + this->h/2, this->w, this->h, this->bgColor, 0.0f);
     glPopMatrix();
     glPushMatrix();
         glColor3f(0.8f, 0.8f, 0.7f);
@@ -167,8 +169,165 @@ void Edit::render() {
         renderString(GLUT_STROKE_MONO_ROMAN, (char *)this->text.c_str());
     glPopMatrix();
     glPushMatrix();
-        float xpos = 0.17f*104.76f*(this->cursor_pos-0.2f);
-        glTranslatef(this->x+5.0f+xpos, this->y-5.0f, 0.0f);
-        renderString(GLUT_STROKE_ROMAN, (char *)"|");
+        if (this->isFocused) {
+            float xpos = 0.17f * 104.76f * (this->cursor_pos - 0.2f);
+            glTranslatef(this->x + 5.0f + xpos, this->y - 5.0f, 0.0f);
+            renderString(GLUT_STROKE_ROMAN, (char *) "|");
+        }
     glPopMatrix();
+}
+
+typedef struct
+{
+    float x;
+    float y;
+} Vector2f;
+
+#define ROUNDING_POINT_COUNT 8
+void DrawRoundRect( float x, float y, float width, float height, float* color, float radius )
+{
+    Vector2f top_left[ROUNDING_POINT_COUNT];
+    Vector2f bottom_left[ROUNDING_POINT_COUNT];
+    Vector2f top_right[ROUNDING_POINT_COUNT];
+    Vector2f bottom_right[ROUNDING_POINT_COUNT];
+
+    if( radius == 0.0 )
+    {
+        radius = min(width, height);
+        radius *= 0.10; // 10%
+    }
+
+    int i = 0;
+    float x_offset, y_offset;
+    float step = ( 2.0f * PI ) / (ROUNDING_POINT_COUNT * 4),
+            angle = 0.0f;
+
+    unsigned int index = 0, segment_count = ROUNDING_POINT_COUNT;
+    Vector2f bottom_left_corner = { x + radius, y - height + radius };
+
+
+    while( i != segment_count )
+    {
+        x_offset = cosf( angle );
+        y_offset = sinf( angle );
+
+
+        top_left[ index ].x = bottom_left_corner.x -
+                              ( x_offset * radius );
+        top_left[ index ].y = ( height - ( radius * 2.0f ) ) +
+                              bottom_left_corner.y -
+                              ( y_offset * radius );
+
+
+        top_right[ index ].x = ( width - ( radius * 2.0f ) ) +
+                               bottom_left_corner.x +
+                               ( x_offset * radius );
+        top_right[ index ].y = ( height - ( radius * 2.0f ) ) +
+                               bottom_left_corner.y -
+                               ( y_offset * radius );
+
+
+        bottom_right[ index ].x = ( width - ( radius * 2.0f ) ) +
+                                  bottom_left_corner.x +
+                                  ( x_offset * radius );
+        bottom_right[ index ].y = bottom_left_corner.y +
+                                  ( y_offset * radius );
+
+
+        bottom_left[ index ].x = bottom_left_corner.x -
+                                 ( x_offset * radius );
+        bottom_left[ index ].y = bottom_left_corner.y +
+                                 ( y_offset * radius );
+
+
+        top_left[ index ].x = top_left[ index ].x;
+        top_left[ index ].y = top_left[ index ].y;
+
+
+        top_right[ index ].x = top_right[ index ].x;
+        top_right[ index ].y = top_right[ index ].y;
+
+
+        bottom_right[ index ].x = bottom_right[ index ].x ;
+        bottom_right[ index ].y = bottom_right[ index ].y;
+
+
+        bottom_left[ index ].x =  bottom_left[ index ].x ;
+        bottom_left[ index ].y =  bottom_left[ index ].y ;
+
+        angle -= step;
+
+        ++index;
+
+        ++i;
+    }
+
+    static GLubyte clr[] = { 0, 0, 0, 128 };
+
+    if( color )
+        glColor4fv(color);
+    else
+        glColor4ubv(clr);
+
+    glBegin( GL_TRIANGLE_STRIP );
+    {
+        // Top
+        for( i = segment_count - 1 ; i >= 0 ; i--)
+        {
+            glVertex2f( top_left[ i ].x, top_left[ i ].y );
+            glVertex2f( top_right[ i ].x, top_right[ i ].y );
+        }
+
+        // In order to stop and restart the strip.
+        glVertex2f( top_right[ 0 ].x, top_right[ 0 ].y );
+        glVertex2f( top_right[ 0 ].x, top_right[ 0 ].y );
+
+        // Center
+        glVertex2f( top_right[ 0 ].x, top_right[ 0 ].y );
+        glVertex2f( top_left[ 0 ].x, top_left[ 0 ].y );
+        glVertex2f( bottom_right[ 0 ].x, bottom_right[ 0 ].y );
+        glVertex2f( bottom_left[ 0 ].x, bottom_left[ 0 ].y );
+
+        // Bottom
+        for( i = 0; i != segment_count ; i++ )
+        {
+            glVertex2f( bottom_right[ i ].x, bottom_right[ i ].y );
+            glVertex2f( bottom_left[ i ].x, bottom_left[ i ].y );
+        }
+    }
+    glEnd();
+}
+
+void EditFloat::receiveStroke(char c) {
+    if (c == 8) {  // backspace
+        if (this->cursor_pos == 0)
+            return;
+        std::string newtext = this->text.substr(0, this->cursor_pos-1) +
+                              this->text.substr(this->cursor_pos, this->text.size()-this->cursor_pos);
+        this->text = newtext;
+        if (!std::regex_match(newtext, std::regex("^[0-9]+(.[0-9]*)?$")))
+            this->setBackgroundColor(0.9f, 0.1f, 0.1f, 0.5f);
+        else
+            this->setBackgroundColor(0.1f, 0.1f, 0.1f, 0.5f);
+        this->cursor_pos--;
+    }
+    if (this->text.size() >= EDITLENGTH-1)
+        return;
+    if (!is_char(c))
+        return;
+    std::string newtext = this->text.substr(0, this->cursor_pos) + c +
+                          this->text.substr(this->cursor_pos, this->text.size()-this->cursor_pos);
+    if (!std::regex_match(newtext, std::regex("^[0-9]+(\\.[0-9]*)?$")))
+        return;
+    else
+        this->setBackgroundColor(0.1f, 0.1f, 0.1f, 0.5f);
+    this->text = newtext;
+    this->cursor_pos++;
+}
+
+void Edit::setBackgroundColor(float r, float g, float b, float transparent) {
+    this->bgColor[0] = r;
+    this->bgColor[1] = g;
+    this->bgColor[2] = b;
+    this->bgColor[3] = transparent;
 }

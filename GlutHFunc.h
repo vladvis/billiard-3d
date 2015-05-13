@@ -7,9 +7,12 @@
 #include <assert.h>
 #include <string>
 #include <string.h>
+#include <math.h>
+#include <regex>
 
 #include <GL/glut.h>
-#define EDITLENGTH 20
+#define EDITLENGTH 17
+#define PI 3.14159265
 
 // Storageruct of bitmap file.
 struct BitMapFile
@@ -26,16 +29,27 @@ class Widget {
             virtual void receiveStroke(char c);
             virtual void render();
             bool visible;
+            bool isFocused;
 };
 
 class Edit : public Widget {
-        private:
+        public:
             std::string text;
             unsigned int cursor_pos;
+            GLfloat bgColor[4];
+            Edit(float x, float y, float w = 300.0f, float h = 45.0f, std::string text = std::string(""));
+            virtual void render();
+            virtual void receiveStroke(char c);
+            void setBackgroundColor(float r, float g, float b, float transparent);
+};
+
+class EditFloat : public Edit {
+        private:
+            float value;
 
         public:
-            Edit(float x, float y, float w = 150.0f, float h = 45.0f, std::string text = std::string(""));
-            virtual void render();
+            EditFloat(float x, float y, float w = 300.0f, float h = 45.0f,
+                      std::string text = std::string("0.0")) : Edit(x, y, w, h, text) {};
             virtual void receiveStroke(char c);
 };
 
@@ -46,6 +60,8 @@ void renderString (void *font, char *string);
 bool is_char(char c);
 void restorePerspectiveProjection();
 void setOrthographicProjection(float w, float h);
+void DrawRoundRect( float x, float y, float width, float height, float* color = NULL, float radius = 0.0f );
+inline float min(float a, float b) { return a < b ? a : b; }
 
 
 #endif //GLUT_H_FUNC
