@@ -283,6 +283,13 @@ int Ball::BoardCollide(Table &t, sndvolume &snd){
         float itr_v = t.rf * (1 + t.re) * vn;
 
         if (u.z <= 0 || r.z > 0) { //Coriolis
+            if (ret & 2) {
+                isvalid = 0;
+                ret |= 4;
+                t.sc_b_num += 1;
+            }else{
+                snd.board = max(snd.board, std::abs(vn/t.re));
+            }
             vec itr;
 
             if (u.mod() < itr_v) {
@@ -297,14 +304,14 @@ int Ball::BoardCollide(Table &t, sndvolume &snd){
 
             v = vt + vn * k;
             w -= hi * (itr ^ k);
-
+        }else{//Rezal - Beware! Dragons ahead!
             if (ret & 2) {
+                isvalid = 0;
                 ret |= 4;
                 t.sc_b_num += 1;
             }else{
                 snd.board = max(snd.board, std::abs(vn/t.re));
             }
-        }else{//Rezal - Beware! Dragons ahead!
             k = vec(0,0,0)-k;//TODO Remove culprit
 
             vec i(0,0,1);

@@ -255,7 +255,7 @@ void glutRender::DisplayGL ()
 
             glPushMatrix();
                glTranslatef(WindowWidth - 260.0f, -30.0f, 0.0f);
-               sprintf(info, "Time rate  %.3f", GameTable.MULT * 100);
+               sprintf(info, "Time rate  %.5f", GameTable.MULT * 100);
                renderString(GLUT_STROKE_ROMAN, info);
             glPopMatrix();
 
@@ -371,7 +371,7 @@ void glutRender::DisplayGL ()
             glPopMatrix();
         }
 
-        //if (it->isvalid != 0) {
+        if (it->isvalid != 0) {
             glEnable (GL_LIGHTING);
             glPushMatrix ();
                 glEnable (GL_TEXTURE_2D);
@@ -385,7 +385,7 @@ void glutRender::DisplayGL ()
 
                 glDisable (GL_TEXTURE_2D);
             glPopMatrix ();
-        //}
+        }
     }
 
     glLineWidth(2.5f);
@@ -600,21 +600,23 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         break;
 
         case '}':
-        case ']':
-        {
-            if (GameTable.MULT < 4)
-                if (GameTable.MULT < 1)
-                    GameTable.MULT *= 2;
-                else
-                    GameTable.MULT += 0.05f;
+        case ']': {
+            if (GameTable.MULT < 4) if (GameTable.MULT < 1) {
+                GameTable.MULT *= 2;
+            } else {
+                if (GameTable.MULT < 3)
+                GameTable.MULT += 0.05f;
+            }
         }
         break;
 
         case '{':
         case '[':
         {
-            if (GameTable.MULT <= 1)
-                GameTable.MULT /= 2;
+            if (GameTable.MULT <= 1) {
+                if (GameTable.MULT > 0.0001)
+                    GameTable.MULT /= 2;
+            }
             else
                 GameTable.MULT -= 0.05;
         }
