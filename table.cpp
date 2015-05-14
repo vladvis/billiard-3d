@@ -420,12 +420,14 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
             vec umac = u.normalized() - (u + ddu).normalized();
             if (umac.mod() < 1) //like previous + w can be zero
                 dw += ddw, dv += ddv, ret |= 4;
+        }else{
+            ret |= 4;
         }
         w += dw, v += dv;
 
         if (!(ret & 1)) w -= w.z * k;
         if (!(ret & 2)) w -= omega;
-        if (!(ret & 4)) v = - a * (k ^ w);
+        if (!(ret & 4)) v = a * (w ^ k);
 
         goto END_STEP;
     }
