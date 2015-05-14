@@ -939,20 +939,36 @@ void glutRender::NextBallButton(Widget *Sender) {
     if (!GameTable.balls.empty())
     {
         SoundController.Play(MediaLibrary["choose"]);
-        curre_ball = (curre_ball + 1) % GameTable.balls.size();
+        int length = GameTable.balls.size();
+        int i = 0;
+        for (i = 0; i < length; i++) {
+            curre_ball = (curre_ball + 1) % length;
+            if (GameTable.balls.at(curre_ball).isvalid) break;
+        }
+        if (i == length) curre_ball = length;
     }
-    else
+    else {
+        curre_ball = 0;
         SoundController.Play(MediaLibrary["wrong"]);
+    }
 }
 
 void glutRender::PrevBallButton(Widget *Sender) {
     if (!GameTable.balls.empty())
     {
         SoundController.Play(MediaLibrary["choose"]);
-        curre_ball = (curre_ball - 1 + GameTable.balls.size()) % GameTable.balls.size();
+        int length = GameTable.balls.size();
+        int i = 0;
+        for (i = 0; i < length; i++) {
+            curre_ball = (curre_ball - 1 + length) % length;
+            if (GameTable.balls.at(curre_ball).isvalid) break;
+        }
+        if (i == length) curre_ball = length;
     }
-    else
+    else {
+        curre_ball = 0;
         SoundController.Play(MediaLibrary["wrong"]);
+    }
 }
 
 void glutRender::TracksDrawingButton(Widget *Sender) {
