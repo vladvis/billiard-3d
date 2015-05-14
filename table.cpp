@@ -132,12 +132,13 @@ Table::Table(const std::string &name): MINTIME(0), DEFCLOCK(0), MULT(1), FPS(60)
 
 Table::Table(): MINTIME(0), DEFCLOCK(0), MULT(1), FPS(60), SLOWFACTOR(1), sc_b_num(0){};
 
-Ball::Ball(const  std::string &name, vec r, quat phi, vec v, vec w, const char *texture_filename) :
+Ball::Ball(const  std::string &name, vec r, quat phi, vec v, vec w, const char *texture_filename, float3f track_color) :
 r(r),
 phi(phi),
 v(v),
 w(w),
-isvalid(true)
+isvalid(true),
+track_color(track_color)
 {
 	std::ifstream file(name.c_str());
 

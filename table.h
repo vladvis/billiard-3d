@@ -72,8 +72,9 @@ public:
     char isvalid = 1;
 
     GLuint texture = 0;
+    float3f track_color;
 
-	Ball(const std::string &cfgfileName, vec r, quat phi, vec v, vec w, const char *texture_filename);
+	Ball(const std::string &cfgfileName, vec r, quat phi, vec v, vec w, const char *texture_filename, float3f track_color = float3f(255, 255, 255));
 	Ball();
 	int CollideDFS(Table &t);
 	int Collide(Table &t, Ball &, sndvolume &snd);

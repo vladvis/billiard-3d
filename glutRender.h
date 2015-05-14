@@ -25,20 +25,13 @@
 #include "gui/Edit.h"
 #include "gui/EditFloat.h"
 #include "gui/Button.h"
+#include "vec.h"
 
 #include <GL/glut.h>
 
 #ifndef GL_MULTISAMPLE
 	#define GL_MULTISAMPLE  0x809D
 #endif
-
-class float3
-{
-		public:
-			GLfloat x, y, z;
-			float3 (GLfloat _x = 0, GLfloat _y = 0, GLfloat _z = 0) :
-				x(_x), y(_y), z(_z) {};
-};
 
 class glutRender
 {
@@ -93,7 +86,7 @@ class glutRender
             bool main_theme_state = true;
 			bool draw_all_tracks = false;
 
-			float3 free_camera_pos = float3(0, 0, 0);
+			float3f free_camera_pos = float3f(0, 0, 0);
 
             std::string table_config_filename;
             std::string balls_config_filename;
