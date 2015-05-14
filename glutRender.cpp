@@ -34,36 +34,7 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     alpha = 1.8*3.14/3;
     curre_ball = 0;
     cam_height_h = 1.4;
-/*    menuState = 0;
-    // state 1 begin
-    Button * exit = new Button(WindowWidth - 45.0f, -45.0f, std::string("X"), 35.0f, 35.0f);
-    exit->visible = false;
-    widgets.push_back(exit);
-    Button * addnew = new Button(WindowWidth - 185.0f, -90.0f, std::string("Add new ball"));
-    addnew->visible = false;
-    widgets.push_back(addnew);
-    Button * editcur = new Button(WindowWidth - 185.0f, -135.0f, std::string("Edit cur ball"));
-    editcur->visible = false;
-    widgets.push_back(editcur);
-    // state 1 end
-    // state 2 begin
-    Button * back = new Button(WindowWidth - 45.0f, -135.0f, std::string("->"), 35.0f, 35.0f);
-    back->visible = false;
-    widgets.push_back(back);
-    EditFloat * xcoord = new EditFloat(WindowWidth - 310.0f, -100.0f, 300.0f, 55.0f,
-                                       std::string("0.0"), std::string("x coordinate"));
-    xcoord->visible = false;
-    widgets.push_back(xcoord);
-    EditFloat * ycoord = new EditFloat(WindowWidth - 310.0f, -155.0f, 300.0f, 55.0f,
-                                       std::string("0.0"), std::string("y coordinate"));
-    ycoord->visible = false;
-    widgets.push_back(ycoord);
-    EditFloat * zcoord = new EditFloat(WindowWidth - 310.0f, -210.0f, 300.0f, 55.0f,
-                                       std::string("0.0"), std::string("z coordinate"));
-    zcoord->visible = false;
-    widgets.push_back(zcoord);
-    // state 2 end
-*/
+    this->InitGui();
     if (*argc > 1)
         start_state_config_filename = std::string(argv[1]);
     else
@@ -587,7 +558,8 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case 'M':
         {
             if (main_theme_state) MainTheme.Stop();
-            main_theme_state != main_theme_state;
+            else MainTheme.Play();
+            main_theme_state = !main_theme_state;
         }
         break;
 
@@ -617,18 +589,6 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
                 GameTable.MULT /= 2;
             else
                 GameTable.MULT -= 0.05;
-        }
-        break;
-
-        case 'x':
-        case 'X':
-        {
-            EditFloat *edit = new EditFloat(10.0f, -100.0f);
-            edit->label = "It's label";
-            this->setFocus(edit);
-            widgets.push_back (edit);
-            Button *button = new Button(10.0f, -300.0f, std::string("I'm button!"));
-            widgets.push_back(button);
         }
         break;
 
@@ -732,7 +692,7 @@ void glutRender::MouseGL(int button, int state, int x, int y) {
     if (state == 0) {
         Widget *widget = NULL;
         for (std::vector<Widget *>::iterator it = this->widgets.begin(); it != this->widgets.end(); ++it) {
-            if ((*it)->hasPoint(x, y)) {
+            if ((*it)->hasPoint(x, y) && (*it)->visible) {
                 widget = *it;
             }
         }
@@ -747,7 +707,12 @@ void glutRender::MouseGL(int button, int state, int x, int y) {
         }
     } else {
         this->dragState = false;
-        if (focusedWidget != NULL) focusedWidget->isPressed = false;
+        if (focusedWidget != NULL) {
+            focusedWidget->isPressed = false;
+            if (focusedWidget->OnClick != NULL)
+                focusedWidget->OnClick(focusedWidget);
+            std::cout << focusedWidget->x << " " << focusedWidget->y << "\n";
+        }
     }
 }
 
@@ -764,4 +729,232 @@ void glutRender::MotionGL(int x, int y) {
         this->focusedWidget->x = x - this->dragX;
         this->focusedWidget->y = -(y - this->dragY);
     }
+}
+
+void glutRender::NewButtonOnClick(Widget *Sender) {
+    calculations_started = !calculations_started;
+}
+
+void glutRender::NewButtonOnClick_(Widget *Sender) {
+    glutRender::Instance.NewButtonOnClick(Sender);
+}
+
+void glutRender::InitGui() {
+    menuState = 0;
+    states.resize(3);
+    Button * new_button;
+    EditFloat * new_editfloat;
+
+    ADDBUTTON("Exit", -45.0f, this->ExitButton_)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Add new ball", -90.0f, this->AddBallButton_)
+    PUSHTOSTATE(2)
+
+    ADDBUTTON("Edit cur ball", -135.0f, this->ApplyButton_)
+    PUSHTOSTATE(2)
+
+    ADDBUTTON("Back", -170.0f, this->BackButton_)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("x coordinate", -100.0f, this->xcoord)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("y coordinate", -155.0f, this->ycoord)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("z coordinate", -210.0f, this->zcoord)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("x velocity", -300.0f, this->xvelocity)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("y velocity", -355.0f, this->yvelocity)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("z velocity", -410.0f, this->zvelocity)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("x angular velocity", -500.0f, this->xanglevelo)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("y angular velocity", -555.0f, this->yanglevelo)
+    PUSHTOSTATE(2)
+
+    ADDEDITFLOAT("z angular velocity", -610.0f, this->zanglevelo)
+    PUSHTOSTATE(2)
+
+    ADDBUTTON("Show menu", -445.0f, this->ShowHideMenuButton_)
+    PUSHTOSTATE(0)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Reset", -555.0f, this->ResetButton_)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Start/Pause", -500.0f, this->StartStopButton_)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Open ball editor", -610.0f, this->OpenBallEditor_)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Toggle music", -665.0f, this->ToggleMusicButton_)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Draw tracks", -390.0f, this->TracksDrawingButton_)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Next ball", -280.0f, this->NextBallButton_)
+    PUSHTOSTATE(1)
+
+    ADDBUTTON("Previous ball", -335.0f, this->PrevBallButton_)
+    PUSHTOSTATE(1)
+
+    setState(0);
+}
+
+void glutRender::ToggleMusicButton_(Widget *Sender) {
+    glutRender::Instance.ToggleMusicButton(Sender);
+}
+
+void glutRender::TracksDrawingButton_(Widget *Sender) {
+    glutRender::Instance.TracksDrawingButton(Sender);
+}
+
+void glutRender::PrevBallButton_(Widget *Sender) {
+    glutRender::Instance.PrevBallButton(Sender);
+}
+
+void glutRender::NextBallButton_(Widget *Sender) {
+    glutRender::Instance.NextBallButton(Sender);
+}
+
+void glutRender::ApplyButton_(Widget *Sender) {
+    glutRender::Instance.ApplyButton(Sender);
+}
+
+void glutRender::AddBallButton_(Widget *Sender) {
+    glutRender::Instance.AddBallButton(Sender);
+}
+
+void glutRender::BackButton_(Widget *Sender) {
+    glutRender::Instance.BackButton(Sender);
+}
+
+void glutRender::ShowHideMenuButton_(Widget *Sender) {
+    glutRender::Instance.ShowHideMenuButton(Sender);
+}
+
+void glutRender::ExitButton_(Widget *Sender) {
+    glutRender::Instance.ExitButton(Sender);
+}
+
+void glutRender::ResetButton_(Widget *Sender) {
+    glutRender::Instance.ResetButton(Sender);
+}
+
+void glutRender::StartStopButton_(Widget *Sender) {
+    glutRender::Instance.StartStopButton(Sender);
+}
+
+void glutRender::ApplyButton(Widget *Sender) {
+
+}
+
+void glutRender::AddBallButton(Widget *Sender) {
+    int texture = rand() % 16;
+    char texture_str[20];
+    sprintf(texture_str, "textures/%02d.data", texture);
+    float phi = (rand() % 100) / 50.0 * M_PI;
+    glutRender::GameTable.balls.push_back(Ball("ball.cfg", vec(*(this->xcoord), *(this->ycoord), *(this->zcoord)),
+                                               quat(cos(phi), sin(phi) * vec(rand(), rand(), rand()).normalized()),
+                                               vec(*(this->xvelocity), *(this->yvelocity), *(this->zvelocity)),
+                                               vec(*(this->xanglevelo), *(this->yanglevelo), *(this->zanglevelo)),
+                                               texture_str ));
+
+
+}
+
+void glutRender::BackButton(Widget *Sender) {
+    setState(1);
+}
+
+void glutRender::ShowHideMenuButton(Widget *Sender) {
+    if (menuState == 0) {
+        setState(1);
+        ((Button *)Sender)->label = std::string("Hide menu");
+    } else {
+        setState(0);
+        ((Button *)Sender)->label = std::string("Show menu");
+    }
+}
+
+void glutRender::ExitButton(Widget *Sender) {
+    this->Cleanup();
+}
+
+void glutRender::ResetButton(Widget *Sender) {
+    SoundController.Play(MediaLibrary["wrong"]);
+    LoadConfig (table_config_filename, balls_config_filename, start_state_config_filename);
+}
+
+void glutRender::StartStopButton(Widget *Sender) {
+    if (!calculations_started)
+        SoundController.Play(MediaLibrary["hit"]);
+    else
+        SoundController.Play(MediaLibrary["wrong"]);
+
+    calculations_started = !calculations_started;
+}
+
+void glutRender::NextBallButton(Widget *Sender) {
+    if (!GameTable.balls.empty())
+    {
+        SoundController.Play(MediaLibrary["choose"]);
+        curre_ball = (curre_ball + 1) % GameTable.balls.size();
+    }
+    else
+        SoundController.Play(MediaLibrary["wrong"]);
+}
+
+void glutRender::PrevBallButton(Widget *Sender) {
+    if (!GameTable.balls.empty())
+    {
+        SoundController.Play(MediaLibrary["choose"]);
+        curre_ball = (curre_ball - 1 + GameTable.balls.size()) % GameTable.balls.size();
+    }
+    else
+        SoundController.Play(MediaLibrary["wrong"]);
+}
+
+void glutRender::TracksDrawingButton(Widget *Sender) {
+    draw_all_tracks = !draw_all_tracks;
+    SoundController.Play(MediaLibrary["choose"]);
+}
+
+void glutRender::ToggleMusicButton(Widget *Sender) {
+    if (main_theme_state) MainTheme.Stop();
+    else MainTheme.Play();
+    main_theme_state = !main_theme_state;
+}
+
+void glutRender::setState(int num) {
+    this->unsetState();
+    for (std::vector<unsigned long>::iterator it = states[num].begin(); it != states[num].end(); ++it) {
+        widgets[*it]->visible = true;
+    }
+    this->menuState = num;
+}
+
+void glutRender::unsetState() {
+    for (std::vector<unsigned long>::iterator it = states[menuState].begin(); it != states[menuState].end(); ++it) {
+        widgets[*it]->visible = false;
+    }
+}
+
+void glutRender::OpenBallEditor(Widget *Sender) {
+    setState(2);
+}
+
+void glutRender::OpenBallEditor_(Widget *Sender) {
+    glutRender::Instance.OpenBallEditor(Sender);
 }

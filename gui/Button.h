@@ -8,9 +8,8 @@
 #include "Widget.h"
 
 class Button : public Widget {
-private:
-    std::string label;
 public:
+    std::string label;
     Button(float x, float y, std::string label, float w = 200.0f, float h = 45.0f);
     virtual void render();
 };

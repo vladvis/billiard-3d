@@ -28,5 +28,6 @@ void EditFloat::receiveStroke(char c) {
     else
         this->setBackgroundColor(0.1f, 0.1f, 0.1f, 0.5f);
     this->text = newtext;
+    this->value = atof(this->text.c_str());
     this->cursor_pos++;
 }

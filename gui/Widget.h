@@ -32,6 +32,7 @@ public:
     bool isFocused;
     bool isPressed;
     float bgColor[4];
+    void (* OnClick)(Widget * Sender);
 };
 
 #endif //BILLIARD_WIDGET_H

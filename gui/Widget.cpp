@@ -11,6 +11,7 @@ Widget::Widget(float x, float y, float w, float h, bool visible) {
     this->h = h;
     this->visible = visible;
     this->isFocused = false;
+    this->OnClick = NULL;
 }
 
 void Widget::setBackgroundColor(float r, float g, float b, float transparent) {
