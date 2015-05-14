@@ -397,11 +397,10 @@ void glutRender::DisplayGL ()
     }
 
     glLineWidth(2.5f);
-    //glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHTING);
 
 	glPushMatrix();
-        //glColor3f(0.7f, 0.7f, 0.7f);
-        glColor3f(0.1f, 0.1f, 0.1f);
+        glColor3f(0.9f, 0.9f, 0.9f);
         renderStrokeFontString(0.49f, -0.03f, GameTable.lenx + 0.09005f, GLUT_STROKE_ROMAN, (char *)"Billiard 3D PROJECT 2015");
 	glPopMatrix();
 
