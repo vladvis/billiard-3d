@@ -309,13 +309,21 @@ void glutRender::DisplayGL ()
 
         if (ActiveBall.isvalid == 0)
         {
-            if (!GameTable.balls.empty())
+            if (!GameTable.balls.empty())//TODO This doesn't work at all!
             {
                 SoundController.Play(MediaLibrary["choose"]);
-                curre_ball = (curre_ball + 1) % GameTable.balls.size();
+                int length = GameTable.balls.size();
+                int i = 0;
+                for (i = 0; i < length; i++) {
+                    curre_ball = (curre_ball + 1) % GameTable.balls.size();
+                    if (GameTable.balls.at(curre_ball).isvalid) break;
+                }
+                if (i == length) curre_ball = length;
             }
-            else
+            else {
+                curre_ball = 0;
                 SoundController.Play(MediaLibrary["wrong"]);
+            }
 
             return;
         }
@@ -431,8 +439,10 @@ void glutRender::IdleGL ()
 		}
 
         for (Ball &b: GameTable.balls){
+            std::cout << (int)b.isvalid << " ";
             b.track.push_back(b.r);
         }
+        std::cout << std::endl;
 
         if (ret & 256)
             SoundController.Play(MediaLibrary["collide"], min(snd.collide/10, 1));
@@ -555,8 +565,10 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
                 SoundController.Play(MediaLibrary["choose"]);
                 curre_ball = (curre_ball + 1) % GameTable.balls.size();
             }
-            else
+            else {
+                curre_ball = 0;
                 SoundController.Play(MediaLibrary["wrong"]);
+            }
         }
         break;
 
