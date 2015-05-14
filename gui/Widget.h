@@ -31,6 +31,7 @@ public:
     bool visible;
     bool isFocused;
     bool isPressed;
+    int prevWidth;
     float bgColor[4];
     void (* OnClick)(Widget * Sender);
 };
