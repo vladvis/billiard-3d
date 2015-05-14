@@ -295,8 +295,8 @@ int Ball::BoardCollide(Table &t, sndvolume &snd){
         if (u.z <= 0 || r.z > 0) { //Coriolis
             vec itr;
 
-            if (u.mod() < itr_v) {
-                itr = u;
+            if (u.mod() < itr_v*(1+hi)) {
+                itr = u/(1+hi);
             }
             else {
                 itr = u.normalized() * itr_v;
@@ -442,11 +442,11 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
 		float itr_v = t.f * (1 + t.je) * vn;
 
 		vec itr;
-		if (u.mod() > itr_v){
+		if (u.mod() > itr_v*(1+hi)){
 			itr = u.normalized() * itr_v;
 		}
 		else{
-			itr = u;
+			itr = u/(1+hi);
 		}
 
 		u -= itr;
