@@ -186,11 +186,11 @@ int Ball::Collide(Table &t, Ball &b, sndvolume &snd)
 	float itr_v = t.bb * (1 + t.e) * (v1n - v2n) / 2;
 
 	vec itr;//We use that friction vector is constant in it's direction - Coriolis
-	if (2 * itr_v < mu){ //Always friction
+	if ((1 + hi) * 2 * itr_v < mu){ //Always friction
 		itr = itr_v * tau;
 	}
 	else{//Friction stops when u=0
-		itr = u / 2;
+		itr = u / 2 / (1 + hi);
 	}
 
 	w -= hi / a * (itr ^ k);
