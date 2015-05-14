@@ -26,37 +26,6 @@ char help_info[hel_info_lines_number][70] =
 /* there is only one copy of glutRender, so we are have to use this lifehack to deal with C GLUT library on C++, it is ok */
 glutRender glutRender::Instance;
 
-void glutRender::addBall() {
-    int fd[2];
-
-    if (pipe (fd))
-    {
-        fprintf(stderr,"Pipe failed.\n");
-        exit(EXIT_FAILURE);
-    }
-    char cmd[256];
-    sprintf(cmd, "python2 dialog.py %d", fd[1]);
-    int pid = fork();
-    if (pid == 0) {
-        if (system(cmd)) std::cout << "Can't create window!" << std::endl;
-        exit(0);
-    }
-    FILE *stream;
-    stream = fdopen(fd[0], "r");
-    int status;
-    if(fscanf(stream, "%d", &status)) return;
-    if (status == 1) {
-        float x,y,z,vx,vy,vz,vax,vay,vaz;
-        if(fscanf(stream, "%f%f%f%f%f%f%f%f%f", &x, &y, &z, &vx, &vy, &vz, &vax, &vay, &vaz)) return;
-        float phi = (rand() % 100) / 50.0 * M_PI;
-        GameTable.balls.push_back(Ball("ball.cfg", vec(x, y, z), quat(cos(phi), sin(phi) * vec(rand(), rand(), rand()).normalized()), vec(vx, vy, vz), vec(vax, vay, vaz), "textures/02.data"));
-
-    } else {
-        printf("Cancel");
-    }
-    fclose (stream);
-}
-
 void glutRender::Init (int* argc, char* argv[], const char *table_config, const char *balls_config, const char *sounds_config)
 {
     srand(time(0));
@@ -65,7 +34,36 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
     alpha = 1.8*3.14/3;
     curre_ball = 0;
     cam_height_h = 1.4;
-
+/*    menuState = 0;
+    // state 1 begin
+    Button * exit = new Button(WindowWidth - 45.0f, -45.0f, std::string("X"), 35.0f, 35.0f);
+    exit->visible = false;
+    widgets.push_back(exit);
+    Button * addnew = new Button(WindowWidth - 185.0f, -90.0f, std::string("Add new ball"));
+    addnew->visible = false;
+    widgets.push_back(addnew);
+    Button * editcur = new Button(WindowWidth - 185.0f, -135.0f, std::string("Edit cur ball"));
+    editcur->visible = false;
+    widgets.push_back(editcur);
+    // state 1 end
+    // state 2 begin
+    Button * back = new Button(WindowWidth - 45.0f, -135.0f, std::string("->"), 35.0f, 35.0f);
+    back->visible = false;
+    widgets.push_back(back);
+    EditFloat * xcoord = new EditFloat(WindowWidth - 310.0f, -100.0f, 300.0f, 55.0f,
+                                       std::string("0.0"), std::string("x coordinate"));
+    xcoord->visible = false;
+    widgets.push_back(xcoord);
+    EditFloat * ycoord = new EditFloat(WindowWidth - 310.0f, -155.0f, 300.0f, 55.0f,
+                                       std::string("0.0"), std::string("y coordinate"));
+    ycoord->visible = false;
+    widgets.push_back(ycoord);
+    EditFloat * zcoord = new EditFloat(WindowWidth - 310.0f, -210.0f, 300.0f, 55.0f,
+                                       std::string("0.0"), std::string("z coordinate"));
+    zcoord->visible = false;
+    widgets.push_back(zcoord);
+    // state 2 end
+*/
     if (*argc > 1)
         start_state_config_filename = std::string(argv[1]);
     else
@@ -133,6 +131,8 @@ void glutRender::Init (int* argc, char* argv[], const char *table_config, const 
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_LINE_SMOOTH);
     glEnable(GL_AUTO_NORMAL);
+    glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+    glEnable( GL_BLEND );
     /* fog */
     glEnable(GL_FOG);
     GLfloat fogColor[4] = {0.03f, 0.03f, 0.03f, 1.0f};
@@ -450,6 +450,11 @@ void glutRender::restorePerspectiveProjection()
 void glutRender::KeyboardGL (unsigned char c, int x, int y)
 {
     if (this->focusedWidget != NULL) {
+        if (c == '\t') {
+            int i = 0;
+            while (this->focusedWidget != this->widgets[i]) ++i;
+            setFocus(this->widgets[(i+1) % this->widgets.size()]);
+        }
         if (c == '\033') {
             this->unsetFocus();
             return;
@@ -546,17 +551,6 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         }
         break;
 
-        case 'z':
-        case 'Z':
-        {
-            if (!calculations_started)
-            {
-                SoundController.Play(MediaLibrary["menu"]);
-                addBall();
-            }
-        }
-        break;
-
         case ' ':
         {
             if (!calculations_started)
@@ -630,8 +624,11 @@ void glutRender::KeyboardGL (unsigned char c, int x, int y)
         case 'X':
         {
             EditFloat *edit = new EditFloat(10.0f, -100.0f);
+            edit->label = "It's label";
             this->setFocus(edit);
             widgets.push_back (edit);
+            Button *button = new Button(10.0f, -300.0f, std::string("I'm button!"));
+            widgets.push_back(button);
         }
         break;
 
@@ -741,6 +738,7 @@ void glutRender::MouseGL(int button, int state, int x, int y) {
         }
         if (widget != NULL) {
             setFocus(widget);
+            widget->isPressed = true;
             this->dragState = true;
             this->dragX = x - round(widget->x);
             this->dragY = y + round(widget->y);
@@ -749,6 +747,7 @@ void glutRender::MouseGL(int button, int state, int x, int y) {
         }
     } else {
         this->dragState = false;
+        if (focusedWidget != NULL) focusedWidget->isPressed = false;
     }
 }
 

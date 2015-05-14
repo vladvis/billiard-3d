@@ -11,8 +11,8 @@ void EditFloat::receiveStroke(char c) {
         std::string newtext = this->text.substr(0, this->cursor_pos-1) +
                               this->text.substr(this->cursor_pos, this->text.size()-this->cursor_pos);
         this->text = newtext;
-        if (!std::regex_match(newtext, std::regex(FLOAT_REGEXP)))
-            this->setBackgroundColor(0.9f, 0.1f, 0.1f, 0.5f);
+        if (newtext.size() == 0)
+            this->setBackgroundColor(0.6f, 0.1f, 0.1f, 0.5f);
         else
             this->setBackgroundColor(0.1f, 0.1f, 0.1f, 0.5f);
         this->cursor_pos--;

@@ -24,6 +24,7 @@
 #include "gui/Widget.h"
 #include "gui/Edit.h"
 #include "gui/EditFloat.h"
+#include "gui/Button.h"
 
 #include <GL/glut.h>
 
@@ -54,7 +55,6 @@ class glutRender
 			void MotionGL (int x, int y);
 			void ReshapeGL (int w, int h);
 			void KeyboardGL (unsigned char c, int x, int y);
-			void addBall();
 			void setFocus(Widget * widget);
 			void unsetFocus();
 
@@ -63,6 +63,7 @@ class glutRender
 			Widget * focusedWidget;
             int dragX, dragY;
             bool dragState = false;
+            int menuState;
 
             glutRender (int _WindowWidth = 1280, int _WindowHeight = 768) :
 				WindowWidth(_WindowWidth), WindowHeight(_WindowHeight) {};

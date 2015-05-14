@@ -100,6 +100,15 @@ void renderString (void *font, char *string)
 	}
 }
 
+void renderSmallString (void *font, char *string)
+{
+    char *c;
+    glScalef(0.12f, 0.09f, 0.0f);
+    for (c = string; *c != '\0'; c++) {
+        glutStrokeCharacter(font, *c);
+    }
+}
+
 void renderStrokeFontString (float x, float y, float z, void *font, char *string)
 {
 	char *c;
@@ -123,7 +132,7 @@ typedef struct
 } Vector2f;
 
 #define ROUNDING_POINT_COUNT 8
-void DrawRoundRect( float x, float y, float width, float height, float* color, float radius )
+void DrawRoundRect( float x, float y, float width, float height, float* color, float radius, float gradient )
 {
     Vector2f top_left[ROUNDING_POINT_COUNT];
     Vector2f bottom_left[ROUNDING_POINT_COUNT];
@@ -178,22 +187,6 @@ void DrawRoundRect( float x, float y, float width, float height, float* color, f
         bottom_left[ index ].y = bottom_left_corner.y +
                                  ( y_offset * radius );
 
-
-        top_left[ index ].x = top_left[ index ].x;
-        top_left[ index ].y = top_left[ index ].y;
-
-
-        top_right[ index ].x = top_right[ index ].x;
-        top_right[ index ].y = top_right[ index ].y;
-
-
-        bottom_right[ index ].x = bottom_right[ index ].x ;
-        bottom_right[ index ].y = bottom_right[ index ].y;
-
-
-        bottom_left[ index ].x =  bottom_left[ index ].x ;
-        bottom_left[ index ].y =  bottom_left[ index ].y ;
-
         angle -= step;
 
         ++index;
@@ -201,22 +194,33 @@ void DrawRoundRect( float x, float y, float width, float height, float* color, f
         ++i;
     }
 
-    static GLubyte clr[] = { 0, 0, 0, 128 };
+    static float clr[] = { 0.0f, 0.0f, 0.0f, 0.5f };
 
     if( color )
-        glColor4fv(color);
-    else
-        glColor4ubv(clr);
+        for (int i = 0; i < 4; ++i)
+            clr[i] = color[i];
+
+    glColor4fv(clr);
 
     glBegin( GL_TRIANGLE_STRIP );
     {
+        for (int i = 0; i < 3; ++i) {
+            clr[i] += segment_count*gradient;
+        }
+        glColor4fv(clr);
         // Top
-        for( i = segment_count - 1 ; i >= 0 ; i--)
+        for( i = 0 ; i < segment_count ; i++)
         {
             glVertex2f( top_left[ i ].x, top_left[ i ].y );
             glVertex2f( top_right[ i ].x, top_right[ i ].y );
+            for (int i = 0; i < 3; ++i)
+                clr[i] -= gradient;
+            glColor4fv(clr);
         }
-
+        for (int i = 0; i < 3; ++i) {
+            clr[i] += segment_count*gradient;
+        }
+        glColor4fv(clr);
         // In order to stop and restart the strip.
         glVertex2f( top_right[ 0 ].x, top_right[ 0 ].y );
         glVertex2f( top_right[ 0 ].x, top_right[ 0 ].y );
@@ -230,6 +234,9 @@ void DrawRoundRect( float x, float y, float width, float height, float* color, f
         // Bottom
         for( i = 0; i != segment_count ; i++ )
         {
+            for (int i = 0; i < 3; ++i)
+                clr[i] -= gradient;
+            glColor4fv(clr);
             glVertex2f( bottom_right[ i ].x, bottom_right[ i ].y );
             glVertex2f( bottom_left[ i ].x, bottom_left[ i ].y );
         }

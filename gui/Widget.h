@@ -26,9 +26,12 @@ public:
     Widget(float x, float y, float w, float h, bool visible = true);
     virtual void receiveStroke(char c);
     virtual void render();
+    virtual void setBackgroundColor(float r, float g, float b, float transparent);
     bool hasPoint(int x, int y);
     bool visible;
     bool isFocused;
+    bool isPressed;
+    float bgColor[4];
 };
 
 #endif //BILLIARD_WIDGET_H

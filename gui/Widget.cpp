@@ -13,6 +13,13 @@ Widget::Widget(float x, float y, float w, float h, bool visible) {
     this->isFocused = false;
 }
 
+void Widget::setBackgroundColor(float r, float g, float b, float transparent) {
+    this->bgColor[0] = r;
+    this->bgColor[1] = g;
+    this->bgColor[2] = b;
+    this->bgColor[3] = transparent;
+}
+
 void Widget::receiveStroke(char c) {
 }
 
@@ -20,7 +27,7 @@ void Widget::render() {
 }
 
 bool Widget::hasPoint(int x, int y) {
-    return (((-round(this->y)-y) < this->h/2) &&
+    return ((abs(-round(this->y)-y) < this->h/2) &&
             ((x - round(this->x)) < this->w) &&
             ((x - round(this->x)) >= 0));
 }

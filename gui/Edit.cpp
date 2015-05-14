@@ -24,24 +24,23 @@ void Edit::receiveStroke(char c) {
     this->cursor_pos++;
 }
 
-Edit::Edit(float x, float y, float w, float h, std::string text) : Widget(x, y, w, h) {
+Edit::Edit(float x, float y, float w, float h, std::string text, std::string label) : Widget(x, y, w, h) {
     this->text = text;
     this->cursor_pos = text.size();
     this->setBackgroundColor(0.1f, 0.1f, 0.1f, 0.5f);
-}
-
-void Edit::setBackgroundColor(float r, float g, float b, float transparent) {
-    this->bgColor[0] = r;
-    this->bgColor[1] = g;
-    this->bgColor[2] = b;
-    this->bgColor[3] = transparent;
+    this->label = label;
 }
 
 void Edit::render() {
     if (!this->visible)
         return;
     glPushMatrix();
-    DrawRoundRect(this->x, this->y + this->h/2, this->w, this->h, this->bgColor, 0.0f);
+    DrawRoundRect(this->x, this->y + this->h/2 + 10.0f, this->w, this->h, this->bgColor, 0.0f);
+    glPopMatrix();
+    glPushMatrix();
+    glColor3f(0.6f, 0.6f, 0.6f);
+    glTranslatef(this->x+10.0f, this->y+18.0f, 0.0f);
+    renderSmallString(GLUT_STROKE_ROMAN, (char *)this->label.c_str());
     glPopMatrix();
     glPushMatrix();
     glColor3f(0.8f, 0.8f, 0.7f);
