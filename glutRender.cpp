@@ -307,12 +307,23 @@ void glutRender::DisplayGL ()
     {
         Ball &ActiveBall = GameTable.balls[curre_ball];
 
+        if (ActiveBall.isvalid == 0)
+        {
+            if (!GameTable.balls.empty())
+            {
+                SoundController.Play(MediaLibrary["choose"]);
+                curre_ball = (curre_ball + 1) % GameTable.balls.size();
+            }
+            else
+                SoundController.Play(MediaLibrary["wrong"]);
+
+            return;
+        }
+
         if (!draw_all_tracks)
         {
             glPushMatrix();
                 glColor3f (ActiveBall.track_color.x, ActiveBall.track_color.y, ActiveBall.track_color.z);
-                //glColor3d (255, 255, 255);
-                //glColor3f(0.9f, 0.9f, 0.9f);
                 glLineWidth(2.5f);
 
                 glBegin(GL_LINES);
@@ -366,7 +377,6 @@ void glutRender::DisplayGL ()
         if (draw_all_tracks)
         {
             glPushMatrix();
-                //glColor3f(0.9f, 0.9f, 0.9f);
                 glColor3f (it->track_color.x, it->track_color.y, it->track_color.z);
                 glLineWidth(2.5f);
 
@@ -397,7 +407,7 @@ void glutRender::DisplayGL ()
     }
 
     glLineWidth(2.5f);
-    glDisable(GL_LIGHTING);
+    //glDisable(GL_LIGHTING);
 
 	glPushMatrix();
         glColor3f(0.9f, 0.9f, 0.9f);

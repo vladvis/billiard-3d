@@ -270,7 +270,7 @@ int Ball::BoardCollide(Table &t, sndvolume &snd){
         ret |= 2;
 
 	if (ret & 1){
-        if (r.z > t.border_height) {
+        if (r.z > t.border_height + a) {
             isvalid = 2;
             return 0;
         }
