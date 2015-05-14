@@ -668,6 +668,12 @@ void glutRender::ReshapeGL (int w, int h)
     glMatrixMode(GL_MODELVIEW);
 
     glutPostRedisplay ();
+
+    for (std::vector<Widget *>::iterator it = widgets.begin(); it != widgets.end(); ++it) {
+        int delta = w - (*it)->prevWidth;
+        (*it)->x += delta;
+        (*it)->prevWidth = w;
+    }
 }
 
 void glutRender::Cleanup ()

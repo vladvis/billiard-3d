@@ -33,8 +33,9 @@
 #endif
 
 #define ADDBUTTON(name,ycoord,func) 																	\
-	new_button = new Button(WindowWidth - 185.0f, ycoord, std::string(name));							\
+	new_button = new Button(WindowWidth - 210.0f, ycoord, std::string(name));							\
 	new_button->visible = false;																		\
+    new_button->prevWidth = this->WindowWidth;                                                          \
 	new_button->OnClick = func;																			\
 	widgets.push_back(new_button);
 
@@ -42,6 +43,7 @@
     new_editfloat = new EditFloat(WindowWidth - 310.0f, ycoord, 300.0f, 55.0f,                          \
                                     std::string("0.0"), std::string(label));                            \
     new_editfloat->visible = false;                                                                     \
+    new_editfloat->prevWidth = this->WindowWidth;                                                       \
     pointer = &new_editfloat->value;                                                                    \
     widgets.push_back(new_editfloat);
 
