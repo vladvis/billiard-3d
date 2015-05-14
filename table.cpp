@@ -132,12 +132,13 @@ Table::Table(const std::string &name): MINTIME(0), DEFCLOCK(0), MULT(1), FPS(60)
 
 Table::Table(): MINTIME(0), DEFCLOCK(0), MULT(1), FPS(60), SLOWFACTOR(1), sc_b_num(0){};
 
-Ball::Ball(const  std::string &name, vec r, quat phi, vec v, vec w, const char *texture_filename) :
+Ball::Ball(const  std::string &name, vec r, quat phi, vec v, vec w, const char *texture_filename, float3f track_color) :
 r(r),
 phi(phi),
 v(v),
 w(w),
-isvalid(true)
+isvalid(true),
+track_color(track_color)
 {
 	std::ifstream file(name.c_str());
 
@@ -269,7 +270,7 @@ int Ball::BoardCollide(Table &t, sndvolume &snd){
         ret |= 2;
 
 	if (ret & 1){
-        if (r.z > t.border_height) {
+        if (r.z > t.border_height + a) {
             isvalid = 2;
             return 0;
         }
@@ -281,6 +282,15 @@ int Ball::BoardCollide(Table &t, sndvolume &snd){
 		vec u = v - k * (v * k) + a * (w ^ k);
 
         float itr_v = t.rf * (1 + t.re) * vn;
+
+        if (ret & 2) {
+            isvalid = 0;
+            ret |= 4;
+            t.sc_b_num += 1;
+            return ret;
+        }else{
+            snd.board = max(snd.board, std::abs(vn/t.re));
+        }
 
         if (u.z <= 0 || r.z > 0) { //Coriolis
             vec itr;
@@ -297,13 +307,6 @@ int Ball::BoardCollide(Table &t, sndvolume &snd){
 
             v = vt + vn * k;
             w -= hi * (itr ^ k);
-
-            if (ret & 2) {
-                ret |= 4;
-                t.sc_b_num += 1;
-            }else{
-                snd.board = max(snd.board, std::abs(vn/t.re));
-            }
         }else{//Rezal - Beware! Dragons ahead!
             k = vec(0,0,0)-k;//TODO Remove culprit
 
@@ -412,12 +415,14 @@ int Ball::NextStep(Table &t, float mintime, sndvolume &snd)
             vec umac = u.normalized() - (u + ddu).normalized();
             if (umac.mod() < 1) //like previous + w can be zero
                 dw += ddw, dv += ddv, ret |= 4;
+        }else{//???
+            ret |= 4;
         }
         w += dw, v += dv;
 
         if (!(ret & 1)) w -= w.z * k;
         if (!(ret & 2)) w -= omega;
-        if (!(ret & 4)) v = - a * (k ^ w);
+        if (!(ret & 4)) v = a * (w ^ k);
 
         goto END_STEP;
     }

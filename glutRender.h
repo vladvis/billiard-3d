@@ -47,14 +47,6 @@
 
 #define PUSHTOSTATE(state) states[state].push_back(widgets.size() - 1);
 
-class float3
-{
-		public:
-			GLfloat x, y, z;
-			float3 (GLfloat _x = 0, GLfloat _y = 0, GLfloat _z = 0) :
-				x(_x), y(_y), z(_z) {};
-};
-
 class glutRender
 {
 		public:
@@ -149,7 +141,7 @@ class glutRender
             bool main_theme_state = true;
 			bool draw_all_tracks = false;
 
-			float3 free_camera_pos = float3(0, 0, 0);
+			float3f free_camera_pos = float3f(0, 0, 0);
 
             std::string table_config_filename;
             std::string balls_config_filename;

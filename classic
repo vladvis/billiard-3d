@@ -5,6 +5,7 @@
 0 0 0
 textures/04.data
 
+
 -0.1 -0.1 0
 0 0 0
 0 0 0
@@ -16,6 +17,7 @@ textures/02.data
 textures/03.data
 
 0.1 -0.1 0
+
 0 0 0
 0 0 0
 textures/15.data
@@ -76,7 +78,7 @@ textures/14.data
 textures/01.data
 
 0 1 0
-0 -10 0
+0 -300 0
 0 0 0
 textures/00.data
 

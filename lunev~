@@ -3,79 +3,95 @@
 0 -2 0.01
 0 51 0
 0 0 0
-textures/test.data
+textures/00.data
+255 255 255
 
 0 0.635 0
 0 0 0
 0 0 0
 textures/01.data
+255 255 0
 
 -0.1 1.035 0
 0 0 0
 0 0 0
 textures/02.data
+0 0 255
 
 -0.2 1.035 0
 0 0 0
 0 0 0
 textures/03.data
+255 0 0
 
 0 1.035 0
 0 0 0
 0 0 0
 textures/04.data
+204 0 153
 
 0.15 0.935 0
 0 0 0
 0 0 0
 textures/05.data
+255 204 51
 
 -0.05 0.935 0
 0 0 0
 0 0 0
 textures/06.data
+0 255 0
 
 0.05 0.935 0
 0 0 0
 0 0 0
 textures/07.data
+204 51 0
 
 0 0.835 0
 0 0 0
 0 0 0
 textures/08.data
+51 51 51
 
 -0.15 0.935 0
 0 0 0
 0 0 0
 textures/09.data
+255 255 153
 
 -0.1 0.835 0
 0 0 0
 0 0 0
 textures/10.data
+153 204 255
 
 0.1 0.835 0
 0 0 0
 0 0 0
 textures/11.data
+255 0 255
 
 0.2 1.035 0
 0 0 0
 0 0 0
 textures/12.data
+204 0 153
 
 0.05 0.735 0
 0 0 0
 0 0 0
 textures/13.data
+255 204 0
 
 -0.05 0.735 0
 0 0 0
 0 0 0
 textures/14.data
+204 255 153
 
 0.1 1.035 0
 0 0 0
 0 0 0
 textures/15.data
+204 0 153
