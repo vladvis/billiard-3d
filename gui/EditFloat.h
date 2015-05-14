@@ -15,7 +15,7 @@ private:
 
 public:
     EditFloat(float x, float y, float w = 300.0f, float h = 45.0f,
-              std::string text = std::string("0.0"), std::string label) : Edit(x, y, w, h, text, label) {};
+              std::string text = std::string("0.0"), std::string label = "") : Edit(x, y, w, h, text, label) {};
     virtual void receiveStroke(char c);
 };
 
