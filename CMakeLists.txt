@@ -16,5 +16,12 @@ add_executable(main test.cpp gui/Widget.cpp gui/Widget.h gui/Edit.cpp gui/Edit.h
 target_link_libraries(main libs)
 
 include_directories(${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${ALUT_INCLUDE_DIRS})
+
+set_target_properties(libs PROPERTIES LINK_SEARCH_START_STATIC 1)
+set_target_properties(libs PROPERTIES LINK_SEARCH_END_STATIC 1)
+set_target_properties(main PROPERTIES LINK_SEARCH_START_STATIC 1)
+set_target_properties(main PROPERTIES LINK_SEARCH_END_STATIC 1)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 target_link_libraries(libs ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES})
 target_link_libraries(main ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ALUT_LIBRARIES})
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")

@@ -32,15 +32,15 @@
 	#define GL_MULTISAMPLE  0x809D
 #endif
 
-#define ADDBUTTON(name,xcoord,ycoord,func) 																	\
-	new_button = new Button(xcoord, ycoord, std::string(name));							\
+#define ADDBUTTON(name,xcoord,ycoord,func) 																\
+	new_button = new Button(xcoord, ycoord, std::string(name));					                   		\
 	new_button->visible = false;																		\
     new_button->prevWidth = this->WindowWidth;                                                          \
 	new_button->OnClick = func;																			\
 	widgets.push_back(new_button);
 
-#define ADDEDITFLOAT(label,xcoord,ycoord,pointer)                                                              \
-    new_editfloat = new EditFloat(xcoord, ycoord, 300.0f, 55.0f,                          \
+#define ADDEDITFLOAT(label,xcoord,ycoord,pointer)                                                       \
+    new_editfloat = new EditFloat(xcoord, ycoord, 300.0f, 55.0f,                                        \
                                     std::string("0.0"), std::string(label));                            \
     new_editfloat->visible = false;                                                                     \
     new_editfloat->value = 0.0;                                                                         \
