@@ -196,67 +196,6 @@ void glutRender::DisplayGL ()
 {
     const GLfloat groundLevel = -2.4f;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLineWidth(1);
-    glDisable (GL_LIGHTING);
-    /* text out */
-    {
-        setOrthographicProjection();
-        glPushMatrix();
-            glLoadIdentity();
-            glScalef(1.0f, -1.0f, 1.0f);
-            glColor3f(1, 1, 1);
-
-            char info[250];
-            for (std::vector<Widget *>::iterator it = widgets.begin(); it != widgets.end(); ++it ) {
-                (*it)->render();
-            }
-            if (curre_ball < (int)GameTable.balls.size())
-            {
-                sprintf(info, "BALL[%d] state: r(%+0.2f, %+0.2f, %+0.2f); v(%+0.2f, %+0.2f, %+0.2f); w(%+0.2f, %+0.2f, %+0.2f)", curre_ball+1,
-                        GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z,
-                        GameTable.balls[curre_ball].v.x,GameTable.balls[curre_ball].v.y, GameTable.balls[curre_ball].v.z,
-                        GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
-
-                glPushMatrix();
-                    glTranslatef(15.0f, -WindowHeight + 15, 0.0f);
-                    renderString(GLUT_STROKE_ROMAN, info);
-                glPopMatrix();
-            }
-
-            glPushMatrix();
-                glTranslatef(WindowWidth - 260.0f, -65.0f, 0.0f);
-                sprintf(info, "Scores    %d", GameTable.sc_b_num);
-                renderString(GLUT_STROKE_ROMAN, info);
-            glPopMatrix();
-
-            glPushMatrix();
-               glTranslatef(WindowWidth - 260.0f, -30.0f, 0.0f);
-               sprintf(info, "Time rate  %.5f", GameTable.MULT * 100);
-               renderString(GLUT_STROKE_ROMAN, info);
-            glPopMatrix();
-
-            glPushMatrix();
-                glTranslatef(15.0f, -30.0f, 0.0f);
-                renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
-            glPopMatrix();
-
-
-            if (help_menu_showed) {
-                glPushMatrix();
-                glTranslatef(35.0f, -65.0f, 0.0f);
-                float height = 0;
-                for (int i = 0; i < hel_info_lines_number; i++) {
-                    glPushMatrix();
-                    glTranslatef(0.0f, -height, 0.0f);
-                    renderString(GLUT_STROKE_ROMAN, help_info[i]);
-                    glPopMatrix();
-                    height += 35;
-                }
-                glPopMatrix();
-            }
-        glPopMatrix();
-        restorePerspectiveProjection();
-    }
 
     glLoadIdentity();
     if (curre_ball < (int)GameTable.balls.size())
@@ -393,7 +332,69 @@ void glutRender::DisplayGL ()
         renderStrokeFontString(0.49f, -0.03f, GameTable.lenx + 0.09005f, GLUT_STROKE_ROMAN, (char *)"Billiard 3D PROJECT 2015");
 	glPopMatrix();
 
-	glutSwapBuffers();
+    glLineWidth(1);
+    glDisable (GL_LIGHTING);
+    /* text out */
+    {
+        setOrthographicProjection();
+        glPushMatrix();
+        glLoadIdentity();
+        glScalef(1.0f, -1.0f, 1.0f);
+        glColor3f(1, 1, 1);
+
+        char info[250];
+        for (std::vector<Widget *>::iterator it = widgets.begin(); it != widgets.end(); ++it ) {
+            (*it)->render();
+        }
+        if (curre_ball < (int)GameTable.balls.size())
+        {
+            sprintf(info, "BALL[%d] state: r(%+0.2f, %+0.2f, %+0.2f); v(%+0.2f, %+0.2f, %+0.2f); w(%+0.2f, %+0.2f, %+0.2f)", curre_ball+1,
+                    GameTable.balls[curre_ball].r.x, GameTable.balls[curre_ball].r.y, GameTable.balls[curre_ball].r.z,
+                    GameTable.balls[curre_ball].v.x,GameTable.balls[curre_ball].v.y, GameTable.balls[curre_ball].v.z,
+                    GameTable.balls[curre_ball].w.x, GameTable.balls[curre_ball].w.y, GameTable.balls[curre_ball].w.z);
+
+            glPushMatrix();
+            glTranslatef(15.0f, -WindowHeight + 15, 0.0f);
+            renderString(GLUT_STROKE_ROMAN, info);
+            glPopMatrix();
+        }
+
+        glPushMatrix();
+        glTranslatef(WindowWidth - 260.0f, -65.0f, 0.0f);
+        sprintf(info, "Scores    %d", GameTable.sc_b_num);
+        renderString(GLUT_STROKE_ROMAN, info);
+        glPopMatrix();
+
+        glPushMatrix();
+        glTranslatef(WindowWidth - 260.0f, -30.0f, 0.0f);
+        sprintf(info, "Time rate  %.5f", GameTable.MULT * 100);
+        renderString(GLUT_STROKE_ROMAN, info);
+        glPopMatrix();
+
+        glPushMatrix();
+        glTranslatef(15.0f, -30.0f, 0.0f);
+        renderString(GLUT_STROKE_ROMAN, (char *)"Press \'h\' to show/hide help information");
+        glPopMatrix();
+
+
+        if (help_menu_showed) {
+            glPushMatrix();
+            glTranslatef(35.0f, -65.0f, 0.0f);
+            float height = 0;
+            for (int i = 0; i < hel_info_lines_number; i++) {
+                glPushMatrix();
+                glTranslatef(0.0f, -height, 0.0f);
+                renderString(GLUT_STROKE_ROMAN, help_info[i]);
+                glPopMatrix();
+                height += 35;
+            }
+            glPopMatrix();
+        }
+        glPopMatrix();
+        restorePerspectiveProjection();
+    }
+
+    glutSwapBuffers();
 
     glFlush();
 }
@@ -428,6 +429,8 @@ void glutRender::IdleGL ()
 
 void glutRender::setOrthographicProjection()
 {
+    glDisable (GL_DEPTH_TEST);
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -438,6 +441,8 @@ void glutRender::setOrthographicProjection()
 
 void glutRender::restorePerspectiveProjection()
 {
+    glEnable (GL_DEPTH_TEST);
+
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
