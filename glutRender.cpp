@@ -760,10 +760,10 @@ void glutRender::MotionGL_(int x, int y) {
 }
 
 void glutRender::MotionGL(int x, int y) {
-    if (this->dragState && this->focusedWidget != NULL) {
+    /*if (this->dragState && this->focusedWidget != NULL) {
         this->focusedWidget->x = x - this->dragX;
         this->focusedWidget->y = -(y - this->dragY);
-    }
+    } */
 }
 
 void glutRender::NewButtonOnClick(Widget *Sender) {
@@ -780,68 +780,68 @@ void glutRender::InitGui() {
     Button * new_button;
     EditFloat * new_editfloat;
 
-    ADDBUTTON("Exit", -45.0f, this->ExitButton_)
+    ADDBUTTON("Exit", WindowWidth - 210.0f, -100.0f, this->ExitButton_)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Add new ball", -90.0f, this->AddBallButton_)
+    ADDBUTTON("Add new ball", WindowWidth - 520.0f, -90.0f, this->AddBallButton_)
     PUSHTOSTATE(2)
 
-    ADDBUTTON("Edit cur ball", -135.0f, this->ApplyButton_)
+    ADDBUTTON("Edit cur ball", WindowWidth - 520.0f, -145.0f, this->ApplyButton_)
     PUSHTOSTATE(2)
 
-    ADDBUTTON("Back", -170.0f, this->BackButton_)
+    ADDBUTTON("Back", WindowWidth - 520.0f, -200.0f, this->BackButton_)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("x coordinate", -100.0f, this->xcoord)
+    ADDEDITFLOAT("x coordinate", WindowWidth - 310.0f, -100.0f, this->xcoord)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("y coordinate", -155.0f, this->ycoord)
+    ADDEDITFLOAT("y coordinate", WindowWidth - 310.0f, -155.0f, this->ycoord)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("z coordinate", -210.0f, this->zcoord)
+    ADDEDITFLOAT("z coordinate", WindowWidth - 310.0f, -210.0f, this->zcoord)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("x velocity", -300.0f, this->xvelocity)
+    ADDEDITFLOAT("x velocity", WindowWidth - 310.0f, -300.0f, this->xvelocity)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("y velocity", -355.0f, this->yvelocity)
+    ADDEDITFLOAT("y velocity", WindowWidth - 310.0f, -355.0f, this->yvelocity)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("z velocity", -410.0f, this->zvelocity)
+    ADDEDITFLOAT("z velocity", WindowWidth - 310.0f, -410.0f, this->zvelocity)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("x angular velocity", -500.0f, this->xanglevelo)
+    ADDEDITFLOAT("x angular velocity", WindowWidth - 310.0f, -500.0f, this->xanglevelo)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("y angular velocity", -555.0f, this->yanglevelo)
+    ADDEDITFLOAT("y angular velocity", WindowWidth - 310.0f, -555.0f, this->yanglevelo)
     PUSHTOSTATE(2)
 
-    ADDEDITFLOAT("z angular velocity", -610.0f, this->zanglevelo)
+    ADDEDITFLOAT("z angular velocity", WindowWidth - 310.0f, -610.0f, this->zanglevelo)
     PUSHTOSTATE(2)
 
-    ADDBUTTON("Show menu", -445.0f, this->ShowHideMenuButton_)
+    ADDBUTTON("Show menu", WindowWidth - 210.0f, -170.0f, this->ShowHideMenuButton_)
     PUSHTOSTATE(0)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Reset", -555.0f, this->ResetButton_)
+    ADDBUTTON("Reset", WindowWidth - 210.0f, -555.0f, this->ResetButton_)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Start/Pause", -500.0f, this->StartStopButton_)
+    ADDBUTTON("Start/Pause", WindowWidth - 210.0f, -500.0f, this->StartStopButton_)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Open ball editor", -610.0f, this->OpenBallEditor_)
+    ADDBUTTON("Open ball editor", WindowWidth - 210.0f, -225.0f, this->OpenBallEditor_)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Toggle music", -665.0f, this->ToggleMusicButton_)
+    ADDBUTTON("Toggle music", WindowWidth - 210.0f, -445.0f, this->ToggleMusicButton_)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Draw tracks", -390.0f, this->TracksDrawingButton_)
+    ADDBUTTON("Draw tracks", WindowWidth - 210.0f, -390.0f, this->TracksDrawingButton_)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Next ball", -280.0f, this->NextBallButton_)
+    ADDBUTTON("Next ball", WindowWidth - 210.0f, -280.0f, this->NextBallButton_)
     PUSHTOSTATE(1)
 
-    ADDBUTTON("Previous ball", -335.0f, this->PrevBallButton_)
+    ADDBUTTON("Previous ball", WindowWidth - 210.0f, -335.0f, this->PrevBallButton_)
     PUSHTOSTATE(1)
 
     setState(0);
@@ -892,7 +892,10 @@ void glutRender::StartStopButton_(Widget *Sender) {
 }
 
 void glutRender::ApplyButton(Widget *Sender) {
-
+    int currentBall = curre_ball;
+    GameTable.balls[curre_ball].r = vec(*(this->xcoord), *(this->ycoord), *(this->zcoord));
+    GameTable.balls[curre_ball].v = vec(*(this->xvelocity), *(this->yvelocity), *(this->zvelocity));
+    GameTable.balls[curre_ball].w = vec(*(this->xanglevelo), *(this->yanglevelo), *(this->zanglevelo));
 }
 
 void glutRender::AddBallButton(Widget *Sender) {
@@ -1003,6 +1006,19 @@ void glutRender::unsetState() {
 }
 
 void glutRender::OpenBallEditor(Widget *Sender) {
+    int current_ball = curre_ball;
+    *(this->xcoord) = GameTable.balls[current_ball].r.x;
+    *(this->ycoord) = GameTable.balls[current_ball].r.y;
+    *(this->zcoord) = GameTable.balls[current_ball].r.z;
+    *(this->xvelocity) = GameTable.balls[current_ball].v.x;
+    *(this->yvelocity) = GameTable.balls[current_ball].v.y;
+    *(this->zvelocity) = GameTable.balls[current_ball].v.z;
+    *(this->xanglevelo) = GameTable.balls[current_ball].w.x;
+    *(this->yanglevelo) = GameTable.balls[current_ball].w.y;
+    *(this->zanglevelo) = GameTable.balls[current_ball].w.z;
+    for (int i = 0; i < states[2].size(); ++i) {
+        widgets[states[2][i]]->receiveStroke('`');
+    }
     setState(2);
 }
 

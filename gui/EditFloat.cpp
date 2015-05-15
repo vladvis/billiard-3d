@@ -15,7 +15,15 @@ void EditFloat::receiveStroke(char c) {
             this->setBackgroundColor(0.6f, 0.1f, 0.1f, 0.5f);
         else
             this->setBackgroundColor(0.1f, 0.1f, 0.1f, 0.5f);
+            this->value = atof(this->text.c_str());
         this->cursor_pos--;
+    }
+    if (c == '`' || c == '~') {
+        char text[17];
+        sprintf(text, "%f", this->value);
+        text[16] = '\0';
+        this->text = std::string(text);
+        this->cursor_pos = this->text.size();
     }
     if (this->text.size() >= EDITLENGTH-1)
         return;
